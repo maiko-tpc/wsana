@@ -64,6 +64,7 @@ void analysis(char *filename) {
   }
   
   bld1_header bld1h;
+  //  RunComment runcom;
   BlkHeader tmp_blkh;
   EvtHeader evth;
   FldHeader fldh;
@@ -74,7 +75,9 @@ void analysis(char *filename) {
   unsigned short comment[100000];  
   
   eve=0;
-
+  printf("analyzed %d events\n", eve);
+  fflush(stdout);
+  
   /* Read the first header */
   infile.read((char*)&bld1h, sizeof(bld1h));
   infile.read((char*)&tmp_blkh, sizeof(tmp_blkh));
@@ -103,110 +106,113 @@ void analysis(char *filename) {
   
   /* Read the run comment */
   infile.read((char*)&comment, blksize*2);
+  //  infile.read((char*)&runcom, sizeof(RunComment));
   
   while(!infile.eof()){
 
-  /* Read the BLD1 header */
-  infile.read((char*)&bld1h, sizeof(bld1h));
+    /* Read the BLD1 header */
+    infile.read((char*)&bld1h, sizeof(bld1h));
 #ifdef DEBUG
-  printf("id= %08x\n", bld1h.id);
-  printf("seq_num= %08x\n", htonl(bld1h.seq_num));
-  printf("bsize= 0x%08x\n", htonl(bld1h.bsize));
-  printf("------------------------\n");
-#endif
-  
-  /* Read the Block header */  
-  infile.read((char*)&tmp_blkh, sizeof(tmp_blkh));
-#ifdef DEBUG
-  printf("Header ID= 0x%04x\n", htons(tmp_blkh.headerID));
-  printf("HeaderSize= 0x%04x\n", htons(tmp_blkh.headerSize));
-  printf("BlockID= 0x%04x\n", htons(tmp_blkh.blockID));
-  printf("blockSize in old format= 0x%04x\n",
-	 htons(tmp_blkh.blockSize));
-  printf("blockNumber= 0x%04x\n", htons(tmp_blkh.blockNumber));
-  printf("numEvents= 0x%04x\n", htons(tmp_blkh.numEvents));
-  printf("blockSize32_l= 0x%04x\n", htons(tmp_blkh.blockSize32_l));
-  printf("blockSize32_u= 0x%04x\n", htons(tmp_blkh.blockSize32_u));
-  printf("------------------------\n");
-#endif
-  
-  unsigned int blksize_byte=4*(0x00010000*htons(tmp_blkh.blockSize32_u)+
-			       htons(tmp_blkh.blockSize32_l));
-  unsigned int byte_cnt=0;
-
-  while(byte_cnt<blksize_byte){
-    /* Read the Event header */  
-    infile.read((char*)&evth, sizeof(evth));
-    byte_cnt+=sizeof(evth);
-    eve++;
-    if(eve%1000==0){
-      printf("analyzed %d events\n", eve);
-    }
-    
-#ifdef DEBUG
-    printf("size=%d\n", byte_cnt);
-    printf("header ID= 0x%04x\n", htons(evth.headerID));
-    printf("event header size= 0x%04x\n", htons(evth.headerSize));
-    printf("eventID= 0x%04x\n", htons(evth.eventID));
-    printf("eventSize= 0x%04x\n", htons(evth.eventSize));
-    printf("eventNumber= 0x%04x\n", htons(evth.eventNumber));
-    printf("eventnumFields= 0x%04x\n", htons(evth.numFields));
+    printf("id= %08x\n", bld1h.id);
+    printf("seq_num= %08x\n", htonl(bld1h.seq_num));
+    printf("bsize= 0x%08x\n", htonl(bld1h.bsize));
     printf("------------------------\n");
 #endif
     
-    /* Event initialization */
-    init_madc32_data(&madc);
-    
-    /* Read the Field header */  
-    infile.read((char*)&fldh, sizeof(fldh));  
-    byte_cnt+=sizeof(fldh);
-    unsigned int field_size = htons(fldh.fieldSize);
-    
+    /* Read the Block header */  
+    infile.read((char*)&tmp_blkh, sizeof(tmp_blkh));
 #ifdef DEBUG
-    printf("headerID= 0x%04x\n", htons(fldh.headerID));
-    printf("headerSize= 0x%04x\n", htons(fldh.headerSize));
-    printf("fieldID= 0x%04x\n", htons(fldh.fieldID));
-    printf("fieldSize= 0x%04x\n", field_size);
-    printf("------------------------\n");  
+    printf("Header ID= 0x%04x\n", htons(tmp_blkh.headerID));
+    printf("HeaderSize= 0x%04x\n", htons(tmp_blkh.headerSize));
+    printf("BlockID= 0x%04x\n", htons(tmp_blkh.blockID));
+    printf("blockSize in old format= 0x%04x\n",
+	   htons(tmp_blkh.blockSize));
+    printf("blockNumber= 0x%04x\n", htons(tmp_blkh.blockNumber));
+    printf("numEvents= 0x%04x\n", htons(tmp_blkh.numEvents));
+    printf("blockSize32_l= 0x%04x\n", htons(tmp_blkh.blockSize32_l));
+    printf("blockSize32_u= 0x%04x\n", htons(tmp_blkh.blockSize32_u));
+    printf("------------------------\n");
 #endif
     
-    unsigned int fldcnt=0;
-    unsigned int tmpdata[MAX_REGION];
-    //  unsigned int madc32data[1000];
-    unsigned int region_id, region_size;
-    while(fldcnt<field_size){
-      /* Read region header */
-      infile.read((char*)&regionh, sizeof(regionh));
-      byte_cnt+=sizeof(regionh);
-      region_id=htons(regionh.id)>>12;
-      region_size=regionh.size;
-      fldcnt+=1;
-      
-      /* Read the module data */
-      infile.read((char*)&tmpdata, region_size*2);
-      byte_cnt+=region_size*2;
-      fldcnt+=region_size;
-
-#ifdef DEBUG
-      printf("region id=0x%x, size=%d\n", region_id, region_size);
+    unsigned int blksize_byte=4*(0x00010000*htons(tmp_blkh.blockSize32_u)+
+				 htons(tmp_blkh.blockSize32_l));
+    unsigned int byte_cnt=0;
+    
+    while(byte_cnt<blksize_byte){
+      /* Read the Event header */  
+      infile.read((char*)&evth, sizeof(evth));
+      byte_cnt+=sizeof(evth);
+      eve++;
+#ifndef DEBUG      
+      if(eve%10000==0){
+	printf("\ranalyzed %d events", eve);
+      }
 #endif
       
-      switch(region_id){
-      case 1:
-	//      printf("V1190, size=%d\n", region_size);
-	break;
-      case 3:
-	ana_madc32(&madc, tmpdata, region_size);
+#ifdef DEBUG
+      printf("size=%d\n", byte_cnt);
+      printf("header ID= 0x%04x\n", htons(evth.headerID));
+      printf("event header size= 0x%04x\n", htons(evth.headerSize));
+      printf("eventID= 0x%04x\n", htons(evth.eventID));
+      printf("eventSize= 0x%04x\n", htons(evth.eventSize));
+      printf("eventNumber= 0x%04x\n", htons(evth.eventNumber));
+      printf("eventnumFields= 0x%04x\n", htons(evth.numFields));
+      printf("------------------------\n");
+#endif
+      
+      /* Event initialization */
+      init_madc32_data(&madc);
+      
+      /* Read the Field header */  
+      infile.read((char*)&fldh, sizeof(fldh));  
+      byte_cnt+=sizeof(fldh);
+      unsigned int field_size = htons(fldh.fieldSize);
+      
+#ifdef DEBUG
+      printf("headerID= 0x%04x\n", htons(fldh.headerID));
+      printf("headerSize= 0x%04x\n", htons(fldh.headerSize));
+      printf("fieldID= 0x%04x\n", htons(fldh.fieldID));
+      printf("fieldSize= 0x%04x\n", field_size);
+      printf("------------------------\n");  
+#endif
+      
+      unsigned int fldcnt=0;
+      unsigned int tmpdata[MAX_REGION];
+      //  unsigned int madc32data[1000];
+      unsigned int region_id, region_size;
+      while(fldcnt<field_size){
+	/* Read region header */
+	infile.read((char*)&regionh, sizeof(regionh));
+	byte_cnt+=sizeof(regionh);
+	region_id=htons(regionh.id)>>12;
+	region_size=regionh.size;
+	fldcnt+=1;
+	
+	/* Read the module data */
+	infile.read((char*)&tmpdata, region_size*2);
+	byte_cnt+=region_size*2;
+	fldcnt+=region_size;
+	
+#ifdef DEBUG
+	printf("region id=0x%x, size=%d\n", region_id, region_size);
+#endif
+	
+	switch(region_id){
+	case 1:
+	  //      printf("V1190, size=%d\n", region_size);
+	  break;
+	case 3:
+	  ana_madc32(&madc, tmpdata, region_size);
 	break;
 	
-      default:
-	break;
-      } // end of switch(region_id)
-    } // end of while(fldcnt<field_size)
-
-    tree->Fill();
-  } // end of while(byte_cnt<blksize_byte)
-  
+	default:
+	  break;
+	} // end of switch(region_id)
+      } // end of while(fldcnt<field_size)
+      
+      tree->Fill();
+    } // end of while(byte_cnt<blksize_byte)
+    
   } // end of while(!infile.eof())
   
   infile.close();
@@ -228,7 +234,7 @@ unsigned int flip_32bit(unsigned int inp){
 
 void init_madc32_data(madc32_data *madc){
   int i;
-
+  
   for(i=0; i<N_MADC; i++){
     madc->wrdcnt[i]=0;
     madc->counter[i]=0;
@@ -260,9 +266,12 @@ void ana_madc32(madc32_data *madc, unsigned int *rawdata, unsigned int size){
       madc->wrdcnt[geo]=nword;
       for(int i=0; i<nword-1; i++){  // data
 	tmpdata=flip_32bit(ntohl(rawdata[rp]));
-	ich=32*geo+((tmpdata>>16)&0x001f);
-	tmpadc=(tmpdata)&0x00001fff;
-	madc->adc[ich]=tmpadc;
+
+	if((tmpdata>>26)==0x1){
+	  ich=32*geo+((tmpdata>>16)&0x001f);
+	  tmpadc=(tmpdata)&0x00001fff;
+	  madc->adc[ich]=tmpadc;
+	}
 	rp++;
       }
       tmpdata=flip_32bit(ntohl(rawdata[rp]));

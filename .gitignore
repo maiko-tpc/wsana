@@ -1,5 +1,8 @@
+moduledata.h~
+decoder.h~
+decoder.cxx~
+moduledata.h~
 ana.cxx~
-Makefile~
 .gitignore~
 *.ssd
 *.bld

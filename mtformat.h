@@ -11,10 +11,8 @@
   Modified: 20-AUG-2015 by A. Tamii (DAQ Data ver 4.0)
   Modified: 19-APR-2016 by A. Tamii (for newer VMEDAQ)
 */
-
 #define ComVar4_0  (4<<8)  /* version 4.0 */
 #define MaxComLen  124
-
 
 typedef struct BlkHeader{ // from Ver. 4.0
   unsigned short		headerID;         /* = 0xFFFF */
@@ -77,7 +75,6 @@ typedef struct RegionHeader{  /* all components are defined by the network byte 
   unsigned char  id;        /* identification word ('BLD1') */
   unsigned char size  ;   /* sequential number */
 } RegionHeader,*RegionHeaderPtr, **RegionHeaderHdl;
-
 
 
 

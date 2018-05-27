@@ -78,8 +78,10 @@ void analysis(char *filename) {
   printf("analyzed %d events\n", eve);
   fflush(stdout);
   
-  /* Read the first header */
+  /* Read the first BLD1 header */
   infile.read((char*)&bld1h, sizeof(bld1h));
+
+  /* Read the first Block header */
   infile.read((char*)&tmp_blkh, sizeof(tmp_blkh));
 
 #ifdef DEBUG
@@ -106,12 +108,13 @@ void analysis(char *filename) {
   
   /* Read the run comment */
   infile.read((char*)&comment, blksize*2);
-  //  infile.read((char*)&runcom, sizeof(RunComment));
+  //  infile.read((char*)&runcom, blksize*2);
   
   while(!infile.eof()){
 
     /* Read the BLD1 header */
     infile.read((char*)&bld1h, sizeof(bld1h));
+
 #ifdef DEBUG
     printf("id= %08x\n", bld1h.id);
     printf("seq_num= %08x\n", htonl(bld1h.seq_num));
@@ -139,6 +142,7 @@ void analysis(char *filename) {
     unsigned int byte_cnt=0;
     
     while(byte_cnt<blksize_byte){
+
       /* Read the Event header */  
       infile.read((char*)&evth, sizeof(evth));
       byte_cnt+=sizeof(evth);
@@ -181,6 +185,7 @@ void analysis(char *filename) {
       //  unsigned int madc32data[1000];
       unsigned int region_id, region_size;
       while(fldcnt<field_size){
+
 	/* Read region header */
 	infile.read((char*)&regionh, sizeof(regionh));
 	byte_cnt+=sizeof(regionh);
@@ -198,13 +203,13 @@ void analysis(char *filename) {
 #endif
 	
 	switch(region_id){
-	case 1:
-	  //      printf("V1190, size=%d\n", region_size);
-	  break;
-	case 3:
-	  ana_madc32(&madc, tmpdata, region_size);
-	break;
+	case 1:  // V1190
 	
+	  break;
+	case 3:  // MADC32
+	  ana_madc32(&madc, tmpdata, region_size);
+	  break;
+	  
 	default:
 	  break;
 	} // end of switch(region_id)

@@ -10,6 +10,7 @@
 
 #include "mtformat.h"
 #include "moduledata.h"
+#include "decoder.h"
 
 
 #define MAX_REGION 10000
@@ -20,16 +21,13 @@
 using namespace std;
 void analysis(char *filename);
 void error_exit(TFile *file, int i);
-unsigned int flip_32bit(unsigned int inp);
-void init_madc32_data(madc32_data *madc);
-void ana_madc32(madc32_data *madc,
-		unsigned int *rawdata, unsigned int size);
 
 TFile *file;
 TTree *tree;
 
 unsigned int eve;
 madc32_data madc;
+v1190_data v1190_ssd;
 
 int main(int iarg, char *argv[]) {
   if (iarg != 3) {
@@ -166,6 +164,7 @@ void analysis(char *filename) {
       
       /* Event initialization */
       init_madc32_data(&madc);
+      init_v1190_data(&v1190_ssd);
       
       /* Read the Field header */  
       infile.read((char*)&fldh, sizeof(fldh));  
@@ -204,7 +203,7 @@ void analysis(char *filename) {
 	
 	switch(region_id){
 	case 1:  // V1190
-	
+	  if(eve==1) ana_v1190(&v1190_ssd, tmpdata, region_size);
 	  break;
 	case 3:  // MADC32
 	  ana_madc32(&madc, tmpdata, region_size);
@@ -229,65 +228,5 @@ void error_exit(TFile *file, int i) {
   printf("error exit [%d]\n", i); fflush(stdout);
   file->Close();
   exit(0);
-}
-
-unsigned int flip_32bit(unsigned int inp){
-  unsigned int low = inp&0x0000ffff;
-  unsigned int up  = inp>>16;
-  return low*0x00010000 + up;
-}
-
-void init_madc32_data(madc32_data *madc){
-  int i;
-  
-  for(i=0; i<N_MADC; i++){
-    madc->wrdcnt[i]=0;
-    madc->counter[i]=0;
-  }
-
-  for(i=0; i<N_MADC_CH; i++){
-    madc->adc[i]=0;
-  }
-}
-
-void ana_madc32(madc32_data *madc, unsigned int *rawdata, unsigned int size){
-  int finish_mod=0;
-  unsigned int rp=0;
-  unsigned int tmpdata;
-  int geo;
-  int nword;
-  int ich;
-  unsigned int tmpadc;
-  unsigned int tmp_counter;
-  
-  while(rp<size/2){
-    tmpdata=flip_32bit(ntohl(rawdata[rp]));
-    rp++;
-
-    if(tmpdata>>24 == 0x40){  // header
-      geo=(tmpdata>>16)&0x00ff;
-      if(geo>=N_MADC) geo=0;
-      nword=(tmpdata)&0x00000fff;
-      madc->wrdcnt[geo]=nword;
-      for(int i=0; i<nword-1; i++){  // data
-	tmpdata=flip_32bit(ntohl(rawdata[rp]));
-
-	if((tmpdata>>26)==0x1){
-	  ich=32*geo+((tmpdata>>16)&0x001f);
-	  tmpadc=(tmpdata)&0x00001fff;
-	  madc->adc[ich]=tmpadc;
-	}
-	rp++;
-      }
-      tmpdata=flip_32bit(ntohl(rawdata[rp]));
-      rp++;
-      if((tmpdata>>30)==0x3){  // ender 
-	tmp_counter=(tmpdata)&0x3fffffff;
-	finish_mod++;
-      }
-    }
-    if(finish_mod==N_MADC) break;
-  }
-  
 }
 

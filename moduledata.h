@@ -1,4 +1,4 @@
-#define N_MADC 3
+#define N_MADC 2
 #define N_V1190 1
 #define V1190_MAX_MULTI 4
 #define V1190_REF_CH 127

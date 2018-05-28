@@ -41,9 +41,17 @@ int main(int iarg, char *argv[]) {
   tree = new TTree("tree", "tree");
   
   tree->Branch("eve", &eve, "eve/I");
+
   tree->Branch("madc", &madc,
 	       Form("wrdcnt[%d]/I:adc[%d]/I:counter[%d]/I",
 		    N_MADC, N_MADC_CH, N_MADC));
+  
+//  tree->Branch("v1190_ssd", &v1190_ssd,
+//	       Form("lead[%d][%d]/I:trail[%d][%d]/I:tot[%d][%d]/I:multi[%d]/I:counter/I",
+//		    N_V1190_CH, V1190_MAX_MULTI,
+//		    N_V1190_CH, V1190_MAX_MULTI,
+//		    N_V1190_CH, V1190_MAX_MULTI,
+//		    N_V1190_CH));
   
   analysis(argv[1]);
   
@@ -71,7 +79,7 @@ void analysis(char *filename) {
   unsigned int blksize;
   
   unsigned short comment[100000];  
-  
+
   eve=0;
   printf("analyzed %d events\n", eve);
   fflush(stdout);
@@ -147,7 +155,8 @@ void analysis(char *filename) {
       eve++;
 #ifndef DEBUG      
       if(eve%10000==0){
-	printf("\ranalyzed %d events", eve);
+	//	printf("\ranalyzed %d events", eve);
+	printf("analyzed %d events\n", eve);
       }
 #endif
       
@@ -163,6 +172,10 @@ void analysis(char *filename) {
 #endif
       
       /* Event initialization */
+//      for(i=0; i<MAX_REGION; i++){
+//	tmpdata[i]=0;
+//      }
+      unsigned int tmpdata[MAX_REGION]={0};
       init_madc32_data(&madc);
       init_v1190_data(&v1190_ssd);
       
@@ -180,7 +193,7 @@ void analysis(char *filename) {
 #endif
       
       unsigned int fldcnt=0;
-      unsigned int tmpdata[MAX_REGION];
+
       //  unsigned int madc32data[1000];
       unsigned int region_id, region_size;
       while(fldcnt<field_size){
@@ -197,18 +210,21 @@ void analysis(char *filename) {
 	byte_cnt+=region_size*2;
 	fldcnt+=region_size;
 	
-#ifdef DEBUG
-	printf("region id=0x%x, size=%d\n", region_id, region_size);
-#endif
+
+	if(eve>77228 && eve<77234)printf("eve=%d, region id=0x%x, size=%d\n", eve, region_id, region_size);
+	if(eve==2)printf("eve=%d, region id=0x%x, size=%d\n", eve, region_id, region_size);
+	
 	
 	switch(region_id){
 	case 1:  // V1190
-	  if(eve==1) ana_v1190(&v1190_ssd, tmpdata, region_size);
+	  ana_v1190(&v1190_ssd, tmpdata, region_size);
+	  //	  printf("v1190, eve=%d\n", eve);
 	  break;
 	case 3:  // MADC32
 	  ana_madc32(&madc, tmpdata, region_size);
+	  //	  printf("madc, eve=%d\n", eve);
 	  break;
-	  
+
 	default:
 	  break;
 	} // end of switch(region_id)

@@ -64,7 +64,7 @@ void ana_madc32(madc32_data *madc, unsigned int *rawdata, unsigned int size){
     }
     if(finish_mod==N_MADC) break;
   }
-  
+
 }
 
 
@@ -83,29 +83,79 @@ void init_v1190_data(v1190_data *v1190){
 
 int ana_v1190(v1190_data *v1190, unsigned int *rawdata, unsigned int size){
   unsigned int rp=0;
-  unsigned int tmpdata;
+  unsigned int data;
   int geo=-1;
-
+  unsigned int itdc;
+  unsigned int edge;
+  unsigned int ich;
+  unsigned int measure;
+  int i,j;
+  
   int tmp_multi[N_V1190_CH]={0};
   
   while(rp<size/2){
-    tmpdata=flip_32bit(ntohl(rawdata[rp]));
+    data=flip_32bit(ntohl(rawdata[rp]));
     rp++;
 
-    if(tmpdata>>27 == 0x08){  // global header
-      geo=tmpdata&0x1f;
-      if(geo==V1190_SSD_GEO) v1190->counter=(tmpdata>>5)&0x3fffff;
+    if(data>>27 == 0x08){  // global header
+      geo=data&0x1f;
+      if(geo==V1190_SSD_GEO) v1190->counter=(data>>5)&0x3fffff;
     }
 
     if(geo!=V1190_SSD_GEO) return geo;
 
     /* analyze only the ssd data */
     if(geo==V1190_SSD_GEO){
-      tmpdata=flip_32bit(ntohl(rawdata[rp]));
-      rp++;
-      
+
+      while(1){
+	data=flip_32bit(ntohl(rawdata[rp]));
+	rp++;
+	if(data>>27 == 0x10) break; // global trailer
+	
+	if((data>>27) == 0x1){  // TDC header
+	  itdc = (data>>24)&0x03;
+	  
+	  while(1){
+	    data=flip_32bit(ntohl(rawdata[rp]));
+	    rp++;
+	    if((data>>27) == 0x03){
+	      break; // TDC trailer
+	    }
+
+	    if((data>>27) == 0x4){ // TDC error
+	      break;
+	    }
+
+	    if((data>>27) == 0x00){ // TDC measure
+	      edge=(data>>26)&0x3f;
+	      ich=(data>>19)&0x7f;
+	      measure=data&0x0007ffff;
+	      if(tmp_multi[ich]>=V1190_MAX_MULTI) tmp_multi[ich]=V1190_MAX_MULTI-1;
+	      if(edge==0){ // leading edge
+		v1190->lead[ich][tmp_multi[ich]]=measure;
+	      }
+	      if(edge==1){ // trailing edge
+		v1190->trail[ich][tmp_multi[ich]]=measure;
+	      }
+	      tmp_multi[ich]++;
+	    }
+
+	  }
+	} 
+      } 
+    } // end of if(geo==V1190_SSD_GEO)
+  } // end of while(rp<size/2)
+
+  for(i=0; i<N_V1190_CH; i++){
+    for(j=0; j<tmp_multi[i]-1; j++){
+      v1190->tot[i][j] = v1190->trail[i][j] - v1190->lead[i][j];
     }
+    v1190->multi[i]=tmp_multi[i];
   }
 
+  //  if(v1190->multi[V1190_REF_CH]==0){
+  //    printf("No V1190 ref. hit, geo= %d\n", geo);
+  //  }
+  
   return geo;
 }

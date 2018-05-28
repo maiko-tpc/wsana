@@ -1,6 +1,7 @@
 #define N_MADC 3
 #define N_V1190 1
 #define V1190_MAX_MULTI 4
+#define V1190_REF_CH 127
 
 const int N_MADC_CH = N_MADC*32;
 const int N_V1190_CH = 128;

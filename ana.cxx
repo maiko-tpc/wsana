@@ -3,10 +3,13 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <fstream>
+#include <signal.h>
+#include <string.h>
+
 #include <TFile.h>
 #include <TTree.h>
-#include <TCut.h>
-#include <fstream>
+//#include <TCut.h>
 
 #include "mtformat.h"
 #include "moduledata.h"
@@ -21,6 +24,8 @@
 using namespace std;
 void analysis(char *filename);
 void error_exit(TFile *file, int i);
+void abrt_handler(int sig, siginfo_t *info, void *ctx);
+volatile sig_atomic_t eflag = 0;
 
 TFile *file;
 TTree *tree;
@@ -31,6 +36,17 @@ v1190_data v1190_ssd;
 grpla_data grpla;
 
 int main(int iarg, char *argv[]) {
+
+  /* define action when Cntl-c is given */
+  struct sigaction sa_sigabrt;
+  memset(&sa_sigabrt, 0, sizeof(sa_sigabrt));
+  sa_sigabrt.sa_sigaction = abrt_handler;
+  sa_sigabrt.sa_flags = SA_SIGINFO;
+
+  if (sigaction(SIGINT, &sa_sigabrt, NULL) < 0 ) {
+    exit(1);
+  }
+  
   if (iarg != 3) {
     printf("usage: ./ana xxxx.ssd xxxx.root\n");
     printf("eg.)\n");
@@ -70,6 +86,7 @@ void analysis(char *filename) {
   
   ifstream infile(filename,ios_base::in|ios::binary);
   if (!infile){
+    printf("File '%s' does not exist!\n", filename);
     error_exit(file, 0);
   }
   
@@ -127,7 +144,7 @@ void analysis(char *filename) {
   /* Read the run comment */
   infile.read((char*)&comment, blksize*2);
   
-  while(!infile.eof()){
+  while(!infile.eof() && !eflag){
     
     /* Read the BLD1 header */
       infile.read((char*)&bld1h, sizeof(bld1h));
@@ -163,13 +180,13 @@ void analysis(char *filename) {
 				 htons(tmp_blkh.blockSize32_l));
     unsigned int byte_cnt=0;
     
-    while(byte_cnt<blksize_byte && (!infile.eof())){
+    while(byte_cnt<blksize_byte && (!infile.eof()) && !eflag){
       
       /* Read the Event header */  
-      while(!infile.eof()){
-      infile.read((char*)&evth, sizeof(evth));
-      byte_cnt+=sizeof(evth);
-      if(htons(evth.headerID)==0xffdf) break;
+      while(!infile.eof() && !eflag){
+	infile.read((char*)&evth, sizeof(evth));
+	byte_cnt+=sizeof(evth);
+	if(htons(evth.headerID)==0xffdf) break;
       }
       eve++;
 
@@ -199,10 +216,10 @@ void analysis(char *filename) {
       init_grpla_data(&grpla);
       
       /* Read the Field header */  
-      while(!infile.eof()){
-      infile.read((char*)&fldh, sizeof(fldh));  
-      byte_cnt+=sizeof(fldh);
-      if(htons(fldh.headerID)==0xffcf) break;
+      while(!infile.eof() && !eflag){
+	infile.read((char*)&fldh, sizeof(fldh));  
+	byte_cnt+=sizeof(fldh);
+	if(htons(fldh.headerID)==0xffcf) break;
       }
       unsigned int field_size = htons(fldh.fieldSize);
       
@@ -232,7 +249,6 @@ void analysis(char *filename) {
 	infile.read((char*)&tmpdata, region_size*2);
 	byte_cnt+=region_size*2;
 	fldcnt+=region_size;
-	
 	
 	switch(region_id){
 	case 0x1:  // V1190
@@ -271,3 +287,10 @@ void error_exit(TFile *file, int i) {
   exit(0);
 }
 
+void abrt_handler(int sig, siginfo_t *info, void *ctx) {
+  printf("\n");
+  printf("Interrupt is detected!\n");
+  printf("Saving output file.\n");
+  printf("\n");
+  eflag = 1;
+}

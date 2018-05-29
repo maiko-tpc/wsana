@@ -242,9 +242,14 @@ void analysis(char *filename) {
 	  ana_madc32(&madc, tmpdata, region_size);
 	  break;
 	  
-	case 0xd:
-	  ana_grpla(&grpla, tmpdata, region_size);
-	  
+	case 0xd:  // FERA QDC
+	  ana_grpla_qdc(&grpla, tmpdata, region_size);
+	  break;
+
+	case 0xe:  // FERA TDC
+	  ana_grpla_tdc(&grpla, tmpdata, region_size);
+	  break;
+
 	default:
 	  break;
 	} // end of switch(region_id)

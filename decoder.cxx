@@ -170,7 +170,7 @@ void init_grpla_data(grpla_data *grpla){
   }
 }
 
-int ana_grpla(grpla_data *grpla, unsigned int *rawdata, unsigned int size){
+int ana_grpla_qdc(grpla_data *grpla, unsigned int *rawdata, unsigned int size){
   unsigned int data;
 
   unsigned short data16;
@@ -206,5 +206,42 @@ int ana_grpla(grpla_data *grpla, unsigned int *rawdata, unsigned int size){
     }
   }
   
+  return vsn;
+}
+
+int ana_grpla_tdc(grpla_data *grpla, unsigned int *rawdata, unsigned int size){
+  unsigned int data;
+
+  unsigned short data16;
+  unsigned int ndata;
+  int vsn;
+  int ich,tmp_tdc;
+  
+  data=(ntohl(rawdata[0]));
+  data16=(data>>16)&0xffff;
+  ndata=(data16>>11)&0xf;
+  vsn=data16&0xff;
+
+  unsigned int cnt=1;
+  int rawdata_index;
+
+    data16=data&0xffff;
+    ich=(data16>>11)&0x0f;
+    tmp_tdc=data16&0x7ff;
+    if(ich<N_GRPLA_CH)grpla->tdc[ich]=tmp_tdc;
+    
+    while(cnt<ndata){
+      rawdata_index=(int)(cnt/2+cnt%2);
+      data=(ntohl(rawdata[rawdata_index]));
+      if((cnt%2)==0) data16=data&0xffff;
+      if((cnt%2)==1) data16=(data>>16)&0xffff;
+      if(data16!=0){
+	ich=(data16>>11)&0x0f;
+	tmp_tdc=data16&0x7ff;
+	if(ich<N_GRPLA_CH)grpla->tdc[ich]=tmp_tdc;
+      }
+      
+      cnt++;
+    }
   return vsn;
 }

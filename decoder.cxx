@@ -4,6 +4,7 @@
 #include "moduledata.h"
 
 #define V1190_SSD_GEO 24
+#define VSN_GR 1
 
 unsigned int flip_32bit(unsigned int inp){
   unsigned int low = inp&0x0000ffff;
@@ -158,4 +159,52 @@ int ana_v1190(v1190_data *v1190, unsigned int *rawdata, unsigned int size){
   //  }
   
   return geo;
+}
+
+
+void init_grpla_data(grpla_data *grpla){
+  int i;
+  for(i=0; i<N_GRPLA_CH; i++){
+    grpla->adc[i]=0;
+    grpla->tdc[i]=0;
+  }
+}
+
+int ana_grpla(grpla_data *grpla, unsigned int *rawdata, unsigned int size){
+  unsigned int data;
+
+  unsigned short data16;
+  unsigned int ndata;
+  int vsn;
+  int ich,tmp_adc;
+  
+  data=(ntohl(rawdata[0]));
+  data16=(data>>16)&0xffff;
+  ndata=(data16>>11)&0xf;
+  vsn=data16&0xff;
+  
+  unsigned int cnt=1;
+  int rawdata_index;
+  if(vsn==VSN_GR){ // analyze only GR
+    data16=data&0xffff;
+    ich=(data16>>11)&0x0f;
+    tmp_adc=data16&0x7ff;
+    if(ich<N_GRPLA_CH)grpla->adc[ich]=tmp_adc;
+    
+    while(cnt<ndata){
+      rawdata_index=(int)(cnt/2+cnt%2);
+      data=(ntohl(rawdata[rawdata_index]));
+      if((cnt%2)==0) data16=data&0xffff;
+      if((cnt%2)==1) data16=(data>>16)&0xffff;
+      if(data16!=0){
+	ich=(data16>>11)&0x0f;
+	tmp_adc=data16&0x7ff;
+	if(ich<N_GRPLA_CH)grpla->adc[ich]=tmp_adc;
+      }
+      
+      cnt++;
+    }
+  }
+  
+  return vsn;
 }

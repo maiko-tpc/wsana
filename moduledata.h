@@ -5,6 +5,7 @@
 
 const int N_MADC_CH = N_MADC*32;
 const int N_V1190_CH = 128;
+const int N_GRPLA_CH = 16;
 
 typedef struct madc32_data{
   unsigned int wrdcnt[N_MADC];
@@ -19,3 +20,8 @@ typedef struct v1190_data{
   unsigned int multi[N_V1190_CH];  
   unsigned int counter;
 } v1190_data;
+
+typedef struct grpla_data{
+  unsigned int adc[N_GRPLA_CH];
+  unsigned int tdc[N_GRPLA_CH];
+} grpla_data;

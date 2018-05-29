@@ -28,6 +28,7 @@ TTree *tree;
 unsigned int eve;
 madc32_data madc;
 v1190_data v1190_ssd;
+grpla_data grpla;
 
 int main(int iarg, char *argv[]) {
   if (iarg != 3) {
@@ -53,6 +54,9 @@ int main(int iarg, char *argv[]) {
 		    N_V1190_CH, V1190_MAX_MULTI,
 		    N_V1190_CH));
   
+  tree->Branch("grpla", &grpla,
+	       Form("adc[%d]/I:tdc[%d]/I",
+		    N_GRPLA_CH, N_GRPLA_CH));
   analysis(argv[1]);
   
   tree->Write();
@@ -192,6 +196,7 @@ void analysis(char *filename) {
       unsigned int tmpdata[MAX_REGION];
       init_madc32_data(&madc);
       init_v1190_data(&v1190_ssd);
+      init_grpla_data(&grpla);
       
       /* Read the Field header */  
       while(!infile.eof()){
@@ -230,12 +235,15 @@ void analysis(char *filename) {
 	
 	
 	switch(region_id){
-	case 1:  // V1190
+	case 0x1:  // V1190
 	  ana_v1190(&v1190_ssd, tmpdata, region_size);
 	  break;
-	case 3:  // MADC32
+	case 0x3:  // MADC32
 	  ana_madc32(&madc, tmpdata, region_size);
 	  break;
+	  
+	case 0xd:
+	  ana_grpla(&grpla, tmpdata, region_size);
 	  
 	default:
 	  break;

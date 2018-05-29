@@ -70,13 +70,6 @@ typedef struct bld1_header{  /* all components are defined by the network byte o
   int             next_pos2; /*                                       (lower)*/
 } bld1_header_t;
 
-/* added by Furuno on 18/05/26 */
-typedef struct RegionHeader{  /* all components are defined by the network byte order */
-  unsigned char  id;        /* identification word ('BLD1') */
-  unsigned char size  ;   /* sequential number */
-} RegionHeader,*RegionHeaderPtr, **RegionHeaderHdl;
-
-
 
 #if 0  // before Ver 4.0 
 typedef struct RunComment{

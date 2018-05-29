@@ -7,7 +7,7 @@
 
 unsigned int flip_32bit(unsigned int inp){
   unsigned int low = inp&0x0000ffff;
-  unsigned int up  = inp>>16;
+  unsigned int up  = (inp>>16)&0xffff;
   return low*0x00010000 + up;
 }
 
@@ -39,7 +39,7 @@ void ana_madc32(madc32_data *madc, unsigned int *rawdata, unsigned int size){
     tmpdata=flip_32bit(ntohl(rawdata[rp]));
     rp++;
 
-    if(tmpdata>>24 == 0x40){  // header
+    if((tmpdata>>24) == 0x40){  // header
       geo=(tmpdata>>16)&0x00ff;
       if(geo>=N_MADC) geo=0;
       nword=(tmpdata)&0x00000fff;
@@ -56,8 +56,8 @@ void ana_madc32(madc32_data *madc, unsigned int *rawdata, unsigned int size){
       }
       tmpdata=flip_32bit(ntohl(rawdata[rp]));
       rp++;
-      if((tmpdata>>30)==0x3){  // ender 
-	tmp_counter=(tmpdata)&0x3fffffff;
+      if(((tmpdata>>30))==0x3){  // ender 
+	tmp_counter=((unsigned int)tmpdata)&0x0fffffff;
 	madc->counter[geo]=tmp_counter;
 	finish_mod++;
       }

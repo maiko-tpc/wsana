@@ -82,8 +82,8 @@ int main(int iarg, char *argv[]) {
 
 
 void analysis(char *filename) {
-  /* open data file */
-  
+
+  /* open data file */  
   ifstream infile(filename,ios_base::in|ios::binary);
   if (!infile){
     printf("File '%s' does not exist!\n", filename);
@@ -143,6 +143,7 @@ void analysis(char *filename) {
   
   /* Read the run comment */
   infile.read((char*)&comment, blksize*2);
+//  infile.read((char*)&runcom, sizeof(runcom));
   
   while(!infile.eof() && !eflag){
     

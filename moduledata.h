@@ -25,3 +25,10 @@ typedef struct grpla_data{
   unsigned int adc[N_GRPLA_CH];
   unsigned int tdc[N_GRPLA_CH];
 } grpla_data;
+
+typedef struct grvdc_data{
+  unsigned int plane;
+  unsigned int wire;
+  int lead_raw;
+  int lead_cor;
+} grvdc_data;

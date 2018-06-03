@@ -6,10 +6,10 @@
 #include <fstream>
 #include <signal.h>
 #include <string.h>
+#include <vector>
 
 #include <TFile.h>
 #include <TTree.h>
-//#include <TCut.h>
 
 #include "mtformat.h"
 #include "moduledata.h"
@@ -34,6 +34,7 @@ unsigned int eve;
 madc32_data madc;
 v1190_data v1190_ssd;
 grpla_data grpla;
+vector<grvdc_data> grvdc;
 
 int main(int iarg, char *argv[]) {
 
@@ -160,8 +161,7 @@ void analysis(char *filename) {
 #endif
     
     /* Read the Block header */  
-    infile.read((char*)&tmp_blkh, sizeof(tmp_blkh));
-
+      infile.read((char*)&tmp_blkh, sizeof(tmp_blkh));
 #ifdef DEBUG
     printf("++++++++++++++++++++++++++++++++\n");
     printf("Block Header\n");
@@ -189,12 +189,11 @@ void analysis(char *filename) {
 	byte_cnt+=sizeof(evth);
 	if(htons(evth.headerID)==0xffdf) break;
       }
-      eve++;
 
 #ifndef DEBUG      
       if(eve%10000==0){
-	//printf("\ranalyzed %d events", eve);
-	printf("analyzed %d events\n", eve);
+	printf("\ranalyzed %d events", eve);
+	//	printf("analyzed %d events\n", eve);
       }
 #endif
       
@@ -237,7 +236,7 @@ void analysis(char *filename) {
       unsigned int region_id, region_size;
       unsigned short tmp_region;
       
-      while(fldcnt<field_size && (!infile.eof())){
+      while(fldcnt<field_size && !infile.eof()){
 	
 	/* Read region header */
 	infile.read((char*)&tmp_region, sizeof(short));
@@ -271,13 +270,14 @@ void analysis(char *filename) {
 	  break;
 	} // end of switch(region_id)
       } // end of while(fldcnt<field_size)
-      
+      eve++;
       tree->Fill();
-  } // end of while(byte_cnt<blksize_byte)
-    
+    } // end of while(byte_cnt<blksize_byte)
   } // end of while(!infile.eof())
   
+  
   infile.close();
+  printf("\n");
   printf("analyzed %d events\n", eve);
   
 }  // end of analysis

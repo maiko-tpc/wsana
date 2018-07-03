@@ -9,5 +9,4 @@ ana.cxx~
 *.gr
 *.grb
 *.root
-macro/*
 root/*

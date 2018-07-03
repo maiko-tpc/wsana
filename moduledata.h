@@ -2,6 +2,7 @@
 #define N_V1190 1
 #define V1190_MAX_MULTI 4
 #define V1190_REF_CH 127
+#define N_VDCPLANE 4
 
 const int N_MADC_CH = N_MADC*32;
 const int N_V1190_CH = 128;
@@ -27,6 +28,7 @@ typedef struct grpla_data{
 } grpla_data;
 
 typedef struct grvdc_data{
+  unsigned int geo;
   unsigned int plane;
   unsigned int wire;
   int lead_raw;

@@ -10,6 +10,8 @@
 
 #include <TFile.h>
 #include <TTree.h>
+#include <TH1F.h>
+#include <TH2F.h>
 
 #include "mtformat.h"
 #include "moduledata.h"
@@ -30,11 +32,20 @@ volatile sig_atomic_t eflag = 0;
 TFile *file;
 TTree *tree;
 
+/* parameters to save in tree */
 unsigned int eve;
 madc32_data madc;
 v1190_data v1190_ssd;
 grpla_data grpla;
 vector<grvdc_data> grvdc;
+int nhit_plane[N_VDCPLANE];
+float mean_wire[N_VDCPLANE];
+
+/* Definition of output histograms */
+TH1F *hwire[N_VDCPLANE];
+TH1F *hdrifttime[N_VDCPLANE];
+
+
 
 int main(int iarg, char *argv[]) {
 
@@ -74,16 +85,38 @@ int main(int iarg, char *argv[]) {
   tree->Branch("grpla", &grpla,
 	       Form("adc[%d]/I:tdc[%d]/I",
 		    N_GRPLA_CH, N_GRPLA_CH));
+
+  tree->Branch("vdcnhit", nhit_plane, Form("vdcnhit[%d]/I", N_VDCPLANE));
+  tree->Branch("meanwire", mean_wire, Form("vdcwire[%d]/F", N_VDCPLANE));
+
+  for(Int_t i=0; i<N_VDCPLANE; i++){
+    hwire[i] = new TH1F(Form("h%d", 1000+i), Form("VDC plane %d hit", i),
+                        256, 0, 256);
+    hdrifttime[i] = new TH1F(Form("h%d", 1010+i), Form("VDC plane %d drift time", i),
+                             5000, 0, 5000);
+  }
+
+  /* main analysis */
   analysis(argv[1]);
   
   tree->Write();
+
+  for(Int_t i=0; i<N_VDCPLANE; i++){
+    hwire[i]->Write();
+  }
+  for(Int_t i=0; i<N_VDCPLANE; i++){
+    hdrifttime[i]->Write();
+  }
+
+
   file->Close();
   return 0;
 }
 
 
 void analysis(char *filename) {
-
+  int i;
+  
   /* open data file */  
   ifstream infile(filename,ios_base::in|ios::binary);
   if (!infile){
@@ -102,9 +135,7 @@ void analysis(char *filename) {
   unsigned short comment[100000];  
   
   eve=0;
-  printf("analyzed %d events\n", eve);
-  fflush(stdout);
-  
+
   /* Read the first BLD1 header */
   infile.read((char*)&bld1h, sizeof(bld1h));
 #ifdef DEBUG
@@ -190,12 +221,9 @@ void analysis(char *filename) {
 	if(htons(evth.headerID)==0xffdf) break;
       }
 
-#ifndef DEBUG      
       if(eve%10000==0){
-	printf("\ranalyzed %d events", eve);
-	//	printf("analyzed %d events\n", eve);
+	printf("analyzed %d events\n", eve);
       }
-#endif
       
 #ifdef DEBUG
       printf("========================\n");
@@ -271,6 +299,29 @@ void analysis(char *filename) {
 	  break;
 	} // end of switch(region_id)
       } // end of while(fldcnt<field_size)
+
+      /* Event by event analysis */
+
+      // GR VDC
+      for(i=0; i<N_VDCPLANE; i++){
+	nhit_plane[i]=0;
+	mean_wire[i]=0.0;
+      }
+
+      for(i=0; i<(int)(grvdc.size()); i++){
+	int plane=grvdc[i].plane;
+	int wire=grvdc[i].wire;
+	int drifttime=grvdc[i].lead_cor;
+	if(wire>0){
+	  hwire[plane]->Fill(wire);
+	  hdrifttime[plane]->Fill(drifttime);
+	  nhit_plane[plane]++;
+	  mean_wire[plane]+=wire;
+	}
+      }
+      
+      /* Event by event analysis to here */
+
       eve++;
       tree->Fill();
     } // end of while(byte_cnt<blksize_byte)

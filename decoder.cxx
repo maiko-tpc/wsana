@@ -7,12 +7,62 @@
 #define V1190_SSD_GEO 24
 #define VSN_GR 1
 
+int VDC_OFFSET = 4000;
+
 using namespace std;
 
 unsigned int flip_32bit(unsigned int inp){
   unsigned int low = inp&0x0000ffff;
   unsigned int up  = (inp>>16)&0xffff;
   return low*0x00010000 + up;
+}
+
+int get_vdc_wire(int geo, int ch){
+  if(geo==0 || geo==4){
+    if(ch>=  0 && ch<= 15) return ch;
+    if(ch>= 16 && ch<= 31) return ch+16;
+    if(ch>= 32 && ch<= 47) return ch-16;
+    if(ch>= 48 && ch<= 63) return ch;
+    if(ch>= 64 && ch<= 79) return ch;
+    if(ch>= 80 && ch<= 95) return ch+16;
+    if(ch>= 96 && ch<=111) return -1;
+    if(ch>+112 && ch<=127) return -1;
+  }
+
+  if(geo==1 || geo==5){
+    if(ch>=  0 && ch<= 15) return ch+80;
+    if(ch>= 16 && ch<= 31) return ch+96;
+    if(ch>= 32 && ch<= 47) return ch+96;
+    if(ch>= 48 && ch<= 63) return ch+112;
+    if(ch>= 64 && ch<= 79) return ch+80;
+    if(ch>= 80 && ch<= 95) return ch+96;
+    if(ch>= 96 && ch<=111) return -1;
+    if(ch>+112 && ch<=127) return -1;
+  }
+
+  if(geo==2 || geo==6){
+    if(ch>=  0 && ch<= 15) return ch+16;
+    if(ch>= 16 && ch<= 31) return ch+32;
+    if(ch>= 32 && ch<= 47) return ch;
+    if(ch>= 48 && ch<= 63) return ch+16;
+    if(ch>= 64 && ch<= 79) return ch+16;
+    if(ch>= 80 && ch<= 95) return ch+32;
+    if(ch>= 96 && ch<=111) return ch-96;
+    if(ch>+112 && ch<=127) return -1;
+  }
+
+  if(geo==3 || geo==7){
+    if(ch>=  0 && ch<= 15) return ch+96;
+    if(ch>= 16 && ch<= 31) return ch+112;
+    if(ch>= 32 && ch<= 47) return ch+112;
+    if(ch>= 48 && ch<= 63) return ch+128;
+    if(ch>= 64 && ch<= 79) return ch+96;
+    if(ch>= 80 && ch<= 95) return ch+112;
+    if(ch>= 96 && ch<=111) return -1;
+    if(ch>+112 && ch<=127) return -1;
+  }
+
+  return -1;
 }
 
 void init_madc32_data(madc32_data *madc){
@@ -85,9 +135,8 @@ void init_v1190_data(v1190_data *v1190){
   v1190->counter=0;
 }
 
-//int ana_v1190(v1190_data *v1190, unsigned int *rawdata, unsigned int size){
 int ana_v1190(v1190_data *v1190, vector<grvdc_data> &grvdc,
-	      unsigned int *rawdata, unsigned int size){
+              unsigned int *rawdata, unsigned int size){
   unsigned int rp=0;
   unsigned int data;
   int geo=-1;
@@ -96,11 +145,18 @@ int ana_v1190(v1190_data *v1190, vector<grvdc_data> &grvdc,
   unsigned int ich;
   unsigned int measure;
   int i,j;
-  unsigned int vdc_plane, vdc_wire;
   
   int tmp_multi[N_V1190_CH]={0};
 
-  grvdc_data tmp_vdc={0,0,0,0};
+  vector<grvdc_data> tmp_vdc_vec;
+  tmp_vdc_vec.clear();
+
+  unsigned int tmp_plane, tmp_wire;
+
+  grvdc_data tmp_grvdc;
+  grvdc_data tmp_data;
+  
+  int vdc_ref[8]={0};
   
   while(rp<size/2){
     data=flip_32bit(ntohl(rawdata[rp]));
@@ -111,9 +167,9 @@ int ana_v1190(v1190_data *v1190, vector<grvdc_data> &grvdc,
       if(geo==V1190_SSD_GEO) v1190->counter=(data>>5)&0x3fffff;
     }
 
-    if(geo!=V1190_SSD_GEO) return geo;
+    //    if(geo!=V1190_SSD_GEO) return geo;
 
-    /* analyze the ssd data */
+    /* analyze only the ssd data */
     if(geo==V1190_SSD_GEO){
 
       while(1){
@@ -142,19 +198,76 @@ int ana_v1190(v1190_data *v1190, vector<grvdc_data> &grvdc,
 	      if(tmp_multi[ich]>=V1190_MAX_MULTI) tmp_multi[ich]=V1190_MAX_MULTI-1;
 	      if(edge==0){ // leading edge
 		v1190->lead[ich][tmp_multi[ich]]=measure;
+		tmp_multi[ich]++;
 	      }
 	      if(edge==1){ // trailing edge
 		v1190->trail[ich][tmp_multi[ich]]=measure;
 	      }
-	      tmp_multi[ich]++;
 	    }
 
 	  }
 	} 
       } 
     } // end of if(geo==V1190_SSD_GEO)
+
+
+    /* analyze GRVDC data */
+    if(geo<8){
+      while(1){
+	data=flip_32bit(ntohl(rawdata[rp]));
+	rp++;
+	if(data>>27 == 0x10) break; // global trailer
+	
+	if((data>>27) == 0x1){  // TDC header
+	  itdc = (data>>24)&0x03;
+	  
+	  while(1){
+	    data=flip_32bit(ntohl(rawdata[rp]));
+	    rp++;
+	    if((data>>27) == 0x03){
+	      break; // TDC trailer
+	    }
+
+	    if((data>>27) == 0x4){ // TDC error
+	      break;
+	    }
+
+	    if((data>>27) == 0x00){ // TDC measure
+	      tmp_grvdc.geo=10;
+	      tmp_grvdc.plane=10;
+	      tmp_grvdc.wire=1000;
+	      tmp_grvdc.lead_raw=-1000;
+	      tmp_grvdc.lead_cor=-1000;
+
+	      edge=(data>>26)&0x3f;
+	      ich=(data>>19)&0x7f;
+	      measure=data&0x0007ffff;
+
+	      tmp_plane=(int)(geo/2);
+	      tmp_wire=get_vdc_wire(geo, ich);
+
+	      if(edge==0){ // leading edge
+		tmp_grvdc.geo=geo;
+		tmp_grvdc.plane=tmp_plane;
+		tmp_grvdc.wire=tmp_wire;
+		tmp_grvdc.lead_raw=measure;		
+		tmp_vdc_vec.push_back(tmp_grvdc);
+		if(ich==V1190_REF_CH){
+		  vdc_ref[geo]=measure;
+		}
+	      }
+	      if(edge==1){ // trailing edge
+	      }
+	    }
+	    
+	  }
+	} 
+      } 
+    } // end of if(geo<8)
+    
   } // end of while(rp<size/2)
 
+  // reanalysis
   for(i=0; i<N_V1190_CH; i++){
     for(j=0; j<tmp_multi[i]-1; j++){
       v1190->tot[i][j] = v1190->trail[i][j] - v1190->lead[i][j];
@@ -162,9 +275,14 @@ int ana_v1190(v1190_data *v1190, vector<grvdc_data> &grvdc,
     v1190->multi[i]=tmp_multi[i];
   }
 
-  //  if(v1190->multi[V1190_REF_CH]==0){
-  //    printf("No V1190 ref. hit, geo= %d\n", geo);
-  //  }
+  for(i=0; i<(int)(tmp_vdc_vec.size()); i++){
+    tmp_data.geo = tmp_vdc_vec[i].geo;
+    tmp_data.plane = tmp_vdc_vec[i].plane;
+    tmp_data.wire = tmp_vdc_vec[i].wire;
+    tmp_data.lead_raw = tmp_vdc_vec[i].lead_raw;
+    tmp_data.lead_cor = tmp_vdc_vec[i].lead_raw - vdc_ref[tmp_data.geo]+VDC_OFFSET;
+    grvdc.push_back(tmp_data);
+  }
   
   return geo;
 }
@@ -254,50 +372,3 @@ int ana_grpla_tdc(grpla_data *grpla, unsigned int *rawdata, unsigned int size){
   return vsn;
 }
 
-int get_vdc_wire(int geo, int ch){
-  if(geo==0 || geo==4){
-    if(ch>=  0 && ch<= 15) return ch;
-    if(ch>= 16 && ch<= 31) return ch+16;
-    if(ch>= 32 && ch<= 47) return ch-16;
-    if(ch>= 48 && ch<= 63) return ch;
-    if(ch>= 64 && ch<= 79) return ch;
-    if(ch>= 80 && ch<= 95) return ch+16;
-    if(ch>= 96 && ch<=111) return -1;
-    if(ch>+112 && ch<=127) return -1;
-  }
-
-  if(geo==1 || geo==5){
-    if(ch>=  0 && ch<= 15) return ch+80;
-    if(ch>= 16 && ch<= 31) return ch+96;
-    if(ch>= 32 && ch<= 47) return ch+96;
-    if(ch>= 48 && ch<= 63) return ch+112;
-    if(ch>= 64 && ch<= 79) return ch+80;
-    if(ch>= 80 && ch<= 95) return ch+96;
-    if(ch>= 96 && ch<=111) return -1;
-    if(ch>+112 && ch<=127) return -1;
-  }
-
-  if(geo==2 || geo==6){
-    if(ch>=  0 && ch<= 15) return ch+16;
-    if(ch>= 16 && ch<= 31) return ch+32;
-    if(ch>= 32 && ch<= 47) return ch;
-    if(ch>= 48 && ch<= 63) return ch+16;
-    if(ch>= 64 && ch<= 79) return ch+16;
-    if(ch>= 80 && ch<= 95) return ch+32;
-    if(ch>= 96 && ch<=111) return ch-96;
-    if(ch>+112 && ch<=127) return -1;
-  }
-
-    if(geo==3 || geo==7){
-    if(ch>=  0 && ch<= 15) return ch+96;
-    if(ch>= 16 && ch<= 31) return ch+112;
-    if(ch>= 32 && ch<= 47) return ch+112;
-    if(ch>= 48 && ch<= 63) return ch+128;
-    if(ch>= 64 && ch<= 79) return ch+96;
-    if(ch>= 80 && ch<= 95) return ch+112;
-    if(ch>= 96 && ch<=111) return -1;
-    if(ch>+112 && ch<=127) return -1;
-  }
-
-  return -1;
-}

@@ -214,6 +214,7 @@ void analysis(char *filename) {
       init_madc32_data(&madc);
       init_v1190_data(&v1190_ssd);
       init_grpla_data(&grpla);
+      grvdc.clear();
       
       /* Read the Field header */  
       while(!infile.eof() && !eflag){
@@ -252,7 +253,7 @@ void analysis(char *filename) {
 	
 	switch(region_id){
 	case 0x1:  // V1190
-	  ana_v1190(&v1190_ssd, tmpdata, region_size);
+	  ana_v1190(&v1190_ssd, grvdc, tmpdata, region_size);
 	  break;
 	case 0x3:  // MADC32
 	  ana_madc32(&madc, tmpdata, region_size);

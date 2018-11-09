@@ -1,14 +1,24 @@
 #include <iostream>
 #include <fstream>
 
-int vdccalib(float tmin, float tmax){
+int vdccalib(int tmin=-1, int tmax=-1){
 
   using namespace std;
   
   const float DRIFT_GAP = 10.0;
   
+  if(tmin==-1){
+    printf("useage: vdccalib(int tmin, int tmax)\n");
+    return -1;
+  }
+
+  if(tmax==-1){
+    printf("useage: vdccalib(int tmin, int tmax)\n");
+    return -1;
+  }
+  
   if(tmin > tmax){
-    printf("vdccalib(float tmin, float tmax)\n");
+    printf("useage: vdccalib(int tmin, int tmax)\n");
     printf("error: tmax should be larger than tmin.\n");
     return -1;
   }

@@ -16,6 +16,7 @@
 #include "mtformat.h"
 #include "moduledata.h"
 #include "decoder.h"
+#include "vdc.h"
 
 
 #define MAX_REGION 100000
@@ -60,9 +61,9 @@ int main(int iarg, char *argv[]) {
   }
   
   if (iarg != 3) {
-    printf("usage: ./ana xxxx.ssd xxxx.root\n");
+    printf("usage: ./ana xxxx.bld xxxx.root\n");
     printf("eg.)\n");
-    printf("$ ./ana run7144.ssd run7144.root\n");
+    printf("$ ./ana run7144.bld run7144.root\n");
     exit(0);
   }
   
@@ -320,6 +321,8 @@ void analysis(char *filename) {
 	}
       }
       
+      hoge();
+
       /* Event by event analysis to here */
 
       eve++;

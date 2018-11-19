@@ -294,6 +294,10 @@ void init_grpla_data(grpla_data *grpla){
     grpla->adc[i]=0;
     grpla->tdc[i]=0;
   }
+  for(i=0; i<N_GRPLA; i++){
+    grpla->pos[i]=-10;
+    grpla->de[i]=-10;    
+  }
 }
 
 int ana_grpla_qdc(grpla_data *grpla, unsigned int *rawdata, unsigned int size){

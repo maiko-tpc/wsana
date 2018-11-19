@@ -84,8 +84,8 @@ int main(int iarg, char *argv[]) {
 		    N_V1190_CH));
   
   tree->Branch("grpla", &grpla,
-	       Form("adc[%d]/I:tdc[%d]/I",
-		    N_GRPLA_CH, N_GRPLA_CH));
+	       Form("adc[%d]/I:tdc[%d]/I:pos[%d]/F:de[%d]/F",
+		    N_GRPLA_CH, N_GRPLA_CH, N_GRPLA, N_GRPLA));
 
   tree->Branch("vdcnhit", nhit_plane, Form("vdcnhit[%d]/I", N_VDCPLANE));
   tree->Branch("meanwire", mean_wire, Form("vdcwire[%d]/F", N_VDCPLANE));
@@ -303,6 +303,13 @@ void analysis(char *filename) {
 
       /* Event by event analysis */
 
+      // GR plastic
+      grpla.pos[0]=grpla.tdc[0] - grpla.tdc[1];
+      grpla.pos[1]=grpla.tdc[2] - grpla.tdc[3];      
+
+      grpla.de[0]=sqrt(grpla.adc[0]*grpla.adc[1]);
+      grpla.de[1]=sqrt(grpla.adc[2]*grpla.adc[3]);      
+      
       // GR VDC
       for(i=0; i<N_VDCPLANE; i++){
 	nhit_plane[i]=0;

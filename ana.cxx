@@ -284,19 +284,33 @@ void analysis(char *filename) {
 	case 0x1:  // V1190
 	  ana_v1190(&v1190_ssd, grvdc, tmpdata, region_size);
 	  break;
+	case 0x2:  // input register
+	  // will be implemented later...	  
+	  break;
 	case 0x3:  // MADC32
 	  ana_madc32(&madc, tmpdata, region_size);
 	  break;
-	  
+	case 0x6:  // CAMAC scaler?
+	  // will be implemented later...	  
+	  break;
+	case 0x8:  // UNIX time
+	  // will be implemented later...	  
+	  break;
+	case 0x9:  // V830 scaler
+	  // will be implemented later...
+	  break;	  
 	case 0xd:  // FERA QDC
 	  ana_grpla_qdc(&grpla, tmpdata, region_size);
 	  break;
-
 	case 0xe:  // FERA TDC
 	  ana_grpla_tdc(&grpla, tmpdata, region_size);
 	  break;
+	case 0xf:  // CheckSUM?
+	  // will be implemented later...
+	  break;	  
 
 	default:
+	  printf("Unknown region_id: %d\n", region_id);
 	  break;
 	} // end of switch(region_id)
       } // end of while(fldcnt<field_size)

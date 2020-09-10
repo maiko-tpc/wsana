@@ -1,12 +1,10 @@
-moduledata.h~
-decoder.h~
-decoder.cxx~
-moduledata.h~
-ana.cxx~
-.gitignore~
+*~
+ana
+*.o
 *.ssd
 *.bld
 *.gr
 *.grb
+*.pla
 *.root
 root/*

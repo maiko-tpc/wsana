@@ -140,7 +140,7 @@ int ana_v1190(v1190_data *v1190, vector<grvdc_data> &grvdc,
   unsigned int rp=0;
   unsigned int data;
   int geo=-1;
-  unsigned int itdc;
+  //  unsigned int itdc=0;
   unsigned int edge;
   unsigned int ich;
   unsigned int measure;
@@ -178,7 +178,7 @@ int ana_v1190(v1190_data *v1190, vector<grvdc_data> &grvdc,
 	if(data>>27 == 0x10) break; // global trailer
 	
 	if((data>>27) == 0x1){  // TDC header
-	  itdc = (data>>24)&0x03;
+	  //	  itdc = (data>>24)&0x03;
 	  
 	  while(1){
 	    data=flip_32bit(ntohl(rawdata[rp]));
@@ -219,7 +219,7 @@ int ana_v1190(v1190_data *v1190, vector<grvdc_data> &grvdc,
 	if(data>>27 == 0x10) break; // global trailer
 	
 	if((data>>27) == 0x1){  // TDC header
-	  itdc = (data>>24)&0x03;
+	  //	  itdc = (data>>24)&0x03;
 	  
 	  while(1){
 	    data=flip_32bit(ntohl(rawdata[rp]));

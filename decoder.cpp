@@ -5,6 +5,7 @@
 #include "moduledata.h"
 
 #define V1190_SSD_GEO 24
+#define V1190_MAX_GEO 32
 #define VSN_GR 1
 
 int VDC_OFFSET = 4000;
@@ -26,7 +27,7 @@ int get_vdc_wire(int geo, int ch){
     if(ch>= 64 && ch<= 79) return ch;
     if(ch>= 80 && ch<= 95) return ch+16;
     if(ch>= 96 && ch<=111) return -1;
-    if(ch>+112 && ch<=127) return -1;
+    if(ch> 112 && ch<=127) return -1;
   }
 
   if(geo==1 || geo==5){
@@ -37,7 +38,7 @@ int get_vdc_wire(int geo, int ch){
     if(ch>= 64 && ch<= 79) return ch+80;
     if(ch>= 80 && ch<= 95) return ch+96;
     if(ch>= 96 && ch<=111) return -1;
-    if(ch>+112 && ch<=127) return -1;
+    if(ch> 112 && ch<=127) return -1;
   }
 
   if(geo==2 || geo==6){
@@ -48,7 +49,7 @@ int get_vdc_wire(int geo, int ch){
     if(ch>= 64 && ch<= 79) return ch+16;
     if(ch>= 80 && ch<= 95) return ch+32;
     if(ch>= 96 && ch<=111) return ch-96;
-    if(ch>+112 && ch<=127) return -1;
+    if(ch> 112 && ch<=127) return -1;
   }
 
   if(geo==3 || geo==7){
@@ -59,7 +60,7 @@ int get_vdc_wire(int geo, int ch){
     if(ch>= 64 && ch<= 79) return ch+96;
     if(ch>= 80 && ch<= 95) return ch+112;
     if(ch>= 96 && ch<=111) return -1;
-    if(ch>+112 && ch<=127) return -1;
+    if(ch> 112 && ch<=127) return -1;
   }
 
   return -1;
@@ -135,156 +136,123 @@ void init_v1190_data(v1190_data *v1190){
   v1190->counter=0;
 }
 
-int ana_v1190(v1190_data *v1190, vector<grvdc_data> &grvdc,
-              unsigned int *rawdata, unsigned int size){
+
+
+int ana_v1190(vector<v1190_hit> &v1190_hit_all,
+              unsigned int *rawdata, unsigned int size, int field_id){
   unsigned int rp=0;
   unsigned int data;
-  int geo=-1;
+  int geo=V1190_MAX_GEO-1;
   //  unsigned int itdc=0;
   unsigned int edge;
   unsigned int ich;
   unsigned int measure;
   int i,j;
   
-  int tmp_multi[N_V1190_CH]={0};
+  int counter=0;
 
-  vector<grvdc_data> tmp_vdc_vec;
-  tmp_vdc_vec.clear();
-
-  unsigned int tmp_plane, tmp_wire;
-
-  grvdc_data tmp_grvdc;
-  grvdc_data tmp_data;
+  v1190_hit tmp_hit;
   
-  int vdc_ref[8]={0};
-  
+  int tmp_lead[V1190_MAX_GEO][N_V1190_CH][V1190_MAX_MULTI]={0};  // 128ch
+  int tmp_trail[V1190_MAX_GEO][N_V1190_CH][V1190_MAX_MULTI]={0};  // 128ch  
+  int lead_cnt[V1190_MAX_GEO][N_V1190_CH]={0};
+  int trail_cnt[V1190_MAX_GEO][N_V1190_CH]={0};  
+
+  int ref_lead[V1190_MAX_GEO]={0};
+  int ref_flag[V1190_MAX_GEO]={0};  
+
   while(rp<size/2){
     data=flip_32bit(ntohl(rawdata[rp]));
     rp++;
-
+    
     if(data>>27 == 0x08){  // global header
       geo=data&0x1f;
-      if(geo==V1190_SSD_GEO) v1190->counter=(data>>5)&0x3fffff;
+      counter=(data>>5)&0x3fffff;
     }
-
-    //    if(geo!=V1190_SSD_GEO) return geo;
-
-    /* analyze only the ssd data */
-    if(geo==V1190_SSD_GEO){
-
-      while(1){
-	data=flip_32bit(ntohl(rawdata[rp]));
-	rp++;
-	if(data>>27 == 0x10) break; // global trailer
+        
+    while(1){
+      data=flip_32bit(ntohl(rawdata[rp]));
+      rp++;
+      if(data>>27 == 0x10) break; // global trailer
+      
+      if((data>>27) == 0x1){  // TDC header
+	//	  itdc = (data>>24)&0x03;
 	
-	if((data>>27) == 0x1){  // TDC header
-	  //	  itdc = (data>>24)&0x03;
-	  
-	  while(1){
-	    data=flip_32bit(ntohl(rawdata[rp]));
-	    rp++;
-	    if((data>>27) == 0x03){
-	      break; // TDC trailer
-	    }
-
-	    if((data>>27) == 0x4){ // TDC error
-	      break;
-	    }
-
-	    if((data>>27) == 0x00){ // TDC measure
-	      edge=(data>>26)&0x3f;
-	      ich=(data>>19)&0x7f;
-	      measure=data&0x0007ffff;
-	      if(tmp_multi[ich]>=V1190_MAX_MULTI) tmp_multi[ich]=V1190_MAX_MULTI-1;
-	      if(edge==0){ // leading edge
-		v1190->lead[ich][tmp_multi[ich]]=measure;
-		tmp_multi[ich]++;
-	      }
-	      if(edge==1){ // trailing edge
-		v1190->trail[ich][tmp_multi[ich]]=measure;
-	      }
-	    }
-
+	while(1){
+	  data=flip_32bit(ntohl(rawdata[rp]));
+	  rp++;
+	  if((data>>27) == 0x03){
+	    break; // TDC trailer
 	  }
-	} 
-      } 
-    } // end of if(geo==V1190_SSD_GEO)
-
-
-    /* analyze GRVDC data */
-    if(geo<8){
-      while(1){
-	data=flip_32bit(ntohl(rawdata[rp]));
-	rp++;
-	if(data>>27 == 0x10) break; // global trailer
-	
-	if((data>>27) == 0x1){  // TDC header
-	  //	  itdc = (data>>24)&0x03;
 	  
-	  while(1){
-	    data=flip_32bit(ntohl(rawdata[rp]));
-	    rp++;
-	    if((data>>27) == 0x03){
-	      break; // TDC trailer
-	    }
-
-	    if((data>>27) == 0x4){ // TDC error
-	      break;
-	    }
-
-	    if((data>>27) == 0x00){ // TDC measure
-	      tmp_grvdc.geo=10;
-	      tmp_grvdc.plane=10;
-	      tmp_grvdc.wire=1000;
-	      tmp_grvdc.lead_raw=-1000;
-	      tmp_grvdc.lead_cor=-1000;
-
-	      edge=(data>>26)&0x3f;
-	      ich=(data>>19)&0x7f;
-	      measure=data&0x0007ffff;
-
-	      tmp_plane=(int)(geo/2);
-	      tmp_wire=get_vdc_wire(geo, ich);
-
-	      if(edge==0){ // leading edge
-		tmp_grvdc.geo=geo;
-		tmp_grvdc.plane=tmp_plane;
-		tmp_grvdc.wire=tmp_wire;
-		tmp_grvdc.lead_raw=measure;		
-		tmp_vdc_vec.push_back(tmp_grvdc);
-		if(ich==V1190_REF_CH){
-		  vdc_ref[geo]=measure;
-		}
+	  if((data>>27) == 0x4){ // TDC error
+	    break;
+	  }
+	  
+	  if((data>>27) == 0x00){ // TDC measure
+	    edge=(data>>26)&0x3f;
+	    ich=(data>>19)&0x7f;
+	    measure=data&0x0007ffff;
+	    
+	    if(edge==0){ // leading edge
+	      if(lead_cnt[geo][ich]<V1190_MAX_MULTI){
+		tmp_lead[geo][ich][lead_cnt[geo][ich]]=measure;
 	      }
-	      if(edge==1){ // trailing edge
+	      lead_cnt[geo][ich]++;
+	      if(ich==127 && ref_flag[geo]==0){
+		ref_lead[geo]=measure;
+		ref_flag[geo]=1;
 	      }
+	    }
+	    if(edge==1){ // trailing edge
+	      if(trail_cnt[geo][ich]<V1190_MAX_MULTI){
+		tmp_lead[geo][ich][trail_cnt[geo][ich]]=measure;
+	      }
+	      trail_cnt[geo][ich]++;
 	    }
 	    
 	  }
-	} 
+	  
+	}
       } 
-    } // end of if(geo<8)
-    
-  } // end of while(rp<size/2)
-
-  // reanalysis
-  for(i=0; i<N_V1190_CH; i++){
-    for(j=0; j<tmp_multi[i]-1; j++){
-      v1190->tot[i][j] = v1190->trail[i][j] - v1190->lead[i][j];
-    }
-    v1190->multi[i]=tmp_multi[i];
-  }
-
-  for(i=0; i<(int)(tmp_vdc_vec.size()); i++){
-    tmp_data.geo = tmp_vdc_vec[i].geo;
-    tmp_data.plane = tmp_vdc_vec[i].plane;
-    tmp_data.wire = tmp_vdc_vec[i].wire;
-    tmp_data.lead_raw = tmp_vdc_vec[i].lead_raw;
-    tmp_data.lead_cor = tmp_vdc_vec[i].lead_raw - vdc_ref[tmp_data.geo]+VDC_OFFSET;
-    grvdc.push_back(tmp_data);
+    }  
   }
   
-  return geo;
+  // reanalysis
+  int total_hit=0;
+
+  tmp_hit.field=field_id;
+  tmp_hit.counter=counter;
+  tmp_hit.trail_raw=0;
+  tmp_hit.tot=0;  
+  
+  for(geo=0; geo<V1190_MAX_GEO; geo++){
+    if(ref_flag[geo]==1){
+      for(i=0; i<N_V1190_CH; i++){
+	if(lead_cnt[geo][i]>0){
+	  for(j=0; j<lead_cnt[geo][i]; j++){
+	    tmp_hit.geo=geo;
+	    tmp_hit.ch=i;
+	    tmp_hit.lead_raw = tmp_lead[geo][i][j];
+	    tmp_hit.lead_cor = tmp_lead[geo][i][j]-ref_lead[geo];		
+	    
+	    if(lead_cnt[geo][i]==trail_cnt[geo][i]){
+	      tmp_hit.trail_raw = tmp_trail[geo][i][j];
+	      tmp_hit.tot = tmp_trail[geo][i][j] - tmp_lead[geo][i][j];
+	    }
+	    else{
+	      tmp_hit.trail_raw = -1;
+	      tmp_hit.tot = -1;	  
+	    }
+	    v1190_hit_all.push_back(tmp_hit);
+	    total_hit++;
+	    //	    printf("dec geo=%d\n", tmp_hit.geo);
+	  }
+	}
+      } // end of multi-hit loop
+    } // end of v1190 ch loop
+  } // end of geo loop
+  return total_hit;
 }
 
 

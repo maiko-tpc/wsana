@@ -11,6 +11,11 @@
   Modified: 20-AUG-2015 by A. Tamii (DAQ Data ver 4.0)
   Modified: 19-APR-2016 by A. Tamii (for newer VMEDAQ)
 */
+
+#ifndef _MTFORMAT_H_
+#define _MTFORMAT_H_
+
+
 #define ComVar4_0  (4<<8)  /* version 4.0 */
 #define MaxComLen  124
 
@@ -148,3 +153,6 @@ typedef struct RunComment{
 #define S_FH_MAX  sizeof(FldHeader)/2
 #define S_BT_MIN  sizeof(BlkTrailer)/2
 #define S_BT_MAX  sizeof(BlkTrailer)/2
+
+
+#endif  // include guard

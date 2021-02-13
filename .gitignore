@@ -7,4 +7,6 @@ ana
 *.grb
 *.pla
 *.root
+back
+test
 root/*

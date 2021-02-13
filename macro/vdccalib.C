@@ -41,7 +41,7 @@ int vdccalib(int tmin=-1, int tmax=-1){
 
   printf("\n");
   printf("-------------------------------------\n");
-  printf("start=%f(bin=%d), stop=%f(bin=%d) \n",
+  printf("start=%d(bin=%d), stop=%d(bin=%d) \n",
 	 tmin, start_integ, tmax, stop_integ);
   printf("\n");
 
@@ -68,59 +68,60 @@ int vdccalib(int tmin=-1, int tmax=-1){
   ofstream ofs_x2("calib/vdccalib_x2.dat", ios::out);
   ofstream ofs_u2("calib/vdccalib_u2.dat", ios::out);
 
-  float bin_center;
+  float bin_pos;
   float drift_length;
-
+  int tmp_sum;
+  
   /* x1 */
-  int tmp_sum=0;
+  tmp_sum=0;
   for(int i=1; i<nbin_x1; i++){
     tmp_sum += hx1->GetBinContent(i);
-    bin_center = hx1->GetBinCenter(i);
+    bin_pos = hx1->GetBinLowEdge(i);
     drift_length = DRIFT_GAP*tmp_sum/(float)integ_x1;
     if(drift_length>DRIFT_GAP) drift_length = DRIFT_GAP;
-    if(bin_center<tmin) drift_length=0.0;
-    if(bin_center>tmax) drift_length=10.0;
+    if(bin_pos<tmin) drift_length=0.0;
+    if(bin_pos>tmax) drift_length=10.0;
     
-    ofs_x1 << bin_center << " " << drift_length << endl;
+    ofs_x1 << (int)bin_pos << " " << drift_length << endl;
   }
 
   /* u1 */
-  int tmp_sum=0;
+  tmp_sum=0;
   for(int i=1; i<nbin_u1; i++){
     tmp_sum += hu1->GetBinContent(i);
-    bin_center = hu1->GetBinCenter(i);
+    bin_pos = hu1->GetBinLowEdge(i);
     drift_length = DRIFT_GAP*tmp_sum/(float)integ_u1;
     if(drift_length>DRIFT_GAP) drift_length = DRIFT_GAP;
-    if(bin_center<tmin) drift_length=0.0;
-    if(bin_center>tmax) drift_length=10.0;
+    if(bin_pos<tmin) drift_length=0.0;
+    if(bin_pos>tmax) drift_length=10.0;
     
-    ofs_u1 << bin_center << " " << drift_length << endl;
+    ofs_u1 << (int)bin_pos << " " << drift_length << endl;
   }
 
   /* x2 */
-  int tmp_sum=0;
+  tmp_sum=0;
   for(int i=1; i<nbin_x2; i++){
     tmp_sum += hx2->GetBinContent(i);
-    bin_center = hx2->GetBinCenter(i);
+    bin_pos = hx2->GetBinLowEdge(i);
     drift_length = DRIFT_GAP*tmp_sum/(float)integ_x2;
     if(drift_length>DRIFT_GAP) drift_length = DRIFT_GAP;
-    if(bin_center<tmin) drift_length=0.0;
-    if(bin_center>tmax) drift_length=10.0;
+    if(bin_pos<tmin) drift_length=0.0;
+    if(bin_pos>tmax) drift_length=10.0;
     
-    ofs_x2 << bin_center << " " << drift_length << endl;
+    ofs_x2 << (int)bin_pos << " " << drift_length << endl;
   }
 
   /* u2 */
-  int tmp_sum=0;
+  tmp_sum=0;
   for(int i=1; i<nbin_u2; i++){
     tmp_sum += hu2->GetBinContent(i);
-    bin_center = hu2->GetBinCenter(i);
+    bin_pos = hu2->GetBinLowEdge(i);
     drift_length = DRIFT_GAP*tmp_sum/(float)integ_u2;
     if(drift_length>DRIFT_GAP) drift_length = DRIFT_GAP;
-    if(bin_center<tmin) drift_length=0.0;
-    if(bin_center>tmax) drift_length=10.0;
+    if(bin_pos<tmin) drift_length=0.0;
+    if(bin_pos>tmax) drift_length=10.0;
     
-    ofs_u2 << bin_center << " " << drift_length << endl;
+    ofs_u2 << (int)bin_pos << " " << drift_length << endl;
   }
   
   ofs_x1.close();

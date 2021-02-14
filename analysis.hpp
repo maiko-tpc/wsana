@@ -1,6 +1,8 @@
 #ifndef ANALYSIS_HPP_
 #define ANALYSIS_HPP_
 
+#define ANASSD   // comment out to disable ssd analysis
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <arpa/inet.h>
@@ -15,7 +17,7 @@
 #include <TTree.h>
 #include <TH1.h>
 
-#include "mk_hist.hpp"
+//#include "mk_hist.hpp"
 #include "mtformat.h"
 #include "moduledata.h"
 //#include "evtdata.h"

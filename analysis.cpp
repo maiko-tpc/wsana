@@ -176,8 +176,10 @@ int  analysis::AnaEvt(){
   pla->analyze(&evt);
      
   // SSD
+#ifdef ANASSD
   ssd->analyze(&evt);
-
+#endif
+  
   // GR VDC
   gr->anavdc(&evt);
 

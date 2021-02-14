@@ -7,6 +7,7 @@ void analysis::TreeDef(){
   tree->Branch("blk",  &evt.blk, "blk/I");
   tree->Branch("eve",  &evt.eve, "eve/I");
 
+#ifdef ANASSD
   tree->Branch("madc", &evt.madc,
   	       Form("wrdcnt[%d]/I:adc[%d]/I:counter[%d]/I",
 		    N_MADC, N_MADC_CH, N_MADC));
@@ -17,6 +18,7 @@ void analysis::TreeDef(){
 		    N_V1190_CH, V1190_MAX_MULTI,
 		    N_V1190_CH, V1190_MAX_MULTI,
 		    N_V1190_CH));
+#endif
   
   tree->Branch("grpla", &evt.grpla,
 	       Form("adc[%d]/I:tdc[%d]/I:pos[%d]/F:de[%d]/F",

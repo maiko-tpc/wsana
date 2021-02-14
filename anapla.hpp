@@ -11,7 +11,8 @@
 #include <string.h>
 #include <vector>
 
-#include "mk_hist.hpp"
+#include <TMath.h>
+
 #include "mtformat.h"
 #include "moduledata.h"
 #include "evtdata.h"

@@ -12,6 +12,6 @@ void anapla::analyze(evtdata *evt){
   evt->grpla.pos[1] = evt->grpla.tdc[2] - evt->grpla.tdc[3];
   
   // Energy deposite by QDC mean
-  evt->grpla.de[0] = sqrt(evt->grpla.adc[0] * evt->grpla.adc[1]);
-  evt->grpla.de[1] = sqrt(evt->grpla.adc[2] * evt->grpla.adc[3]); 
+  evt->grpla.de[0] = TMath::Sqrt(evt->grpla.adc[0] * evt->grpla.adc[1]);
+  evt->grpla.de[1] = TMath::Sqrt(evt->grpla.adc[2] * evt->grpla.adc[3]); 
 }

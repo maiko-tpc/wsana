@@ -16,7 +16,6 @@
 #include <TH1.h>
 #include <TMath.h>
 
-#include "mk_hist.hpp"
 #include "mtformat.h"
 #include "moduledata.h"
 #include "evtdata.h"

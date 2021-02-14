@@ -17,7 +17,6 @@
 #include <TMath.h>
 #include <TRandom3.h>
 
-#include "mk_hist.hpp"
 #include "mtformat.h"
 #include "moduledata.h"
 #include "evtdata.h"

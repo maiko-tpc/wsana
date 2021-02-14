@@ -182,10 +182,10 @@ int  analysis::AnaEvt(){
     printf("Analyzed %d events\n", evt.eve);
   }
 
-  evt.eve++;
   tree->Fill();
   HistFill();
 
+  evt.eve++;
   return evt.eve;
 }
 

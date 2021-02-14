@@ -4,7 +4,6 @@
 #define N_MADC 2
 #define N_V1190 1
 #define V1190_MAX_MULTI 16
-#define V1190_REF_CH 127
 #define N_VDCPLANE 4
 #define PLANE_SIZE 256
 

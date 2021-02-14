@@ -6,9 +6,8 @@
 
 #define V1190_SSD_GEO 24
 #define V1190_MAX_GEO 32
+#define V1190_REF_CH 127
 #define VSN_GR 1
-
-int VDC_OFFSET = 4000;
 
 using namespace std;
 
@@ -150,10 +149,8 @@ int ana_v1190(vector<v1190_hit> &v1190_hit_all,
   int i,j;
   
   int counter=0;
-
-  v1190_hit tmp_hit;
   
-  int tmp_lead[V1190_MAX_GEO][N_V1190_CH][V1190_MAX_MULTI]={0};  // 128ch
+  int tmp_lead[V1190_MAX_GEO][N_V1190_CH][V1190_MAX_MULTI]={0};   // 128ch
   int tmp_trail[V1190_MAX_GEO][N_V1190_CH][V1190_MAX_MULTI]={0};  // 128ch  
   int lead_cnt[V1190_MAX_GEO][N_V1190_CH]={0};
   int trail_cnt[V1190_MAX_GEO][N_V1190_CH]={0};  
@@ -161,6 +158,7 @@ int ana_v1190(vector<v1190_hit> &v1190_hit_all,
   int ref_lead[V1190_MAX_GEO]={0};
   int ref_flag[V1190_MAX_GEO]={0};  
 
+  // multiple module data is coming (not single module)
   while(rp<size/2){
     data=flip_32bit(ntohl(rawdata[rp]));
     rp++;
@@ -170,6 +168,7 @@ int ana_v1190(vector<v1190_hit> &v1190_hit_all,
       counter=(data>>5)&0x3fffff;
     }
         
+    // for one module 
     while(1){
       data=flip_32bit(ntohl(rawdata[rp]));
       rp++;
@@ -197,18 +196,20 @@ int ana_v1190(vector<v1190_hit> &v1190_hit_all,
 	    if(edge==0){ // leading edge
 	      if(lead_cnt[geo][ich]<V1190_MAX_MULTI){
 		tmp_lead[geo][ich][lead_cnt[geo][ich]]=measure;
+		if(ich==V1190_REF_CH && ref_flag[geo]==0){
+		  ref_lead[geo]=measure;
+		  ref_flag[geo]=1;
+		}
+		lead_cnt[geo][ich]++;
 	      }
-	      lead_cnt[geo][ich]++;
-	      if(ich==127 && ref_flag[geo]==0){
-		ref_lead[geo]=measure;
-		ref_flag[geo]=1;
-	      }
+
 	    }
 	    if(edge==1){ // trailing edge
 	      if(trail_cnt[geo][ich]<V1190_MAX_MULTI){
-		tmp_lead[geo][ich][trail_cnt[geo][ich]]=measure;
+		tmp_trail[geo][ich][trail_cnt[geo][ich]]=measure;
+		trail_cnt[geo][ich]++;
 	      }
-	      trail_cnt[geo][ich]++;
+
 	    }
 	    
 	  }
@@ -220,21 +221,21 @@ int ana_v1190(vector<v1190_hit> &v1190_hit_all,
   
   // reanalysis
   int total_hit=0;
-
-  tmp_hit.field=field_id;
-  tmp_hit.counter=counter;
-  tmp_hit.trail_raw=0;
-  tmp_hit.tot=0;  
   
   for(geo=0; geo<V1190_MAX_GEO; geo++){
     if(ref_flag[geo]==1){
       for(i=0; i<N_V1190_CH; i++){
 	if(lead_cnt[geo][i]>0){
 	  for(j=0; j<lead_cnt[geo][i]; j++){
+	    v1190_hit tmp_hit;
+	    tmp_hit.field=field_id;
+	    tmp_hit.counter=counter;
+	    tmp_hit.trail_raw=0;
+	    tmp_hit.tot=0;  
 	    tmp_hit.geo=geo;
 	    tmp_hit.ch=i;
 	    tmp_hit.lead_raw = tmp_lead[geo][i][j];
-	    tmp_hit.lead_cor = tmp_lead[geo][i][j]-ref_lead[geo];		
+	    tmp_hit.lead_cor = tmp_lead[geo][i][j]-ref_lead[geo];
 	    
 	    if(lead_cnt[geo][i]==trail_cnt[geo][i]){
 	      tmp_hit.trail_raw = tmp_trail[geo][i][j];

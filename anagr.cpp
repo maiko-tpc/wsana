@@ -1,6 +1,10 @@
 #include "anagr.hpp"
 
+const int VDC_OFFSET = 4000;
+
 anagr::anagr(){
+  rnd = new TRandom3();
+  rnd->SetSeed(0);
 }
 
 anagr::~anagr(){
@@ -103,12 +107,13 @@ int anagr::GetWire(int geo, int ch){
 
 void anagr::V1190Hit2VDCData(evtdata *evt){
   /* Get V1190 hit data to fill into grvdc */
-  grvdc_data tmp_vdc_data;
+
   int tmp_field;
   int tmp_geo, tmp_ch;
   
   int hit_size = (int)(evt->v1190_hit_all.size());
   for(int i=0; i<hit_size; i++){
+    grvdc_data tmp_vdc_data;
     tmp_field = evt->v1190_hit_all[i].field;
     tmp_geo = evt->v1190_hit_all[i].geo;
     tmp_ch = evt->v1190_hit_all[i].ch;
@@ -119,14 +124,14 @@ void anagr::V1190Hit2VDCData(evtdata *evt){
       tmp_vdc_data.wire = GetWire(tmp_geo, tmp_ch);
       tmp_vdc_data.geo = evt->v1190_hit_all[i].geo;
       tmp_vdc_data.lead_raw = evt->v1190_hit_all[i].lead_raw;
-      tmp_vdc_data.lead_cor = evt->v1190_hit_all[i].lead_cor;
+      tmp_vdc_data.lead_cor = evt->v1190_hit_all[i].lead_cor + VDC_OFFSET;
       tmp_vdc_data.clst_flag = 0;                  
+      if(tmp_vdc_data.plane<4 &&
+	 tmp_vdc_data.wire>0 && tmp_vdc_data.wire<1000){
+	evt->grvdc.push_back(tmp_vdc_data);
+      }
     }
-
-    if(tmp_vdc_data.plane<4 &&
-       tmp_vdc_data.wire>0 && tmp_vdc_data.wire<1000){
-      evt->grvdc.push_back(tmp_vdc_data);
-    }
+    
   }
 }
 
@@ -158,6 +163,14 @@ void anagr::anavdc(evtdata *evt){
   }
   
   cal_nclst(evt);
+}
+
+void anagr::TDC2Len_GR(evtdata *evt){
+  int ar_index;
+  int hit_size = (int)evt->grvdc.size();
+  for(int i=0; i<hit_size; i++){
+
+  }
 }
 
 void anagr::cal_nclst(evtdata *evt){

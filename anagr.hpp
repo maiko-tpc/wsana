@@ -15,6 +15,7 @@
 #include <TTree.h>
 #include <TH1.h>
 #include <TMath.h>
+#include <TRandom3.h>
 
 #include "mk_hist.hpp"
 #include "mtformat.h"
@@ -34,6 +35,7 @@ public:
   int GetPlane(int geo);
   int GetWire(int geo, int ch);
   
+  void TDC2Len_GR(evtdata *);
   void cal_nclst(evtdata *);
 
   void SetMaxDriftLength(float length);
@@ -59,7 +61,8 @@ private:
   /* TDC to drift length table */
   unsigned int tdc_bin_wid=1;
   float tdc2len_tab[N_VDCPLANE][MAX_VDC_TDC];
-
+  TRandom3 *rnd;
+  
 };
 
 

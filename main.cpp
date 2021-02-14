@@ -18,7 +18,6 @@
 #include "evtdata.h"
 #include "decoder.hpp"
 #include "mk_hist.hpp"
-#include "vdc.h"
 #include "analysis.hpp"
 
 //#define DEBUG 

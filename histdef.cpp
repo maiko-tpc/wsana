@@ -16,6 +16,10 @@ void analysis::HistFill(){
     int wire=evt.grvdc[i].wire;
     int drifttime=evt.grvdc[i].lead_cor;
     if(wire>0){
+      if(evt.eve==0){
+	//	printf("plane=%d, wire=%d, raw=%d, dtime=%d\n",
+	//	       plane, wire, evt.grvdc[i].lead_raw, drifttime);
+      }
       hwire[plane]->Fill(wire);
       hdrifttime[plane]->Fill(drifttime);
       evt.nhit_plane[plane]++;

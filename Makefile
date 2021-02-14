@@ -1,6 +1,6 @@
 CXX = g++
 TARGET = ana
-SOURCE = main.o analysis.o anagr.o anassd.o decoder.o histdef.o treedef.o
+SOURCE = main.o analysis.o anapla.o anagr.o anassd.o decoder.o histdef.o treedef.o
 ROOTFLAGS = $(shell root-config --cflags)
 ROOTLIBS  = $(shell root-config --libs)
 
@@ -19,5 +19,5 @@ ${TARGET}: ${SOURCE}
 clean:
 	${RM} *.o ${TARGET}
 
-reflesh:
+refresh:
 	${RM} *.o

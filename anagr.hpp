@@ -28,7 +28,6 @@ public:
   anagr();
   ~anagr();
 
-  void anapla(evtdata *);
   void anavdc(evtdata *);
 
   void V1190Hit2VDCData(evtdata *);

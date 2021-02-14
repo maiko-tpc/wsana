@@ -20,6 +20,7 @@
 #include "moduledata.h"
 //#include "evtdata.h"
 #include "decoder.hpp"
+#include "anapla.hpp"
 #include "anagr.hpp"
 #include "anassd.hpp"
 
@@ -68,6 +69,7 @@ private:
   
   char comment[100000];
 
+  anapla *pla;
   anagr *gr;
   anassd *ssd;  
 };

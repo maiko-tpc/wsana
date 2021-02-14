@@ -6,6 +6,9 @@
 
 analysis::analysis(){
   evt.eve=0;
+
+  pla = new anapla();
+
   gr = new anagr();
   gr->SetGRPars();
   gr->SetTDC2LenTab_GR();
@@ -170,7 +173,7 @@ int  analysis::AnaEvt(){
   /* Event by event analysis */
 
   // GR plastic
-  gr->anapla(&evt);
+  pla->analyze(&evt);
      
   // GR VDC
   gr->anavdc(&evt);

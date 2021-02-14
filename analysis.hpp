@@ -64,6 +64,7 @@ private:
   /* Definition of output histograms */
   TH1F *hwire[N_VDCPLANE];
   TH1F *hdrifttime[N_VDCPLANE];
+  TH1F *hdriftlen[N_VDCPLANE];  
   
   char comment[100000];
 

@@ -52,6 +52,7 @@ typedef struct grvdc_data{
   int lead_raw;
   int lead_cor;
   unsigned int clst_flag;
+  float dlen; // drift length
 } grvdc_data;
 
 

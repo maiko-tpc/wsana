@@ -5,6 +5,7 @@ const int VDC_OFFSET = 4000;
 anagr::anagr(){
   rnd = new TRandom3();
   rnd->SetSeed(0);
+  SetTDC2LenTab_GR();
 }
 
 anagr::~anagr(){
@@ -162,14 +163,29 @@ void anagr::anavdc(evtdata *evt){
     }
   }
   
+  
+  TDC2Len_GR(evt);
   cal_nclst(evt);
 }
 
 void anagr::TDC2Len_GR(evtdata *evt){
   int ar_index;
   int hit_size = (int)evt->grvdc.size();
+  int plane;
+  float dlen;
+  float wid;
   for(int i=0; i<hit_size; i++){
+    plane=evt->grvdc[i].plane;
+    ar_index = (int)(evt->grvdc[i].lead_cor/tdc_bin_wid);
+    if(ar_index<0) ar_index=0;
+    if(ar_index>=(MAX_VDC_TDC-2)) ar_index=MAX_VDC_TDC-2;
+    dlen=tdc2len_tab[plane][ar_index];
 
+    // smear with random
+    wid=tdc2len_tab[plane][ar_index+1]-tdc2len_tab[plane][ar_index];
+    dlen+=wid*rnd->Rndm();
+    
+    evt->grvdc[i].dlen = dlen;
   }
 }
 

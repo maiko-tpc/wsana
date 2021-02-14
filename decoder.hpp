@@ -1,3 +1,6 @@
+#ifndef DECODER_HPP_
+#define DECODER_HPP_
+
 using namespace std;
 
 unsigned int flip_32bit(unsigned int inp);
@@ -13,3 +16,6 @@ int ana_v1190(vector<v1190_hit> &v1190_hit_all,
 void init_grpla_data(grpla_data *grpla);
 int ana_grpla_qdc(grpla_data *grpla, unsigned int *rawdata, unsigned int size);
 int ana_grpla_tdc(grpla_data *grpla, unsigned int *rawdata, unsigned int size);
+
+
+#endif // end of include guard

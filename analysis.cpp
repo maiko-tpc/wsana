@@ -175,11 +175,12 @@ int  analysis::AnaEvt(){
   // GR plastic
   pla->analyze(&evt);
      
+  // SSD
+  ssd->analyze(&evt);
+
   // GR VDC
   gr->anavdc(&evt);
 
-  // SSD
-  ssd->analyze(&evt);
 
   if(evt.eve%10000==0){
     printf("Analyzed %d events\n", evt.eve);

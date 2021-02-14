@@ -11,12 +11,6 @@
 #include <string.h>
 #include <vector>
 
-#include <TFile.h>
-#include <TTree.h>
-#include <TH1.h>
-#include <TMath.h>
-#include <TRandom3.h>
-
 #include "mk_hist.hpp"
 #include "mtformat.h"
 #include "moduledata.h"
@@ -29,5 +23,8 @@ public:
   ~anapla();
 
   void analyze(evtdata *);  
+
+private:
 };
-#endif
+
+#endif // end of include guard

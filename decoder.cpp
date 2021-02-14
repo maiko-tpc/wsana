@@ -3,6 +3,7 @@
 #include <vector>
 #include <arpa/inet.h>
 #include "moduledata.h"
+#include "decoder.hpp"
 
 #define V1190_SSD_GEO 24
 #define V1190_MAX_GEO 32
@@ -15,54 +16,6 @@ unsigned int flip_32bit(unsigned int inp){
   unsigned int low = inp&0x0000ffff;
   unsigned int up  = (inp>>16)&0xffff;
   return low*0x00010000 + up;
-}
-
-int get_vdc_wire(int geo, int ch){
-  if(geo==0 || geo==4){
-    if(ch>=  0 && ch<= 15) return ch;
-    if(ch>= 16 && ch<= 31) return ch+16;
-    if(ch>= 32 && ch<= 47) return ch-16;
-    if(ch>= 48 && ch<= 63) return ch;
-    if(ch>= 64 && ch<= 79) return ch;
-    if(ch>= 80 && ch<= 95) return ch+16;
-    if(ch>= 96 && ch<=111) return -1;
-    if(ch> 112 && ch<=127) return -1;
-  }
-
-  if(geo==1 || geo==5){
-    if(ch>=  0 && ch<= 15) return ch+80;
-    if(ch>= 16 && ch<= 31) return ch+96;
-    if(ch>= 32 && ch<= 47) return ch+96;
-    if(ch>= 48 && ch<= 63) return ch+112;
-    if(ch>= 64 && ch<= 79) return ch+80;
-    if(ch>= 80 && ch<= 95) return ch+96;
-    if(ch>= 96 && ch<=111) return -1;
-    if(ch> 112 && ch<=127) return -1;
-  }
-
-  if(geo==2 || geo==6){
-    if(ch>=  0 && ch<= 15) return ch+16;
-    if(ch>= 16 && ch<= 31) return ch+32;
-    if(ch>= 32 && ch<= 47) return ch;
-    if(ch>= 48 && ch<= 63) return ch+16;
-    if(ch>= 64 && ch<= 79) return ch+16;
-    if(ch>= 80 && ch<= 95) return ch+32;
-    if(ch>= 96 && ch<=111) return ch-96;
-    if(ch> 112 && ch<=127) return -1;
-  }
-
-  if(geo==3 || geo==7){
-    if(ch>=  0 && ch<= 15) return ch+96;
-    if(ch>= 16 && ch<= 31) return ch+112;
-    if(ch>= 32 && ch<= 47) return ch+112;
-    if(ch>= 48 && ch<= 63) return ch+128;
-    if(ch>= 64 && ch<= 79) return ch+96;
-    if(ch>= 80 && ch<= 95) return ch+112;
-    if(ch>= 96 && ch<=111) return -1;
-    if(ch> 112 && ch<=127) return -1;
-  }
-
-  return -1;
 }
 
 void init_madc32_data(madc32_data *madc){

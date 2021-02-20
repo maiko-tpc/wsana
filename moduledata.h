@@ -1,5 +1,5 @@
-#ifndef _MODULEDATA_H_
-#define _MODULEDATA_H_
+#ifndef MODULEDATA_H_
+#define MODULEDATA_H_
 
 #define N_MADC 2
 #define N_V1190 1

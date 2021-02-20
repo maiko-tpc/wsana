@@ -1,7 +1,7 @@
 #ifndef ANALYSIS_HPP_
 #define ANALYSIS_HPP_
 
-#define ANASSD   // comment out to disable ssd analysis
+//#define ANASSD   // comment out to disable ssd analysis
 
 #include <stdio.h>
 #include <stdlib.h>

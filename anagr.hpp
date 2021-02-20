@@ -30,6 +30,7 @@ public:
   void anavdc(evtdata *);
 
   void V1190Hit2VDCData(evtdata *);
+  void GetXUHits(evtdata *);
   int GetPlane(int geo);
   int GetWire(int geo, int ch);
   
@@ -47,7 +48,7 @@ public:
 private:
   /* Tracking parameters */
   unsigned int min_clst_size = 2;
-  unsigned int max_clst_size = 20;
+  unsigned int max_clst_size = 10;
   unsigned int max_clst_zero = 1;
 
   /* VDC paramters */

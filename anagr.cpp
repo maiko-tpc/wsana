@@ -11,7 +11,6 @@ anagr::anagr(){
 anagr::~anagr(){
 }
 
-
 /* VDC parameters setting */
 void anagr::SetMaxDriftLength(float length){
   max_drift_length = length;
@@ -103,7 +102,10 @@ void anagr::V1190Hit2VDCData(evtdata *evt){
   /* Get V1190 hit data to fill into grvdc */
 
   int tmp_field;
-  int tmp_geo, tmp_ch;
+  int tmp_geo, tmp_ch, tmp_plane, tmp_wire;
+
+  // Accept only the first hit in each wire
+  unsigned int hit_flag[N_VDCPLANE][PLANE_SIZE]={0};
   
   int hit_size = (int)(evt->v1190_hit_all.size());
   for(int i=0; i<hit_size; i++){
@@ -111,33 +113,45 @@ void anagr::V1190Hit2VDCData(evtdata *evt){
     tmp_field = evt->v1190_hit_all[i].field;
     tmp_geo = evt->v1190_hit_all[i].geo;
     tmp_ch = evt->v1190_hit_all[i].ch;
-    if(evt->eve==5) printf("geo=%d\n", tmp_geo);
     
     if(tmp_field==0 && tmp_geo<=7 && tmp_ch!=127){
-      tmp_vdc_data.plane = GetPlane(tmp_geo);
-      tmp_vdc_data.wire = GetWire(tmp_geo, tmp_ch);
+      tmp_plane = GetPlane(tmp_geo);
+      tmp_wire = GetWire(tmp_geo, tmp_ch);
+      tmp_vdc_data.plane = tmp_plane;
+      tmp_vdc_data.wire = tmp_wire;
       tmp_vdc_data.geo = evt->v1190_hit_all[i].geo;
       tmp_vdc_data.lead_raw = evt->v1190_hit_all[i].lead_raw;
       tmp_vdc_data.lead_cor = evt->v1190_hit_all[i].lead_cor + VDC_OFFSET;
       tmp_vdc_data.clst_flag = 0;                  
       if(tmp_vdc_data.plane<4 &&
-	 tmp_vdc_data.wire>0 && tmp_vdc_data.wire<1000){
+	 tmp_vdc_data.wire>0 && tmp_vdc_data.wire<1000 &&
+	 hit_flag[tmp_plane][tmp_wire]==0){
 	evt->grvdc.push_back(tmp_vdc_data);
+	hit_flag[tmp_plane][tmp_wire]=1;
       }
     }
     
   }
 }
 
+void anagr::GetXUHits(evtdata *evt){
+  int nhits = (int)evt->grvdc.size();
+  for(int i=0; i<nhits; i++){
+    if((evt->grvdc[i].plane)%2==0){  // X plane
+      evt->grvdc_x.push_back(evt->grvdc[i]);
+    }
+    if((evt->grvdc[i].plane)%2==1){  // U plane
+      evt->grvdc_u.push_back(evt->grvdc[i]);
+    }
+  }
+
+}
+
 void anagr::anavdc(evtdata *evt){
   int i;
-
-  for(i=0; i<N_VDCPLANE; i++){
-    evt->nhit_plane[i]=0;
-    evt->mean_wire[i]=0.0;
-  }
   
   V1190Hit2VDCData(evt);
+  GetXUHits(evt);
   
   int grvdc_size = (int)(evt->grvdc.size());
   for(i=0; i<grvdc_size; i++){
@@ -155,8 +169,7 @@ void anagr::anavdc(evtdata *evt){
       evt->mean_wire[i] = evt->mean_wire[i]/evt->nhit_plane[i];
     }
   }
-  
-  
+    
   TDC2Len_GR(evt);
   cal_nclst(evt);
 }

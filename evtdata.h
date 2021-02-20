@@ -1,5 +1,5 @@
-#ifndef _EVTDATA_H_
-#define _EVTDATA_H_
+#ifndef EVTDATA_H_
+#define EVTDATA_H_
 
 #include <vector>
 #include "moduledata.h"
@@ -14,6 +14,8 @@ struct evtdata{
 
   grpla_data grpla;
   std::vector<grvdc_data> grvdc;
+  std::vector<grvdc_data> grvdc_x;
+  std::vector<grvdc_data> grvdc_u;  
   int nhit_plane[N_VDCPLANE];
   float mean_wire[N_VDCPLANE];  
 

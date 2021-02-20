@@ -12,8 +12,8 @@
   Modified: 19-APR-2016 by A. Tamii (for newer VMEDAQ)
 */
 
-#ifndef _MTFORMAT_H_
-#define _MTFORMAT_H_
+#ifndef MTFORMAT_H_
+#define MTFORMAT_H_
 
 
 #define ComVar4_0  (4<<8)  /* version 4.0 */

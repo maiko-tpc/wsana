@@ -341,10 +341,16 @@ void analysis::InitEvt(){
   init_v1190_data(&evt.v1190_ssd);
   init_grpla_data(&evt.grpla);
   evt.grvdc.clear();
+  evt.grvdc_x.clear();
+  evt.grvdc_u.clear();  
   evt.v1190_hit_all.clear();  
   
   for(int i=0; i<N_VDCPLANE; i++){
     evt.nclst[i]=0;
   }
   
+  for(int i=0; i<N_VDCPLANE; i++){
+    evt.nhit_plane[i]=0;
+    evt.mean_wire[i]=0.0;
+  }
 }

@@ -1,7 +1,5 @@
 #include "anagr.hpp"
 
-const int VDC_OFFSET = 4000;
-
 anagr::anagr(){
   rnd = new TRandom3();
   rnd->SetSeed(0);
@@ -308,4 +306,7 @@ void anagr::SetTDC2LenTab_GR(){
   
   tdc_bin_wid = tdc[1]-tdc[0];
   if(tdc_bin_wid<=0) tdc_bin_wid = 1;
+}
+
+void anagr::FitXUPlane(evtdata *evt){
 }

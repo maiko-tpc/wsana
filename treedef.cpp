@@ -21,8 +21,9 @@ void analysis::TreeDef(){
 #endif
   
   tree->Branch("grpla", &evt.grpla,
-	       Form("adc[%d]/I:tdc[%d]/I:pos[%d]/F:de[%d]/F",
-		    N_GRPLA_CH, N_GRPLA_CH, N_GRPLA, N_GRPLA));
+	       Form("adc[%d]/I:tdc[%d]/I:pos[%d]/F:de[%d]/F:fqdc[%d]:ftdc[%d]:vqdc[%d]:vtdc[%d]",
+		    N_GRPLA_CH, N_GRPLA_CH, N_GRPLA, N_GRPLA,
+		    N_GRPLA_CH, N_GRPLA_CH, N_GRPLA_CH, N_GRPLA_CH));
 
   tree->Branch("vdcnhit", &evt.nhit_plane, Form("vdcnhit[%d]/I", N_VDCPLANE));
   tree->Branch("meanwire", &evt.mean_wire, Form("vdcwire[%d]/F", N_VDCPLANE));

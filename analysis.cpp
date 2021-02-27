@@ -68,7 +68,7 @@ int analysis::AnaFld(){
 
   unsigned int field_size = htons(fldh.fieldSize);
   int field_id = htons(fldh.fieldID);
-  if(evt.eve==0) printf("%d\n", field_id);
+  if(evt.eve==0) printf("Field ID=%d\n", field_id);
   
 #ifdef DEBUG
     printf("------------------------\n");  
@@ -105,9 +105,13 @@ int analysis::AnaFld(){
     case 0x2:  // input register
 	// will be implemented later...	  
       break;
-    case 0x3:  // MADC32
-	ana_madc32(&evt.madc, tmpdata, region_size);
+    case 0x3:  // MADC32 or MQDC32
+      //	ana_madc32(&evt.madc, tmpdata, region_size);
+	ana_mxdc32(&evt, tmpdata, region_size);	
 	break;
+    case 0x5:  // Scaler64?
+      // will be implemented later...	  
+      break;
     case 0x6:  // CAMAC scaler?
       // will be implemented later...	  
       break;
@@ -352,5 +356,19 @@ void analysis::InitEvt(){
   for(int i=0; i<N_VDCPLANE; i++){
     evt.nhit_plane[i]=0;
     evt.mean_wire[i]=0.0;
+  }
+
+  for(int i=0; i<N_GRPLA_CH; i++){
+    evt.grpla.adc[i]=0;
+    evt.grpla.tdc[i]=0;
+    evt.grpla.fqdc[i]=0;
+    evt.grpla.ftdc[i]=0;    
+    evt.grpla.vqdc[i]=0;
+    evt.grpla.vtdc[i]=0;    
+  }
+
+  for(int i=0; i<N_GRPLA; i++){
+    evt.grpla.pos[i]=-100;
+    evt.grpla.de[i]=-100;    
   }
 }

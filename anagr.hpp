@@ -45,6 +45,7 @@ public:
   void SetGRPars();
   void SetTDC2LenTab_GR();
   
+  void FitXUPlane(evtdata *);
 private:
   /* Tracking parameters */
   unsigned int min_clst_size = 2;

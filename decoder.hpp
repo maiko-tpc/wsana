@@ -1,12 +1,18 @@
 #ifndef DECODER_HPP_
 #define DECODER_HPP_
 
+#include "moduledata.h"
+#include "evtdata.h"
+
 using namespace std;
 
 unsigned int flip_32bit(unsigned int inp);
 
 void init_madc32_data(madc32_data *madc);
+void init_mqdc32_data(mqdc32_data *mqdc);
 void ana_madc32(madc32_data *madc,
+		unsigned int *rawdata, unsigned int size);
+void ana_mxdc32(evtdata *,
 		unsigned int *rawdata, unsigned int size);
 
 void init_v1190_data(v1190_data *v1190);

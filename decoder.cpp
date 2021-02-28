@@ -151,6 +151,52 @@ void ana_mxdc32(evtdata *evt, unsigned int *rawdata, unsigned int size){
 
 }
 
+void ana_mxdc32(vector<mxdc32_hit> &mxdc32_hit_all, unsigned int *rawdata, unsigned int size, int field_id){
+  unsigned int rp=0;
+  unsigned int tmpdata;
+  int geo;
+  int nword;
+  int ich;
+  unsigned int tmpadc;
+  //  unsigned int tmp_counter;
+  mxdc32_hit tmp_hit;
+
+  
+  while(rp<size/2){
+    tmpdata=flip_32bit(ntohl(rawdata[rp]));
+    rp++;
+
+    if((tmpdata>>24) == 0x40){  // header
+      geo=(tmpdata>>16)&0x00ff;
+      nword=(tmpdata)&0x00000fff;
+
+      for(int i=0; i<nword-1; i++){  // data
+	tmpdata=flip_32bit(ntohl(rawdata[rp]));
+
+	if((tmpdata>>26)==0x1){
+
+	  ich = (tmpdata>>16)&0x001f;
+	  tmpadc=(tmpdata)&0x00001fff;
+
+	  tmp_hit.field = field_id;
+	  tmp_hit.geo = geo;
+	  tmp_hit.ch = ich;
+	  tmp_hit.adc = tmpadc;
+	  mxdc32_hit_all.push_back(tmp_hit);
+	}
+	rp++;
+      }
+      tmpdata=flip_32bit(ntohl(rawdata[rp]));
+      rp++;
+      if(((tmpdata>>30))==0x3){  // ender 
+	//	tmp_counter=((unsigned int)tmpdata)&0x0fffffff;
+      }
+    }
+
+  }
+
+}
+
 
 void init_v1190_data(v1190_data *v1190){
   int i,j;

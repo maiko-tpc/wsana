@@ -107,7 +107,8 @@ int analysis::AnaFld(){
       break;
     case 0x3:  // MADC32 or MQDC32
       //	ana_madc32(&evt.madc, tmpdata, region_size);
-	ana_mxdc32(&evt, tmpdata, region_size);	
+      //      ana_mxdc32(&evt, tmpdata, region_size);
+      ana_mxdc32(evt.mxdc32_hit_all, tmpdata, region_size, field_id);		
 	break;
     case 0x5:  // Scaler64?
       // will be implemented later...	  
@@ -342,6 +343,8 @@ int analysis::GetRunNum(){
 
 void analysis::InitEvt(){
   init_madc32_data(&evt.madc);
+  evt.mxdc32_hit_all.clear();
+
   init_v1190_data(&evt.v1190_ssd);
   init_grpla_data(&evt.grpla);
   evt.grvdc.clear();

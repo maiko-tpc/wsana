@@ -34,6 +34,13 @@ typedef struct mqdc32_data{
   unsigned int counter[N_MQDC];
 } mqdc32_data;
 
+typedef struct mxdc32_hit{
+  int field;
+  unsigned int geo;
+  unsigned int ch;
+  unsigned int adc;
+} mxdc32_hit;
+
 typedef struct v1190_hit{
   int field; // 0:GR+SSD+pla
   unsigned int geo;

@@ -28,6 +28,7 @@ public:
   ~anassd();
 
   void V1190Hit2SSDTDC(evtdata *);
+  void Mxdc32Hit2SSDADC(evtdata *);
   void analyze(evtdata *);
 };
 

@@ -10,6 +10,8 @@ struct evtdata{
   unsigned int eve;
   madc32_data madc;
   mqdc32_data mqdc;  
+  std::vector<mxdc32_hit> mxdc32_hit_all;
+
   v1190_data v1190_ssd;
   std::vector<v1190_hit> v1190_hit_all;
 

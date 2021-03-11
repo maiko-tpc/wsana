@@ -21,7 +21,7 @@ void analysis::TreeDef(){
 #endif
   
   tree->Branch("grpla", &evt.grpla,
-	       Form("adc[%d]/I:tdc[%d]/I:pos[%d]/F:de[%d]/F:fqdc[%d]:ftdc[%d]:vqdc[%d]:vtdc[%d]",
+	       Form("adc[%d]/I:tdc[%d]/I:pos[%d]/F:de[%d]/F:fqdc[%d]/I:ftdc[%d]/I:vqdc[%d]/I:vtdc[%d]/I",
 		    N_GRPLA_CH, N_GRPLA_CH, N_GRPLA, N_GRPLA,
 		    N_GRPLA_CH, N_GRPLA_CH, N_GRPLA_CH, N_GRPLA_CH));
 

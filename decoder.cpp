@@ -218,7 +218,6 @@ int ana_v1190(vector<v1190_hit> &v1190_hit_all,
   unsigned int rp=0;
   unsigned int data;
   int geo=V1190_MAX_GEO-1;
-  //  unsigned int itdc=0;
   unsigned int edge;
   unsigned int ich;
   unsigned int measure;
@@ -234,78 +233,78 @@ int ana_v1190(vector<v1190_hit> &v1190_hit_all,
   int ref_lead[V1190_MAX_GEO]={0};
   int ref_flag[V1190_MAX_GEO]={0};  
 
+  unsigned int ref_ch=V1190_REF_CH;
+  if(field_id == FIELD_PLA) ref_ch = 15;
+  
   // multiple module data is coming (not single module)
   while(rp<size/2){
     data=flip_32bit(ntohl(rawdata[rp]));
     rp++;
     
+    // for one module 
     if(data>>27 == 0x08){  // global header
       geo=data&0x1f;
+      //      printf("field=%d, geo=%d\n", field_id, geo);
       counter=(data>>5)&0x3fffff;
-    }
         
-    // for one module 
-    while(1){
-      data=flip_32bit(ntohl(rawdata[rp]));
-      rp++;
-      if(data>>27 == 0x10) break; // global trailer
-      
-      if((data>>27) == 0x1){  // TDC header
-	//	  itdc = (data>>24)&0x03;
+      while(1){
+	data=flip_32bit(ntohl(rawdata[rp]));
+	rp++;
+
+	if(data>>27 == 0x10) break; // global trailer
 	
-	while(1){
-	  data=flip_32bit(ntohl(rawdata[rp]));
-	  rp++;
-	  if((data>>27) == 0x03){
-	    break; // TDC trailer
-	  }
-	  
-	  if((data>>27) == 0x4){ // TDC error
-	    break;
-	  }
-	  
-	  if((data>>27) == 0x00){ // TDC measure
-	    edge=(data>>26)&0x3f;
-	    ich=(data>>19)&0x7f;
-	    measure=data&0x0007ffff;
-	    
-	    if(edge==0){ // leading edge
-	      if(lead_cnt[geo][ich]<V1190_MAX_MULTI){
-		tmp_lead[geo][ich][lead_cnt[geo][ich]]=measure;
-		if(ich==V1190_REF_CH && ref_flag[geo]==0){
-		  ref_lead[geo]=measure;
-		  ref_flag[geo]=1;
-		}
-		lead_cnt[geo][ich]++;
-	      }
-
-	    }
-	    if(edge==1){ // trailing edge
-	      if(trail_cnt[geo][ich]<V1190_MAX_MULTI){
-		tmp_trail[geo][ich][trail_cnt[geo][ich]]=measure;
-		trail_cnt[geo][ich]++;
-	      }
-
-	    }
-	    
-	  }
-	  
+	if((data>>27) == 0x1){  // TDC header
 	}
-      } 
-    }  
-  }
+	
+	if((data>>27) == 0x03){ // TDC trailer
+	}
+
+	if((data>>27) == 0x4){ // TDC error
+	}
+	
+	if((data>>27) == 0x00){ // TDC measure
+	  edge=(data>>26)&0x3f;
+	  ich=(data>>19)&0x7f;
+	  measure=data&0x0007ffff;
+	  
+	  if(edge==0){ // leading edge
+	    if(lead_cnt[geo][ich]<V1190_MAX_MULTI){
+	      tmp_lead[geo][ich][lead_cnt[geo][ich]]=measure;
+	      if(ich==ref_ch && ref_flag[geo]==0){
+		ref_lead[geo]=measure;
+		ref_flag[geo]=1;
+	      }
+	      lead_cnt[geo][ich]++;
+	    }
+	    
+	  }
+	  if(edge==1){ // trailing edge
+	    if(trail_cnt[geo][ich]<V1190_MAX_MULTI){
+	      tmp_trail[geo][ich][trail_cnt[geo][ich]]=measure;
+	      trail_cnt[geo][ich]++;
+	    }
+	    
+	  } // end of edge==1
+	  
+	} // end of TDC measdure
+	
+      } // end of while(1)
+    } // end of global header
+  } // end of all data loop 
   
   // reanalysis
   int total_hit=0;
-  
+  v1190_hit tmp_hit;
+
   for(geo=0; geo<V1190_MAX_GEO; geo++){
     if(ref_flag[geo]==1){
       for(i=0; i<N_V1190_CH; i++){
 	if(lead_cnt[geo][i]>0){
 	  for(j=0; j<lead_cnt[geo][i]; j++){
-	    v1190_hit tmp_hit;
+
 	    tmp_hit.field=field_id;
-	    tmp_hit.counter=counter;
+	    //	    tmp_hit.counter=counter;
+	    tmp_hit.counter=0;	    
 	    tmp_hit.trail_raw=0;
 	    tmp_hit.tot=0;  
 	    tmp_hit.geo=geo;
@@ -321,13 +320,17 @@ int ana_v1190(vector<v1190_hit> &v1190_hit_all,
 	      tmp_hit.trail_raw = -1;
 	      tmp_hit.tot = -1;	  
 	    }
+	    //	    printf("field=%d, geo=%d, ch=%d, lead_raw=%d, trail_raw=%d, lead_cor=%d, tot=%d, counter=%d\n",
+	    //		   tmp_hit.field, tmp_hit.geo, tmp_hit.ch, tmp_hit.lead_raw,
+	    //		   tmp_hit.trail_raw, tmp_hit.lead_cor, tmp_hit.tot, tmp_hit.counter);
+	    
 	    v1190_hit_all.push_back(tmp_hit);
 	    total_hit++;
 	    //	    printf("dec geo=%d\n", tmp_hit.geo);
 	  }
 	}
       } // end of multi-hit loop
-    } // end of v1190 ch loop
+    } // end of ref_flag
   } // end of geo loop
   return total_hit;
 }

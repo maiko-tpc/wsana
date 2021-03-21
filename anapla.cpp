@@ -66,8 +66,8 @@ int anapla::GetV1190Hit(evtdata *evt){
     if(evt->v1190_hit_all[i].field == FIELD_PLA){
       ch = evt->mxdc32_hit_all[i].ch;
 
-      // GR 
-      if(ch<16){
+      // GR       
+      if(ch>=0 && ch<16){
 	evt->grpla.vtdc[ch] = evt->v1190_hit_all[i].lead_cor+VDC_OFFSET;
 	cnt++;
       }

@@ -25,6 +25,10 @@ public:
 
   void analyze(evtdata *);  
 
+  int GetMQDCHit(evtdata *);
+  int GetV1190Hit(evtdata *);
+  int GetFERAHit(evtdata *);    
+  
 private:
 };
 

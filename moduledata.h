@@ -12,11 +12,18 @@
 #define MADC_START_GEO 0
 #define PLA_V1190_GEO 30
 
+#define FIELD_PLA 28780
+#define VSN_GRQDC1 1
+#define VSN_GRQDC2 2
+#define VSN_GRTDC1 129
+#define VSN_LASQDC1 17
+#define VSN_LASTDC1 145
 
 const int N_MADC_CH = N_MADC*32;
 const int N_MQDC_CH = N_MQDC*32;
 const int N_V1190_CH = 128;
 const int N_GRPLA_CH = 16;
+const int N_PLA_CH = 32;
 const int N_GRPLA    = 2;
 const int MAX_VDC_TDC = 5000;
 
@@ -52,6 +59,14 @@ typedef struct v1190_hit{
   unsigned int counter;
 } v1190_hit;
 
+typedef struct fera_hit{
+  int field;
+  unsigned int qdc_tdc; // 0:QDC, 1:TDC 
+  unsigned int vsn;
+  unsigned int ch;
+  unsigned int val;
+} fera_hit;
+
 typedef struct v1190_data{
   unsigned int lead[N_V1190_CH][V1190_MAX_MULTI];
   unsigned int trail[N_V1190_CH][V1190_MAX_MULTI];
@@ -61,15 +76,26 @@ typedef struct v1190_data{
 } v1190_data;
 
 typedef struct grpla_data{
-  unsigned int adc[N_GRPLA_CH];
-  unsigned int tdc[N_GRPLA_CH];
+  unsigned int adc[N_PLA_CH];
+  unsigned int tdc[N_PLA_CH];
+  float pos[N_GRPLA];
+  float  de[N_GRPLA];
+  unsigned int fqdc[N_PLA_CH];
+  unsigned int ftdc[N_PLA_CH];  
+  unsigned int vqdc[N_PLA_CH];
+  unsigned int vtdc[N_PLA_CH];  
+} grpla_data;
+
+typedef struct pla_data{
+  unsigned int adc[N_PLA_CH];
+  unsigned int tdc[N_PLA_CH];
   float pos[N_GRPLA];
   float de[N_GRPLA];
-  unsigned int fqdc[N_GRPLA_CH];
-  unsigned int ftdc[N_GRPLA_CH];  
-  unsigned int vqdc[N_GRPLA_CH];
-  unsigned int vtdc[N_GRPLA_CH];  
-} grpla_data;
+  unsigned int fqdc[N_PLA_CH];
+  unsigned int ftdc[N_PLA_CH];  
+  unsigned int vqdc[N_PLA_CH];
+  unsigned int vtdc[N_PLA_CH];  
+} pla_data;
 
 typedef struct grvdc_data{
   unsigned int geo;

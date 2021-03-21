@@ -333,7 +333,7 @@ int ana_v1190(vector<v1190_hit> &v1190_hit_all,
 }
 
 
-void init_grpla_data(grpla_data *grpla){
+void init_grpla_data(pla_data *grpla){
   int i;
   for(i=0; i<N_GRPLA_CH; i++){
     grpla->adc[i]=0;
@@ -345,7 +345,7 @@ void init_grpla_data(grpla_data *grpla){
   }
 }
 
-int ana_grpla_qdc(grpla_data *grpla, unsigned int *rawdata, unsigned int size){
+int ana_grpla_qdc(pla_data *grpla, unsigned int *rawdata, unsigned int size){
   unsigned int data;
 
   unsigned short data16;
@@ -384,7 +384,7 @@ int ana_grpla_qdc(grpla_data *grpla, unsigned int *rawdata, unsigned int size){
   return vsn;
 }
 
-int ana_grpla_tdc(grpla_data *grpla, unsigned int *rawdata, unsigned int size){
+int ana_grpla_tdc(pla_data *grpla, unsigned int *rawdata, unsigned int size){
   unsigned int data;
 
   unsigned short data16;
@@ -421,3 +421,50 @@ int ana_grpla_tdc(grpla_data *grpla, unsigned int *rawdata, unsigned int size){
   return vsn;
 }
 
+int ana_fera(vector<fera_hit> &fera_hit_all, unsigned int *rawdata, unsigned int size,
+	     int field, unsigned int region){
+  unsigned int data;
+
+  unsigned short data16;
+  unsigned int ndata;
+  int vsn;
+  int ich,tmp_adc;
+  
+  data=(ntohl(rawdata[0]));
+  data16=(data>>16)&0xffff;
+  ndata=(data16>>11)&0xf;
+  vsn=data16&0xff;
+  int qdc_tdc = 0;
+  
+  if(region==0xd) qdc_tdc = 0;
+  if(region==0xe) qdc_tdc = 1;  
+  
+  fera_hit fera_hit;
+  fera_hit.field = field;
+  fera_hit.qdc_tdc = qdc_tdc;
+  fera_hit.vsn = vsn;
+  
+  unsigned int cnt=0;
+  int rawdata_index;
+
+  while(cnt<ndata){
+    rawdata_index=(int)(cnt/2+cnt%2);
+    data=(ntohl(rawdata[rawdata_index]));
+    if(cnt==0) data16=data&0xffff;
+    if(cnt>0 && (cnt%2)==0) data16=data&0xffff;
+    if(cnt>0 && (cnt%2)==1) data16=(data>>16)&0xffff;
+    if(data16!=0){
+      ich=(data16>>11)&0x0f;
+      tmp_adc=data16&0x7ff;
+
+      fera_hit.ch = ich;
+      fera_hit.val = tmp_adc;
+
+      fera_hit_all.push_back(fera_hit);
+    }
+    
+    cnt++;
+  }
+  
+  return cnt;
+}

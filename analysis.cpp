@@ -123,10 +123,12 @@ int analysis::AnaFld(){
       // will be implemented later...
       break;	  
     case 0xd:  // FERA QDC
-      ana_grpla_qdc(&evt.grpla, tmpdata, region_size);
+      //      ana_grpla_qdc(&evt.grpla, tmpdata, region_size);
+      ana_fera(evt.fera_hit_all, tmpdata, region_size, field_id, region_id);
       break;
     case 0xe:  // FERA TDC
-      ana_grpla_tdc(&evt.grpla, tmpdata, region_size);
+      //      ana_grpla_tdc(&evt.grpla, tmpdata, region_size);
+      ana_fera(evt.fera_hit_all, tmpdata, region_size, field_id, region_id);
       break;
     case 0xf:  // CheckSUM?
       // will be implemented later...
@@ -347,10 +349,14 @@ void analysis::InitEvt(){
 
   init_v1190_data(&evt.v1190_ssd);
   init_grpla_data(&evt.grpla);
+  init_grpla_data(&evt.laspla);  
   evt.grvdc.clear();
   evt.grvdc_x.clear();
   evt.grvdc_u.clear();  
-  evt.v1190_hit_all.clear();  
+
+  evt.v1190_hit_all.clear();
+  evt.mxdc32_hit_all.clear();
+  evt.fera_hit_all.clear();    
   
   for(int i=0; i<N_VDCPLANE; i++){
     evt.nclst[i]=0;

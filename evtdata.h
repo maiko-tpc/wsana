@@ -15,7 +15,11 @@ struct evtdata{
   v1190_data v1190_ssd;
   std::vector<v1190_hit> v1190_hit_all;
 
-  grpla_data grpla;
+  std::vector<fera_hit> fera_hit_all;
+  
+  pla_data grpla;
+  pla_data laspla;  
+
   std::vector<grvdc_data> grvdc;
   std::vector<grvdc_data> grvdc_x;
   std::vector<grvdc_data> grvdc_u;  

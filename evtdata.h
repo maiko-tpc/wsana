@@ -27,6 +27,7 @@ struct evtdata{
   float mean_wire[N_VDCPLANE];  
 
   int nclst[N_VDCPLANE];
+  int clst_size[N_VDCPLANE];
 };
 
 #endif

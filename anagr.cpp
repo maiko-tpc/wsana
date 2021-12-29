@@ -232,6 +232,7 @@ void anagr::cal_nclst(evtdata *evt){
       if(zero_cnt>max_clst_zero || iwire==PLANE_SIZE-1){
 	if(tmp_cnt>=min_clst_size && tmp_cnt<=max_clst_size){
 	  evt->nclst[iplane]++;
+	  evt->clst_size[iplane]=tmp_cnt;	  
 	  for(int j=start_wire; j<=stop_wire; j++){
 	    clst_flag[iplane][j]=evt->nclst[iplane];
 	  }
@@ -308,5 +309,26 @@ void anagr::SetTDC2LenTab_GR(){
   if(tdc_bin_wid<=0) tdc_bin_wid = 1;
 }
 
-void anagr::FitXUPlane(evtdata *evt){
+int anagr::FitOnePlane(evtdata *evt, unsigned int planeid){
+
+  std::vector<float> hit_x;
+  std::vector<float> hit_y;  
+
+  hit_x.clear();
+  hit_y.clear();  
+
+  float tmp_x, tmp_y;
+  
+  // put target plane hits to vectors
+  int vec_size = (int)evt->grvdc.size();
+  for(int i=0; i<vec_size; i++){
+    if(evt->grvdc[i].plane == planeid){
+      tmp_x = evt->grvdc[i].wire*wire_space[planeid];
+      tmp_y = evt->grvdc[i].dlen;
+      hit_x.push_back(tmp_x);
+      hit_y.push_back(tmp_y);      
+    }
+  }
+  
+  return 0;
 }

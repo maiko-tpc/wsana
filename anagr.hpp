@@ -10,6 +10,7 @@
 #include <signal.h>
 #include <string.h>
 #include <vector>
+#include <sstream>
 
 #include <TFile.h>
 #include <TTree.h>
@@ -45,7 +46,7 @@ public:
   void SetGRPars();
   void SetTDC2LenTab_GR();
   
-  void FitXUPlane(evtdata *);
+  int  FitOnePlane(evtdata *, unsigned int planeid);
 private:
   /* Tracking parameters */
   unsigned int min_clst_size = 2;

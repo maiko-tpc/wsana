@@ -34,6 +34,7 @@ void analysis::TreeDef(){
   tree->Branch("meanwire", &evt.mean_wire, Form("vdcwire[%d]/F", N_VDCPLANE));
 
   tree->Branch("nclst", &evt.nclst, Form("nclst[%d]/I", N_VDCPLANE));
+  tree->Branch("clst_size", &evt.clst_size, Form("clst_size[%d]/I", N_VDCPLANE));  
 }
 
 void analysis::TreeWrite(){

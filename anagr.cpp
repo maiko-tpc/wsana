@@ -279,7 +279,7 @@ void anagr::SetTDC2LenTab_GR(){
   float tmp_len;
   
   for(i=0; i<N_VDCPLANE; i++){
-    ifs[i].open(infname[i]);
+    ifs[i].open(infname[i].c_str());
 
     if(!ifs[i]){
       printf("Error in opening VDC calib table: %s\n", infname[i].c_str());

@@ -11,6 +11,8 @@
 #include <string.h>
 #include <vector>
 #include <sstream>
+#include <algorithm>
+#include <math.h>
 
 #include <TFile.h>
 #include <TTree.h>
@@ -45,8 +47,19 @@ public:
 
   void SetGRPars();
   void SetTDC2LenTab_GR();
+
+  int IsGoodClst(evtdata *);
   
   int  FitOnePlane(evtdata *, unsigned int planeid);
+  
+  std::vector<std::vector<float>> SetUpDownHit(evtdata *, std::vector<std::vector<float>> hitin, int vec_size, int ud_comb);
+  
+  double fit_line(std::vector<std::vector<float>> hitin, int vec_size,
+		  float *fit_res);
+
+  int calc_center_pos(evtdata *evt);
+  double fit_planes(evtdata *evt);  
+
 private:
   /* Tracking parameters */
   unsigned int min_clst_size = 2;
@@ -63,6 +76,11 @@ private:
   unsigned int tdc_bin_wid=1;
   float tdc2len_tab[N_VDCPLANE][MAX_VDC_TDC];
   TRandom3 *rnd;
+
+  /* Fit parameters */
+  float min_chi2[N_VDCPLANE];
+
+  float center_pos[N_VDCPLANE]; // in XY coordinate
   
 };
 

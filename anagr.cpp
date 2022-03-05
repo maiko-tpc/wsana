@@ -1,5 +1,7 @@
 #include "anagr.hpp"
 
+using namespace std;
+
 anagr::anagr(){
   rnd = new TRandom3();
   rnd->SetSeed(0);
@@ -39,7 +41,7 @@ void anagr::SetGRPars(){
   space.push_back(4.0);  
   SetWireSpace(space);
   
-  SetUPlaneAng(-48.2*TMath::DegToRad());
+  SetUPlaneAng(48.2*TMath::DegToRad());
 
   SetChambSpace(250.0);
 }
@@ -170,6 +172,23 @@ void anagr::anavdc(evtdata *evt){
     
   TDC2Len_GR(evt);
   cal_nclst(evt);
+  evt->gr_good_clst=IsGoodClst(evt);
+
+  if(evt->gr_good_clst==1){
+    for(i=0; i<N_VDCPLANE; i++){
+      FitOnePlane(evt, i);
+    }
+  }
+  
+  if(evt->gr_good_clst==0) evt->good_fit=0;
+  for(int i=0; i<N_VDCPLANE; i++){
+    if(evt->redchi2[i]>100) evt->good_fit=0;
+  }
+  
+  // get position at focal plane & angle
+  calc_center_pos(evt);
+  fit_planes(evt);  
+
 }
 
 void anagr::TDC2Len_GR(evtdata *evt){
@@ -309,26 +328,165 @@ void anagr::SetTDC2LenTab_GR(){
   if(tdc_bin_wid<=0) tdc_bin_wid = 1;
 }
 
+int anagr::IsGoodClst(evtdata *evt){
+  int result=1;
+  for(int i=0; i<N_VDCPLANE; i++){
+    if(evt->nclst[i]!=1) result=0;
+    if(evt->clst_size[i]<3) result=0;    
+  }
+  return result;
+}
+
 int anagr::FitOnePlane(evtdata *evt, unsigned int planeid){
 
   std::vector<float> hit_x;
   std::vector<float> hit_y;  
-
+  
   hit_x.clear();
   hit_y.clear();  
 
   float tmp_x, tmp_y;
+  float tmp_res[3], best_res[3];
+
+  // initialize
+  for(int i=0; i<3; i++){
+    tmp_res[i] = 1;
+    best_res[i] = 1;
+  }
   
   // put target plane hits to vectors
   int vec_size = (int)evt->grvdc.size();
+
+  int hit_cnt=0;
   for(int i=0; i<vec_size; i++){
-    if(evt->grvdc[i].plane == planeid){
+    if(evt->grvdc[i].plane == planeid && evt->grvdc[i].clst_flag==1){
       tmp_x = evt->grvdc[i].wire*wire_space[planeid];
       tmp_y = evt->grvdc[i].dlen;
       hit_x.push_back(tmp_x);
       hit_y.push_back(tmp_y);      
+      hit_cnt++;
+      //      printf("%f %f\n", tmp_x, tmp_y);
     }
   }
   
+  std::vector<std::vector<float>> hit(hit_cnt, std::vector<float>(2));
+
+    for(int i=0; i<hit_cnt; i++){
+      hit[i][0] = hit_x[i];
+      hit[i][1] = hit_y[i];      
+    }
+    
+    // sort the vector by the X position
+    sort(hit.begin(), hit.end(),
+	 [](const vector<float> &alpha,const vector<float> &beta){return alpha[0] < beta[0];});
+
+//    printf("---------\n");
+//    for(int i=0; i<hit_cnt; i++){
+//      printf("%f %f\n", hit[i][0], hit[i][1]);
+//    }
+//    printf("---------\n");
+    
+    int max_comb = pow(2, hit_cnt);
+    std::vector<std::vector<float>> tmphit(vec_size, std::vector<float>(2));
+    
+
+    float tmp_chi2;
+    
+    for(int i=0; i<max_comb; i++){
+
+      // ignore if the first hit position will become negative
+
+      if( (i & 0x01) != 0x1){
+	tmphit = SetUpDownHit(evt, hit, hit_cnt, i);
+	for(int j=0; j<hit_cnt; j++){
+	  //	  printf("id=0x%x, x=%f, y=%f\n", i, tmphit[j][0], tmphit[j][1]);
+	}
+	tmp_chi2=fit_line(tmphit, hit_cnt, tmp_res);
+	if(i==0) min_chi2[planeid] = tmp_chi2;
+	if(tmp_chi2 < min_chi2[planeid]){
+	  min_chi2[planeid] = tmp_chi2;
+	  evt->redchi2[planeid] = tmp_chi2;
+	  best_res[0] = tmp_res[0]; // offset of the line
+	  best_res[1] = tmp_res[1]; // slope of the line
+	  best_res[2] = tmp_res[2]; // chi2
+	}
+	//	printf("ud=%d, chi2=%f\n", i, tmp_chi2);
+      }
+    } // end of     for(int i=0; i<max_comb; i++){
+
+    // calculate the center position
+    evt->wire_pos[planeid] = -1.0*best_res[0]/best_res[1];
+    
+    return 0;
+}
+
+std::vector<std::vector<float>> anagr::SetUpDownHit(evtdata *evt, std::vector<std::vector<float>> hitin, int vec_size, int ud_comb){
+
+  
+  std::vector<std::vector<float>> tmphit(vec_size, std::vector<float>(2));
+
+  for(int i=0; i<vec_size; i++){
+    tmphit[i][0] = hitin[i][0];
+    tmphit[i][1] = hitin[i][1];    
+
+    if((ud_comb>>i & 0x1) == 0x1){
+      tmphit[i][1] = -1.0*hitin[i][1];
+    }
+  }
+  return tmphit;
+}
+
+double anagr::fit_line(std::vector<std::vector<float>> hitin, int vec_size,
+		       float *fit_res){
+  
+  double tmp_fit_par[2]; // [0]:offset, [1]:slope
+  double Sx=0;
+  double Sy=0;
+  double Sxx=0;
+  double Sxy=0;      
+
+  for(int i=0; i<vec_size; i++){
+    Sx+=hitin[i][0];
+    Sy+=hitin[i][1];
+    Sxx+=hitin[i][0]*hitin[i][0];
+    Sxy+=hitin[i][0]*hitin[i][1];    
+  }
+
+  // calculate fit parameters
+  tmp_fit_par[0] = (Sxx*Sy-Sx*Sxy)/(vec_size*Sxx-Sx*Sx);
+  tmp_fit_par[1] = (vec_size*Sxy-Sx*Sy)/(vec_size*Sxx-Sx*Sx);  
+  
+  // calculate chi2 with the fitted line
+  double chi2=0;
+  for(int i=0; i<vec_size; i++){
+    chi2+=pow(hitin[i][1]-
+	      (tmp_fit_par[0]+tmp_fit_par[1]*hitin[i][0]), 2);
+  }
+
+  fit_res[0] = tmp_fit_par[0];
+  fit_res[1] = tmp_fit_par[1];  
+  fit_res[2] = chi2/((float)vec_size);
+  
+  return chi2/((float)vec_size);
+}
+
+int anagr::calc_center_pos(evtdata *evt){
+  center_pos[0] = evt->wire_pos[0]; // X1
+  center_pos[2] = evt->wire_pos[2]; // X2
+
+  center_pos[1] = -1.0/tan(u_plane_ang)*center_pos[0]
+    + evt->wire_pos[1]/sin(u_plane_ang); // U1
+  center_pos[3] = -1.0/tan(u_plane_ang)*center_pos[2]
+    + evt->wire_pos[3]/sin(u_plane_ang); // U2
+  
+  return 0;
+}
+
+double anagr::fit_planes(evtdata *evt){
+  evt->grx = (center_pos[0] + center_pos[2])/2.0;
+  evt->gry = (center_pos[1] + center_pos[3])/2.0;  
+  
+  evt->grthx = atan((center_pos[2]-center_pos[0])/chamb_space)*TMath::RadToDeg();
+  evt->grthy = atan((center_pos[3]-center_pos[1])/chamb_space)*TMath::RadToDeg();  
   return 0;
 }

@@ -28,6 +28,16 @@ struct evtdata{
 
   int nclst[N_VDCPLANE];
   int clst_size[N_VDCPLANE];
+
+  int gr_good_clst;
+
+  float redchi2[N_VDCPLANE];
+  float wire_pos[N_VDCPLANE];
+
+  float grx, gry;
+  float grthx, grthy;  
+
+  int good_fit;
 };
 
 #endif

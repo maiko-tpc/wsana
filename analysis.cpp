@@ -381,4 +381,18 @@ void analysis::InitEvt(){
     evt.grpla.pos[i]=-100;
     evt.grpla.de[i]=-100;    
   }
+
+  evt.gr_good_clst=0;
+
+  for(int i=0; i<N_VDCPLANE; i++){
+    evt.redchi2[i]=100000;
+    evt.wire_pos[i]=1000000;
+  }
+
+  evt.grx = 100000;
+  evt.gry = 100000;  
+  evt.grthx = 100000;
+  evt.grthy = 100000;  
+
+  evt.good_fit=1;
 }

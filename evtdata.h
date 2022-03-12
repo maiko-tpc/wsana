@@ -33,11 +33,14 @@ struct evtdata{
 
   float redchi2[N_VDCPLANE];
   float wire_pos[N_VDCPLANE];
+  float residual[N_VDCPLANE];  
 
   float grx, gry;
   float grthx, grthy;  
 
   int good_fit;
+
+  float grp_rela;
 };
 
 #endif

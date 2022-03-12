@@ -39,12 +39,15 @@ void analysis::TreeDef(){
   tree->Branch("good_fit", &evt.good_fit, "good_fit/I");  
 
   tree->Branch("redchi2", &evt.redchi2, Form("redchi2[%d]/F", N_VDCPLANE));
-  tree->Branch("wire_pos", &evt.wire_pos, Form("wire_pos[%d]/F", N_VDCPLANE));      
+  tree->Branch("wire_pos", &evt.wire_pos, Form("wire_pos[%d]/F", N_VDCPLANE));
+  tree->Branch("residual", &evt.residual, Form("residual[%d]/F", N_VDCPLANE));        
 
   tree->Branch("grx", &evt.grx, "grx/F");
   tree->Branch("gry", &evt.gry, "gry/F");
   tree->Branch("grthx", &evt.grthx, "grthx/F");
-  tree->Branch("grthy", &evt.grthy, "grthy/F");  
+  tree->Branch("grthy", &evt.grthy, "grthy/F");
+
+  tree->Branch("grp_rela", &evt.grp_rela, "grp_rela/F");    
 }
 
 void analysis::TreeWrite(){

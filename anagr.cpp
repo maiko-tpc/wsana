@@ -189,6 +189,8 @@ void anagr::anavdc(evtdata *evt){
   calc_center_pos(evt);
   fit_planes(evt);  
 
+  // calc the momentum
+  calc_rela_momentum(evt);
 }
 
 void anagr::TDC2Len_GR(evtdata *evt){
@@ -209,9 +211,6 @@ void anagr::TDC2Len_GR(evtdata *evt){
     dlen+=wid*rnd->Rndm();
     
     evt->grvdc[i].dlen = dlen;
-    if(evt->eve==0 && plane==0){
-      printf("wire=%d, dlen=%f\n", evt->grvdc[i].wire, dlen);
-    }
   }
 }
 
@@ -222,7 +221,6 @@ void anagr::cal_nclst(evtdata *evt){
   size_t grvdc_size = evt->grvdc.size();
   for(int i=0; i<(int)grvdc_size; i++){
     if(evt->grvdc[i].wire >0){
-      if(evt->eve==5)printf("plane=%d, wire=%d\n", evt->grvdc[i].plane,evt->grvdc[i].wire);
       hit_array[evt->grvdc[i].plane][evt->grvdc[i].wire]++;
     }
   }
@@ -261,21 +259,12 @@ void anagr::cal_nclst(evtdata *evt){
 
     } // end of PLANE_SIZE loop
 
-    if(evt->eve==5 && iplane==1){
-      for(int n=0; n<PLANE_SIZE; n++){
-	printf("wire=%d: %d, %d\n",
-	       n, hit_array[iplane][n], clst_flag[iplane][n]);
-      }
-    }
 
   } // end of N_VDCPLANE loop
 
   for(int i=0; i<(int)grvdc_size; i++){
     if(evt->grvdc[i].wire>0 && evt->grvdc[i].wire<PLANE_SIZE){
       evt->grvdc[i].clst_flag = clst_flag[evt->grvdc[i].plane][evt->grvdc[i].wire];
-      if(evt->eve==5) printf("plane=%d, wire=%d, clst=%d\n",
-			     evt->grvdc[i].plane, evt->grvdc[i].wire,
-			     evt->grvdc[i].clst_flag);
     }
   }
 }
@@ -346,10 +335,10 @@ int anagr::FitOnePlane(evtdata *evt, unsigned int planeid){
   hit_y.clear();  
 
   float tmp_x, tmp_y;
-  float tmp_res[3], best_res[3];
+  float tmp_res[4], best_res[4];
 
   // initialize
-  for(int i=0; i<3; i++){
+  for(int i=0; i<4; i++){
     tmp_res[i] = 1;
     best_res[i] = 1;
   }
@@ -365,7 +354,6 @@ int anagr::FitOnePlane(evtdata *evt, unsigned int planeid){
       hit_x.push_back(tmp_x);
       hit_y.push_back(tmp_y);      
       hit_cnt++;
-      //      printf("%f %f\n", tmp_x, tmp_y);
     }
   }
   
@@ -380,12 +368,6 @@ int anagr::FitOnePlane(evtdata *evt, unsigned int planeid){
     sort(hit.begin(), hit.end(),
 	 [](const vector<float> &alpha,const vector<float> &beta){return alpha[0] < beta[0];});
 
-//    printf("---------\n");
-//    for(int i=0; i<hit_cnt; i++){
-//      printf("%f %f\n", hit[i][0], hit[i][1]);
-//    }
-//    printf("---------\n");
-    
     int max_comb = pow(2, hit_cnt);
     std::vector<std::vector<float>> tmphit(vec_size, std::vector<float>(2));
     
@@ -398,9 +380,6 @@ int anagr::FitOnePlane(evtdata *evt, unsigned int planeid){
 
       if( (i & 0x01) != 0x1){
 	tmphit = SetUpDownHit(evt, hit, hit_cnt, i);
-	for(int j=0; j<hit_cnt; j++){
-	  //	  printf("id=0x%x, x=%f, y=%f\n", i, tmphit[j][0], tmphit[j][1]);
-	}
 	tmp_chi2=fit_line(tmphit, hit_cnt, tmp_res);
 	if(i==0) min_chi2[planeid] = tmp_chi2;
 	if(tmp_chi2 < min_chi2[planeid]){
@@ -409,13 +388,14 @@ int anagr::FitOnePlane(evtdata *evt, unsigned int planeid){
 	  best_res[0] = tmp_res[0]; // offset of the line
 	  best_res[1] = tmp_res[1]; // slope of the line
 	  best_res[2] = tmp_res[2]; // chi2
+	  best_res[3] = tmp_res[3]; // residual
 	}
-	//	printf("ud=%d, chi2=%f\n", i, tmp_chi2);
       }
     } // end of     for(int i=0; i<max_comb; i++){
 
     // calculate the center position
     evt->wire_pos[planeid] = -1.0*best_res[0]/best_res[1];
+    evt->residual[planeid] = best_res[3];
     
     return 0;
 }
@@ -456,16 +436,19 @@ double anagr::fit_line(std::vector<std::vector<float>> hitin, int vec_size,
   tmp_fit_par[0] = (Sxx*Sy-Sx*Sxy)/(vec_size*Sxx-Sx*Sx);
   tmp_fit_par[1] = (vec_size*Sxy-Sx*Sy)/(vec_size*Sxx-Sx*Sx);  
   
-  // calculate chi2 with the fitted line
+  // calculate chi2 and mean residual with the fitted line
   double chi2=0;
+  float residual=0;
   for(int i=0; i<vec_size; i++){
     chi2+=pow(hitin[i][1]-
 	      (tmp_fit_par[0]+tmp_fit_par[1]*hitin[i][0]), 2);
+    residual+=hitin[i][1]-(tmp_fit_par[0]+tmp_fit_par[1]*hitin[i][0]);
   }
 
   fit_res[0] = tmp_fit_par[0];
   fit_res[1] = tmp_fit_par[1];  
   fit_res[2] = chi2/((float)vec_size);
+  fit_res[3] = residual/((float)vec_size);
   
   return chi2/((float)vec_size);
 }
@@ -489,4 +472,9 @@ double anagr::fit_planes(evtdata *evt){
   evt->grthx = atan((center_pos[2]-center_pos[0])/chamb_space)*TMath::RadToDeg();
   evt->grthy = atan((center_pos[3]-center_pos[1])/chamb_space)*TMath::RadToDeg();  
   return 0;
+}
+
+
+void anagr::calc_rela_momentum(evtdata *evt){
+  evt->grp_rela = (evt->grx - grx_size/2.0)*100/gr_disp;
 }

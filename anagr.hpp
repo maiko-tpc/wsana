@@ -60,6 +60,8 @@ public:
   int calc_center_pos(evtdata *evt);
   double fit_planes(evtdata *evt);  
 
+  void calc_rela_momentum(evtdata *evt);
+  
 private:
   /* Tracking parameters */
   unsigned int min_clst_size = 2;
@@ -81,6 +83,10 @@ private:
   float min_chi2[N_VDCPLANE];
 
   float center_pos[N_VDCPLANE]; // in XY coordinate
+  
+  /* spectrometer parameter */
+  float gr_disp = 15451.0;
+  float grx_size = 1250.0;
   
 };
 

@@ -10,4 +10,5 @@ ana
 *.old
 back
 test
+data
 root/*

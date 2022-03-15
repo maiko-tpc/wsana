@@ -64,7 +64,7 @@ int anapla::GetV1190Hit(evtdata *evt){
   for(i=0; i<v1190_size; i++){
 
     if(evt->v1190_hit_all[i].field == FIELD_PLA){
-      ch = evt->mxdc32_hit_all[i].ch;
+      ch = evt->v1190_hit_all[i].ch;
 
       // GR       
       if(ch>=0 && ch<16){

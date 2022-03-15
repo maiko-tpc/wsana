@@ -13,6 +13,8 @@
 #define PLA_V1190_GEO 30
 
 #define FIELD_PLA 28780
+#define FIELD_GV_OLD 0
+#define FIELD_GV_NEW 26486
 #define VSN_GRQDC1 1
 #define VSN_GRQDC2 2
 #define VSN_GRTDC1 129

@@ -31,6 +31,9 @@ void anagr::SetChambSpace(float space){
   chamb_space = space;
 }
 
+void anagr::SetChamberXOffset(float offset){
+}
+
 void anagr::SetGRPars(){
   SetMaxDriftLength(10.0);
 
@@ -114,7 +117,8 @@ void anagr::V1190Hit2VDCData(evtdata *evt){
     tmp_geo = evt->v1190_hit_all[i].geo;
     tmp_ch = evt->v1190_hit_all[i].ch;
     
-    if(tmp_field==0 && tmp_geo<=7 && tmp_ch!=127){
+    if((tmp_field==FIELD_GV_NEW || tmp_field==FIELD_GV_OLD)
+       && tmp_geo<=7 && tmp_ch!=127){
       tmp_plane = GetPlane(tmp_geo);
       tmp_wire = GetWire(tmp_geo, tmp_ch);
       tmp_vdc_data.plane = tmp_plane;

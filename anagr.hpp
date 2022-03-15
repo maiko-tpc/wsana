@@ -44,7 +44,8 @@ public:
   void SetWireSpace(std::vector<float> space);  
   void SetUPlaneAng(float ang);
   void SetChambSpace(float space);  
-
+  void SetChamberXOffset(float offset);
+  
   void SetGRPars();
   void SetTDC2LenTab_GR();
 

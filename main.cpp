@@ -86,11 +86,24 @@ int main(int iarg, char *argv[]) {
 
   /* Analyze blocks */
   unsigned int blkcnt=0;
-  while(!(ana->IsBLDeof()) && !eflag){
-    ana->AnaBlk();
-    blkcnt++;
+//  while(!(ana->IsBLDeof()) && !eflag){
+//    ana->AnaBlk();
+//    blkcnt++;
+//  }
+  while(!eflag){
+    if(!(ana->IsBLDeof())){
+      ana->AnaBlk();
+      blkcnt++;
+    }
+    if(ana->GetOnline() && ana->IsBLDeof()){
+      printf("Waiting for data... \n");
+      sleep(10);
+    }
+    if( ((ana->GetOnline())!=0) && ana->IsBLDeof()){
+      break;
+    }
   }
-
+  
   /* Save output ROOT */
   ana->TreeWrite();
   ana->HistWrite();

@@ -7,6 +7,10 @@
 analysis::analysis(){
   evt.eve=0;
 
+  sprintf(opt.rootfname, "out.root");
+  opt.online_flag=0;
+  opt.useage_flag=1;  
+  
   pla = new anapla();
 
   gr = new anagr();
@@ -20,11 +24,11 @@ analysis::~analysis(){
   delete gr;
 }
 
-int analysis::OpenBLDFile(char *bldfilename){
-  bldfile.open(bldfilename, ios_base::in|ios::binary);
+int analysis::OpenBLDFile(){
+  bldfile.open(GetBLDFile(), ios_base::in|ios::binary);
   if(!bldfile){
-    printf("File '%s' does not exist!\n", bldfilename);
-    printf("Input File: %s\n", bldfilename);
+    printf("File '%s' does not exist!\n", GetBLDFile());
+    printf("Input File: %s\n", GetBLDFile());
     return 1;
   }
   return 0;
@@ -38,8 +42,8 @@ bool analysis::IsBLDeof(){
   return bldfile.eof();
 }
 
-void analysis::MakeROOTFile(std::string outfname){
-  outfile = new TFile(outfname.c_str(), "RECREATE");
+void analysis::MakeROOTFile(){
+  outfile = new TFile(GetROOTFile(), "RECREATE");
 }
 
 void analysis::CloseROOTFile(){
@@ -341,6 +345,51 @@ int analysis::GetEveNum(){
 
 int analysis::GetRunNum(){
   return evt.run;
+}
+
+void analysis::SetBLDFile(char *fname){
+  sprintf(opt.bldfname, "%s", fname);
+}
+
+char* analysis::GetBLDFile(){
+  return opt.bldfname;
+}
+
+void analysis::SetROOTFile(char *fname){
+  sprintf(opt.rootfname, "%s", fname);
+}
+
+char* analysis::GetROOTFile(){
+  return opt.rootfname;
+}
+
+void analysis::SetUseage(){
+  opt.useage_flag=1;
+}
+
+void analysis::UnsetUseage(){
+  opt.useage_flag=0;
+}
+
+int analysis::GetUseage(){
+  return opt.useage_flag;
+}
+
+void analysis::SetOnline(){
+  opt.online_flag=1;
+}
+
+int analysis::GetOnline(){
+  return opt.online_flag;
+}
+
+void analysis::ShowCommandOption(){
+  printf("\n");
+  printf("Input  file: %s\n", opt.bldfname);
+  printf("Output file: %s\n", opt.rootfname);
+  if(opt.online_flag){
+    printf("Online mode\n");
+  }
 }
 
 void analysis::InitEvt(){

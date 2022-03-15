@@ -36,25 +36,49 @@ int main(int iarg, char *argv[]) {
   if (sigaction(SIGINT, &sa_sigabrt, NULL) < 0 ) {
     exit(1);
   }
+
+  /* main analysis frame */
+  analysis *ana = new analysis();
+
+
+  /* analyze the command option */
+  for(int i=0; i<iarg; i++){
+
+    // input file
+    if(strstr(argv[i], ".bld") != NULL){
+      ana->SetBLDFile(argv[i]);
+    }
+    if(strstr(argv[i], ".bld") == NULL){
+      ana->UnsetUseage();
+    }
+
+    // output file
+    if(strstr(argv[i], ".root") != NULL){
+      ana->SetROOTFile(argv[i]);
+    }
+    
+    // online flag
+    if(strstr(argv[i], "-online") != NULL){
+      ana->SetOnline();
+    }
+  }
   
   /* Print how to use */
-  if (iarg != 3) {
+  if(ana->GetUseage()) {
     printf("usage: ./ana xxxx.bld xxxx.root\n");
     printf("eg.)\n");
     printf("$ ./ana run7144.bld run7144.root\n");
     exit(0);
   }
-  
 
-  /* main analysis frame */
-  analysis *ana = new analysis();
+  ana->ShowCommandOption();
 
   /* Open .bld file */
-  int bldres = ana->OpenBLDFile(argv[1]);
+  int bldres = ana->OpenBLDFile();
   if(bldres==1) exit(0);  // file not exist
 
   /* Make output ROOT file with tree and histograms */
-  ana->MakeROOTFile(argv[2]);
+  ana->MakeROOTFile();
   ana->TreeDef();
   ana->HistDef();
   

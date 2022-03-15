@@ -33,7 +33,7 @@ public:
   ~analysis();
 
   void error_exit(TFile *file, int i);  
-  int OpenBLDFile(char *bldfilename);
+  int OpenBLDFile();
   void CloseBLDFile();  
   bool IsBLDeof();
   void AnaRunHeader();
@@ -42,12 +42,22 @@ public:
   int  AnaEvt();
   int  AnaFld();
   void InitEvt();
-  void MakeROOTFile(std::string);
+  void MakeROOTFile();
   void CloseROOTFile();  
   TFile* GetFile();
   int GetRunNum();
   int GetEveNum();
-
+  void SetBLDFile(char *fname);
+  char* GetBLDFile();  
+  void SetROOTFile(char *fname);
+  char* GetROOTFile();  
+  void SetUseage();
+  void UnsetUseage();
+  int GetUseage();    
+  void SetOnline();
+  int GetOnline();  
+  void ShowCommandOption();
+  
   // defined in histdef.cpp
   void HistDef();  
   void HistWrite();
@@ -59,7 +69,8 @@ public:
   
 private:
   std::ifstream bldfile;
-  //  int flag;
+
+  optdata opt;
   evtdata evt;
   TFile *outfile;
   TTree *tree;
@@ -74,6 +85,9 @@ private:
   anapla *pla;
   anagr *gr;
   anassd *ssd;  
+
+public:
+
 };
 
 #endif

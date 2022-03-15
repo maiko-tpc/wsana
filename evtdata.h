@@ -4,6 +4,13 @@
 #include <vector>
 #include "moduledata.h"
 
+struct optdata{
+  char bldfname[256];
+  char rootfname[256];  
+  int online_flag;
+  int useage_flag;
+};
+
 struct evtdata{
   unsigned int run;
   unsigned int blk;  

@@ -51,6 +51,8 @@ struct evtdata{
 
   unsigned int camac_inp[N_INP];
   unsigned int vme_inp[N_INP];  
+
+  unsigned int unixtime;
 };
 
 #endif

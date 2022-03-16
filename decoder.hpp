@@ -29,4 +29,7 @@ int ana_fera(vector<fera_hit> &fera_hit_all, unsigned int *rawdata, unsigned int
 int ana_inp(evtdata *evt, unsigned int *rawdata, unsigned int size,
 	    int field);
 
+int ana_unixtime(evtdata *evt, unsigned int *rawdata, unsigned int size,
+		 int field);
+
 #endif // end of include guard

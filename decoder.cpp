@@ -496,3 +496,16 @@ int ana_inp(evtdata *evt, unsigned int *rawdata, unsigned int size,
 
   return 0;
 }
+
+int ana_unixtime(evtdata *evt, unsigned int *rawdata, unsigned int size,
+	    int field){
+
+  unsigned int data;
+  unsigned short data16;
+
+  printf("ana_unixtime, field=%d\n", field);
+  data=(ntohl(rawdata[0]));
+  data16=(data>>16)&0xffff;
+
+  return 0;
+}

@@ -96,10 +96,11 @@ int main(int iarg, char *argv[]) {
       blkcnt++;
     }
     if(ana->GetOnline() && ana->IsBLDeof()){
-      printf("Waiting for data... \n");
+      printf("Waiting for data... (eve: %d)\n", ana->GetEveNum());
+      ana->ClearBLDError();
       sleep(10);
     }
-    if( ((ana->GetOnline())!=0) && ana->IsBLDeof()){
+    if( ((ana->GetOnline())!=1) && ana->IsBLDeof()){
       break;
     }
   }

@@ -36,6 +36,7 @@ public:
   int OpenBLDFile();
   void CloseBLDFile();  
   bool IsBLDeof();
+  void ClearBLDError();
   void AnaRunHeader();
   void strncpy_uchida(char *dst, char *src, int max_len);
   int  AnaBlk();
@@ -47,6 +48,7 @@ public:
   TFile* GetFile();
   int GetRunNum();
   int GetEveNum();
+  int GetBlkNum();  
   void SetBLDFile(char *fname);
   char* GetBLDFile();  
   void SetROOTFile(char *fname);

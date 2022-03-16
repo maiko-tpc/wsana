@@ -42,6 +42,10 @@ bool analysis::IsBLDeof(){
   return bldfile.eof();
 }
 
+void analysis::ClearBLDError(){
+  bldfile.clear();
+}
+
 void analysis::MakeROOTFile(){
   outfile = new TFile(GetROOTFile(), "RECREATE");
 }
@@ -341,6 +345,10 @@ void analysis::strncpy_uchida(char *dst, char *src, int max_len){
 
 int analysis::GetEveNum(){
   return evt.eve;
+}
+
+int analysis::GetBlkNum(){
+  return evt.blk;
 }
 
 int analysis::GetRunNum(){

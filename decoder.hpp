@@ -26,4 +26,7 @@ int ana_grpla_tdc(pla_data *grpla, unsigned int *rawdata, unsigned int size);
 int ana_fera(vector<fera_hit> &fera_hit_all, unsigned int *rawdata, unsigned int size,
 	     int field, unsigned int region);
 
+int ana_inp(evtdata *evt, unsigned int *rawdata, unsigned int size,
+	    int field);
+
 #endif // end of include guard

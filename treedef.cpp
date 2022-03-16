@@ -6,7 +6,9 @@ void analysis::TreeDef(){
   tree->Branch("run",  &evt.run, "run/I");
   tree->Branch("blk",  &evt.blk, "blk/I");
   tree->Branch("eve",  &evt.eve, "eve/I");
-
+  tree->Branch("camac_inp", &evt.camac_inp, Form("camac_inp[%d]/I", N_INP));
+  tree->Branch("vme_inp", &evt.vme_inp, Form("vme_inp[%d]/I", N_INP));  
+  
 #ifdef ANASSD
   tree->Branch("madc", &evt.madc,
   	       Form("wrdcnt[%d]/I:adc[%d]/I:counter[%d]/I",

@@ -12,9 +12,13 @@
 #define MADC_START_GEO 0
 #define PLA_V1190_GEO 30
 
+#define N_INP 16
+
 #define FIELD_PLA 28780
 #define FIELD_GV_OLD 0
 #define FIELD_GV_NEW 26486
+#define FIELD_GR_OLD 0
+#define FIELD_GR_NEW 26482
 #define VSN_GRQDC1 1
 #define VSN_GRQDC2 2
 #define VSN_GRTDC1 129

@@ -111,7 +111,7 @@ int analysis::AnaFld(){
       ana_v1190(evt.v1190_hit_all, tmpdata, region_size, field_id);      
       break;
     case 0x2:  // input register
-	// will be implemented later...	  
+      ana_inp(&evt, tmpdata, region_size, field_id);
       break;
     case 0x3:  // MADC32 or MQDC32
       //	ana_madc32(&evt.madc, tmpdata, region_size);
@@ -455,4 +455,11 @@ void analysis::InitEvt(){
   evt.good_fit=1;
 
   evt.grp_rela = 1000;
+
+  for(int i=0; i<N_INP; i++){
+    evt.camac_inp[i]=0;
+    evt.vme_inp[i]=0;
+  }
 }
+
+

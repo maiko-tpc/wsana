@@ -471,3 +471,23 @@ int ana_fera(vector<fera_hit> &fera_hit_all, unsigned int *rawdata, unsigned int
   
   return cnt;
 }
+
+int ana_inp(evtdata *evt, unsigned int *rawdata, unsigned int size,
+	    int field){
+
+  unsigned int data;
+  unsigned short data16;
+
+  printf("ana_inp, field=%d\n", field);
+
+  if(field==FIELD_GR_NEW){  // .gv data, CAMAC
+    data=(ntohl(rawdata[0]));
+    data16=(data>>16)&0xffff;
+    printf("camac inp=%d\n", data16);
+  }
+
+  if(field==FIELD_PLA){ // .pla data, VME
+  }
+
+  return 0;
+}

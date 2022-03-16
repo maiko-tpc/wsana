@@ -485,8 +485,8 @@ int ana_inp(evtdata *evt, unsigned int *rawdata, unsigned int size,
     data16=(data>>16)&0xffff;
     printf("camac inp=%d\n", data16);
     for(int i=0; i<N_INP; i++){
-      camac_inp[i] = (data16>>i)&0x1;
-      printf("inp ch%d=%d\n", camac_inp[i]);
+      evt->camac_inp[i] = (data16>>i)&0x1;
+      printf("inp ch%d=%d\n", evt->camac_inp[i]);
     }
   }
 

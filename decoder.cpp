@@ -478,12 +478,16 @@ int ana_inp(evtdata *evt, unsigned int *rawdata, unsigned int size,
   unsigned int data;
   unsigned short data16;
 
-  printf("ana_inp, field=%d\n", field);
+  //  printf("ana_inp, field=%d\n", field);
 
   if(field==FIELD_GR_NEW){  // .gv data, CAMAC
     data=(ntohl(rawdata[0]));
     data16=(data>>16)&0xffff;
     printf("camac inp=%d\n", data16);
+    for(int i=0; i<N_INP; i++){
+      camac_inp[i] = (data16>>i)&0x1;
+      printf("inp ch%d=%d\n", camac_inp[i]);
+    }
   }
 
   if(field==FIELD_PLA){ // .pla data, VME

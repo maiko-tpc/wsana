@@ -1,4 +1,5 @@
 #include "analysis.hpp"
+#include "config.h"
 
 //#define DEBUG
 

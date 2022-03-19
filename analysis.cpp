@@ -408,7 +408,7 @@ void analysis::ShowCamacSca(){
   printf("*********** CAMAC Scaler ***********\n");
   for(int i=0; i<CAMAC_SCA_CH; i++){
     sprintf(sca_name, "Sca %02d", i);
-    printf("%s: %010d\n", sca_name, evt.camac_sca[i]);
+    printf("%s: %012ld\n", sca_name, evt.camac_sca[i]);
   }
   printf("**********************\n");
 }

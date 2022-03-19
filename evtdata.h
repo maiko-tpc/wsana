@@ -55,7 +55,7 @@ struct evtdata{
   unsigned int unixtime;
 
   unsigned int camac_sca_flag;
-  unsigned int camac_sca[CAMAC_SCA_CH];  
+  unsigned long int camac_sca[CAMAC_SCA_CH];  
 };
 
 #endif

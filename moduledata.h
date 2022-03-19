@@ -14,6 +14,8 @@
 
 #define N_INP 16
 
+#define CAMAC_SCA_CH 16
+
 #define FIELD_PLA 28780
 #define FIELD_GV_OLD 0
 #define FIELD_GV_NEW 26486

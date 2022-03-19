@@ -1,6 +1,7 @@
 CXX = g++
 TARGET = ana
-SOURCE = main.o analysis.o anapla.o anagr.o anassd.o decoder.o histdef.o treedef.o
+OBJDIR=./
+SOURCE = $(OBJDIR)/main.o $(OBJDIR)/analysis.o $(OBJDIR)/anapla.o $(OBJDIR)/anagr.o $(OBJDIR)/anassd.o $(OBJDIR)/decoder.o $(OBJDIR)/histdef.o $(OBJDIR)/treedef.o $(OBJDIR)/config.o
 ROOTFLAGS = $(shell root-config --cflags)
 ROOTLIBS  = $(shell root-config --libs)
 

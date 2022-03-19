@@ -365,7 +365,7 @@ char *config_get_s_value(char *name, int i_index, char *default_value){
 }
 
 int config_get_b_value(char *name, int i_index, int default_value){
-	Parameter_p parameter;
+	//	Parameter_p parameter;
 	char *sval;
 
 	sval = config_get_s_value(name, i_index, "true");

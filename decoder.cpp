@@ -509,3 +509,22 @@ int ana_unixtime(evtdata *evt, unsigned int *rawdata, unsigned int size,
 
   return 0;
 }
+
+int ana_camac_sca(evtdata *evt, unsigned int *rawdata, unsigned int size,
+		  int field){
+  unsigned int rp=0;
+  unsigned int tmpdata;
+
+  if(evt->camac_sca_flag==0){  // analysis only the first region
+    evt->camac_sca_flag++;
+    int ich=0;
+    while(rp<size/2){
+      tmpdata=flip_32bit(ntohl(rawdata[rp]));
+      rp++;
+
+      evt->camac_sca[ich] += tmpdata;
+      ich++;
+    }  
+  }
+  return 0;
+}

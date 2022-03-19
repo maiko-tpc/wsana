@@ -111,7 +111,8 @@ int main(int iarg, char *argv[]) {
   ana->CloseROOTFile();
 
   ana->CloseBLDFile();
-
+  ana->ShowCamacSca();
+  
   printf("\nAnalyzed %d events (%d blocks)\n", ana->GetEveNum(), blkcnt);
   
   return 0;

@@ -11,6 +11,8 @@ analysis::analysis(){
   sprintf(opt.rootfname, "out.root");
   opt.online_flag=0;
   opt.useage_flag=1;  
+
+  ClearCamacSca();
   
   pla = new anapla();
 
@@ -123,7 +125,7 @@ int analysis::AnaFld(){
       // will be implemented later...	  
       break;
     case 0x6:  // CAMAC scaler?
-      // will be implemented later...	  
+      ana_camac_sca(&evt, tmpdata, region_size, field_id);
       break;
     case 0x8:  // UNIX time
       //      ana_unixtime(&evt, tmpdata, region_size, field_id);
@@ -401,6 +403,22 @@ void analysis::ShowCommandOption(){
   }
 }
 
+void analysis::ShowCamacSca(){
+  char sca_name[256];
+  printf("*********** CAMAC Scaler ***********\n");
+  for(int i=0; i<CAMAC_SCA_CH; i++){
+    sprintf(sca_name, "Sca %02d", i);
+    printf("%s: %010d\n", sca_name, evt.camac_sca[i]);
+  }
+  printf("**********************\n");
+}
+
+void analysis::ClearCamacSca(){
+  for(int i=0; i<CAMAC_SCA_CH; i++){
+    evt.camac_sca[i]=0;
+  }
+}
+
 void analysis::InitEvt(){
   init_madc32_data(&evt.madc);
   evt.mxdc32_hit_all.clear();
@@ -461,6 +479,8 @@ void analysis::InitEvt(){
     evt.camac_inp[i]=0;
     evt.vme_inp[i]=0;
   }
+
+  evt.camac_sca_flag=0;
 }
 
 

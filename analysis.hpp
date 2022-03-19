@@ -59,6 +59,8 @@ public:
   void SetOnline();
   int GetOnline();  
   void ShowCommandOption();
+  void ShowCamacSca();
+  void ClearCamacSca();
   
   // defined in histdef.cpp
   void HistDef();  
@@ -68,7 +70,7 @@ public:
   // defined in treedef.cpp
   void TreeDef();
   void TreeWrite();
-  
+
 private:
   std::ifstream bldfile;
 

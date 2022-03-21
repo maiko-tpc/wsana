@@ -1,5 +1,5 @@
 *~
-ana
+0;95;0cana
 *.o
 *.ssd
 *.bld
@@ -12,3 +12,4 @@ back
 test
 data
 root/*
+ana

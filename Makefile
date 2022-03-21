@@ -1,24 +1,26 @@
 CXX = g++
-TARGET = ana
-OBJDIR=./
-SOURCE = $(OBJDIR)/main.o $(OBJDIR)/analysis.o $(OBJDIR)/anapla.o $(OBJDIR)/anagr.o $(OBJDIR)/anassd.o $(OBJDIR)/decoder.o $(OBJDIR)/histdef.o $(OBJDIR)/treedef.o $(OBJDIR)/config.o
+TARGET = ./ana
+OBJDIR=./obj
+SOURCES = $(wildcard *.cpp)
 ROOTFLAGS = $(shell root-config --cflags)
 ROOTLIBS  = $(shell root-config --libs)
+OBJECTS = $(addprefix $(OBJDIR)/, $(SOURCES:.cpp=.o)) $(OBJDIR)/config.o
 
 CFLAGS = -O2 -Wall -mtune=native -march=native ${ROOTFLAGS}
 LIBS = ${ROOTLIBS}
 DEBAG = -g
 
 all: ${TARGET}
-${TARGET}: ${SOURCE}
-	${CXX} $^ -o $@ ${CFLAGS} ${LIBS}
-#	$(RM) *.o
+${TARGET}: $(OBJECTS)
+	${CXX} -o $@ $^ ${CFLAGS} ${LIBS}
 
-.cpp.o:
-	${CXX} -c ${CFLAGS} $<
+$(OBJDIR)/config.o: config.c
+	gcc config.c -c -o obj/config.o
+
+$(OBJDIR)/%.o: %.cpp
+	@[ -d $(OBJDIR) ]
+	$(CXX) ${CFLAGS} ${LIBS} -o $@ -c $<
+
 
 clean:
-	${RM} *.o ${TARGET}
-
-refresh:
-	${RM} *.o
+	${RM} ${OBJDIR}/*.o ${TARGET}

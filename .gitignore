@@ -1,7 +1,5 @@
 *~
 ana
-obj/*.o
-*.o
 *.ssd
 *.bld
 *.gr
@@ -13,4 +11,4 @@ back
 test
 data
 root/*
-
+obj/*.o

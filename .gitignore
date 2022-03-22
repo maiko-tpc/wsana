@@ -11,4 +11,4 @@ back
 test
 data
 root/*
-obj/*.o
+*.o

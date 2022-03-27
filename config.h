@@ -15,7 +15,12 @@ End:
 */
 
 
-
+// the following lines were added for the compatibility with
+// C++ code
+#ifdef __cplusplus
+extern "C" {
+#endif
+	
 // prototype funcitons
 void config_set_debug_mode(int debug_mode);
 int config_read_file(char *filename);
@@ -24,5 +29,10 @@ double config_get_d_value(char *name, int index, double default_value);
 char* config_get_s_value(char *name, int index, char* default_value);
 int config_get_b_value(char *name, int index, int default_value);
 
+// the following lines were added for the compatibility with
+// C++ code
+#ifdef __cplusplus
+}
+#endif
 
 #endif // for ifdef CONFIG_REG_H

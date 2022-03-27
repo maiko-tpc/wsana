@@ -18,6 +18,7 @@
 #include "evtdata.h"
 #include "decoder.hpp"
 #include "analysis.hpp"
+#include "config.h"
 
 //#define DEBUG 
 

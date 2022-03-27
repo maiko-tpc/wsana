@@ -1,5 +1,4 @@
 #include "analysis.hpp"
-#include "config.h"
 
 //#define DEBUG
 
@@ -23,6 +22,8 @@ analysis::analysis(){
   ssd = new anassd();
   
   serv = new THttpServer("http:8080");
+
+  par_debug_mode = 0;
 }
 
 analysis::~analysis(){
@@ -63,10 +64,18 @@ TFile* analysis::GetFile(){
   return outfile;
 }
 
+void analysis::AnaPar(){
+}
 
+void analysis::read_config_file(char *config_file_name){
+  fprintf(stderr, "Reading configration file '%s'...\n", config_file_name);
+  config_set_debug_mode(par_debug_mode);
+  config_read_file(config_file_name);
+  fprintf(stderr, "Done\n");
+}
 
-
-
+void analysis::GetTargetPart(){
+}
 
 int analysis::AnaFld(){
   /* Read the Field header */  

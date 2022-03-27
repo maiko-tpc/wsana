@@ -28,6 +28,7 @@
 #include "anagr.hpp"
 #include "anassd.hpp"
 
+#include "config.h"
 
 class analysis{
 public:
@@ -73,6 +74,11 @@ public:
   void TreeDef();
   void TreeWrite();
 
+  // Parameter analysis functions
+  void AnaPar();
+  void read_config_file(char *config_file_name);
+  void GetTargetPart();
+  
 private:
   std::ifstream bldfile;
 
@@ -94,6 +100,8 @@ private:
   anagr *gr;
   anassd *ssd;  
 
+  int par_debug_mode;
+  
 public:
 
 };

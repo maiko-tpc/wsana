@@ -15,7 +15,7 @@ ${TARGET}: $(OBJECTS)
 	${CXX} -o $@ $^ ${CFLAGS} ${LIBS}
 
 $(OBJDIR)/config.o: config.c
-	gcc config.c -c -o $(OBJDIR)/config.o
+	gcc config.c -O0 -c -o $(OBJDIR)/config.o -lm -DLinux
 
 $(OBJDIR)/%.o: %.cpp
 	@[ -d $(OBJDIR) ]

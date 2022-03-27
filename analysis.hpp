@@ -16,6 +16,8 @@
 #include <TFile.h>
 #include <TTree.h>
 #include <TH1.h>
+#include <THttpServer.h>
+#include <TInterpreter.h>
 
 //#include "mk_hist.hpp"
 #include "mtformat.h"
@@ -79,6 +81,8 @@ private:
   TFile *outfile;
   TTree *tree;
 
+  THttpServer* serv;
+  
   /* Definition of output histograms */
   TH1F *hwire[N_VDCPLANE];
   TH1F *hdrifttime[N_VDCPLANE];

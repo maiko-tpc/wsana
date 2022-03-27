@@ -21,6 +21,8 @@ analysis::analysis(){
   gr->SetTDC2LenTab_GR();
 
   ssd = new anassd();
+  
+  serv = new THttpServer("http:8080");
 }
 
 analysis::~analysis(){

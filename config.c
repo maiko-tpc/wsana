@@ -291,11 +291,10 @@ static double get_d_value(char *s_value, double default_value){
 
 	if(s_value==NULL) return default_value;
 	if(!regexec(&preg_num1, s_value, 2, pmatch, 0)){
-		printf("hoge1\n");
 		get_matched_string(str, s_value, pmatch, 1);
 		l_num = strtol(str, &endptr, 10);
-		printf("errno=%d\n", errno);
-		printf("endptr=%d\n", *endptr);		
+		//		printf("errno=%d\n", errno);
+		//		printf("endptr=%d\n", *endptr);		
 		//		if(!errno && *endptr==0) return (double)l_num;
 		if(*endptr==0) return (double)l_num;		
 		fprintf(stderr,
@@ -304,7 +303,6 @@ static double get_d_value(char *s_value, double default_value){
 		return default_value;
 	}
 	if(!regexec(&preg_num2, s_value, 2, pmatch, 0)){
-		printf("hoge2\n");
 		get_matched_string(str, s_value, pmatch, 1);
 		l_num = strtol(&str[2], &endptr, 16);
 		if(!errno && *endptr==0) return (double)l_num;
@@ -314,7 +312,6 @@ static double get_d_value(char *s_value, double default_value){
 		return default_value;
 	}
 	if(!regexec(&preg_num3, s_value, 2, pmatch, 0)){
-		printf("hoge3\n");
 		get_matched_string(str, s_value, pmatch, 1);
 		d_num = strtod(str, &endptr);
 		//		if(!errno && *endptr==0) return d_num;

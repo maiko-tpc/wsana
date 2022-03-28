@@ -296,7 +296,8 @@ static double get_d_value(char *s_value, double default_value){
 		l_num = strtol(str, &endptr, 10);
 		printf("errno=%d\n", errno);
 		printf("endptr=%d\n", *endptr);		
-		if(!errno && *endptr==0) return (double)l_num;
+		//		if(!errno && *endptr==0) return (double)l_num;
+		if(*endptr==0) return (double)l_num;		
 		fprintf(stderr,
 						"Error in number conversion of '%s'. Using the default value %lf.\n",
 						s_value, default_value);

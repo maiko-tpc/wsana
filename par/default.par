@@ -1,3 +1,4 @@
-beam_part
-beam_ene
-target_par
+target_nucl = 20Ne
+beam_nucl = 4He
+beam_ene = 10 
+hoge = a

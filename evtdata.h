@@ -9,6 +9,13 @@ struct optdata{
   char rootfname[256];  
   int online_flag;
   int useage_flag;
+  char parfname[256];
+};
+
+struct pardata{
+  char target_nucl[256];
+  char beam_nucl[256];
+  double beam_ene;
 };
 
 struct evtdata{

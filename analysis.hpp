@@ -64,6 +64,7 @@ public:
   void ShowCommandOption();
   void ShowCamacSca();
   void ClearCamacSca();
+  void SetParFile(char *fname);
   
   // defined in histdef.cpp
   void HistDef();  
@@ -75,7 +76,7 @@ public:
   void TreeWrite();
 
   // Parameter analysis functions
-  void AnaPar();
+  int AnaParFile();
   void read_config_file(char *config_file_name);
   void GetTargetPart();
   
@@ -84,6 +85,7 @@ private:
 
   optdata opt;
   evtdata evt;
+  pardata par;
   TFile *outfile;
   TTree *tree;
 

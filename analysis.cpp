@@ -10,7 +10,8 @@ analysis::analysis(){
   sprintf(opt.rootfname, "out.root");
   opt.online_flag=0;
   opt.useage_flag=1;  
-
+  sprintf(opt.parfname, "par/default.par");
+  
   ClearCamacSca();
   
   pla = new anapla();
@@ -21,7 +22,7 @@ analysis::analysis(){
 
   ssd = new anassd();
   
-  serv = new THttpServer("http:8080");
+  //serv = new THttpServer("http:8080");
 
   par_debug_mode = 0;
 }
@@ -62,9 +63,6 @@ void analysis::CloseROOTFile(){
 
 TFile* analysis::GetFile(){
   return outfile;
-}
-
-void analysis::AnaPar(){
 }
 
 void analysis::read_config_file(char *config_file_name){
@@ -405,6 +403,10 @@ int analysis::GetOnline(){
   return opt.online_flag;
 }
 
+void analysis::SetParFile(char *fname){
+  sprintf(opt.parfname, fname);
+}
+
 void analysis::ShowCommandOption(){
   printf("\n");
   printf("Input  file: %s\n", opt.bldfname);
@@ -428,6 +430,28 @@ void analysis::ClearCamacSca(){
   for(int i=0; i<CAMAC_SCA_CH; i++){
     evt.camac_sca[i]=0;
   }
+}
+
+int analysis::AnaParFile(){
+  read_config_file(opt.parfname);
+
+  // Read target nuclei
+  sprintf(par.target_nucl, "%s",
+	  config_get_s_value("target_nucl", 0, "12C"));
+
+  // Read beam nuclei
+  sprintf(par.beam_nucl, "%s",
+	  config_get_s_value("beam_nucl", 0, "1H"));
+
+  // Read beam nuclei
+  par.beam_ene = config_get_d_value("beam_ene", 0, 100.0);
+
+  // Show results
+  printf("Target nuclei: %s\n", par.target_nucl);
+  printf("Beam   nuclei: %s\n", par.beam_nucl);
+  printf("Beam energy  : %f\n", par.beam_ene);    
+  
+  return 0;
 }
 
 void analysis::InitEvt(){

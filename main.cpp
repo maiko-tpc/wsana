@@ -62,6 +62,22 @@ int main(int iarg, char *argv[]) {
     if(strstr(argv[i], "-online") != NULL){
       ana->SetOnline();
     }
+
+    // online flag
+    if(strstr(argv[i], "-online") != NULL){
+      ana->SetOnline();
+    }
+
+    // parameter file name
+    if(strstr(argv[i], "-par") != NULL){
+      if(strstr(argv[i+1], ".par") == NULL){
+	printf("Give the correct parameter file name: %s\n",
+	       argv[i+1]);
+	exit(0);	
+      }
+      ana->SetParFile(argv[i+1]);
+    }
+          
   }
   
   /* Print how to use */
@@ -74,6 +90,8 @@ int main(int iarg, char *argv[]) {
 
   ana->ShowCommandOption();
 
+  ana->AnaParFile();
+  
   /* Open .bld file */
   int bldres = ana->OpenBLDFile();
   if(bldres==1) exit(0);  // file not exist

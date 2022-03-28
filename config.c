@@ -291,30 +291,40 @@ static double get_d_value(char *s_value, double default_value){
 
 	if(s_value==NULL) return default_value;
 	if(!regexec(&preg_num1, s_value, 2, pmatch, 0)){
+		printf("hoge1\n");
 		get_matched_string(str, s_value, pmatch, 1);
 		l_num = strtol(str, &endptr, 10);
 		if(!errno && *endptr==0) return (double)l_num;
-		fprintf(stderr, "Error in number conversion of '%s'. Using the default value %lf.\n", s_value, default_value);
+		fprintf(stderr,
+						"Error in number conversion of '%s'. Using the default value %lf.\n",
+						s_value, default_value);
 		return default_value;
 	}
 	if(!regexec(&preg_num2, s_value, 2, pmatch, 0)){
+		printf("hoge2\n");
 		get_matched_string(str, s_value, pmatch, 1);
 		l_num = strtol(&str[2], &endptr, 16);
 		if(!errno && *endptr==0) return (double)l_num;
-		fprintf(stderr, "Error in number conversion of '%s'. Using the default value %lf.\n", s_value, default_value);
+		fprintf(stderr,
+						"Error in number conversion of '%s'. Using the default value %lf.\n",
+						s_value, default_value);
 		return default_value;
 	}
 	if(!regexec(&preg_num3, s_value, 2, pmatch, 0)){
-		printf("hoge\n");
+		printf("hoge3\n");
 		get_matched_string(str, s_value, pmatch, 1);
 		d_num = strtod(str, &endptr);
 		//		if(!errno && *endptr==0) return d_num;
 		printf("d_num=%f\n", d_num);
 		return d_num;		
-		fprintf(stderr, "Error in number conversion of '%s'. Using the default value %lf.\n", s_value, default_value);
+		fprintf(stderr,
+						"Error in number conversion of '%s'. Using the default value %lf.\n",
+						s_value, default_value);
 		return default_value;
 		}
-		fprintf(stderr, "Error in number conversion of '%s'. Using the default value %lf.\n", s_value, default_value);
+		fprintf(stderr,
+						"Error in number conversion of '%s'. Using the default value %lf.\n",
+						s_value, default_value);
 	return default_value;
 }
 

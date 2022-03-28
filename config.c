@@ -294,6 +294,8 @@ static double get_d_value(char *s_value, double default_value){
 		printf("hoge1\n");
 		get_matched_string(str, s_value, pmatch, 1);
 		l_num = strtol(str, &endptr, 10);
+		printf("errno=%d\n", errno);
+		printf("endptr=%d\n", *endptr);		
 		if(!errno && *endptr==0) return (double)l_num;
 		fprintf(stderr,
 						"Error in number conversion of '%s'. Using the default value %lf.\n",

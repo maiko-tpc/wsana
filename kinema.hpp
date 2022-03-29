@@ -14,9 +14,13 @@
 #include <algorithm>
 #include <math.h>
 
+#include "mtformat.h"
+#include "moduledata.h"
+#include "evtdata.h"
+
 const double AMU = 931.4943;  // atomic mass unit
 
-struct nucl_data{
+struct nucl{
   char name[16];
   int A;
   int Z;
@@ -24,9 +28,26 @@ struct nucl_data{
 };
 
 class kinema{
+
 public:
   kinema();
   ~kinema();
+
+  nucl target_nucl;
+  nucl beam_nucl;
+  nucl scat_nucl;
+  nucl recoil_nucl;    
+
+  std::vector<nucl> nucl_data;
+
+  double beam_ene;
+  double gr_ang;
+  double gr_mag;    
+  
+  double m1, m2, m3, m4;  // rest mass
+
+  void SetMass();
+private:
 };
 
 #endif

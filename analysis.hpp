@@ -27,6 +27,7 @@
 #include "anapla.hpp"
 #include "anagr.hpp"
 #include "anassd.hpp"
+#include "kinema.hpp"
 
 #include "config.h"
 
@@ -80,6 +81,8 @@ public:
   void read_config_file(char *config_file_name);
   void GetTargetPart();
   
+  void SetKinema();
+  
 private:
   std::ifstream bldfile;
 
@@ -101,7 +104,8 @@ private:
   anapla *pla;
   anagr *gr;
   anassd *ssd;  
-
+  kinema *kine;
+  
   int par_debug_mode;
   
 public:

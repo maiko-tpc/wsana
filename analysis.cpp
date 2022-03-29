@@ -21,6 +21,8 @@ analysis::analysis(){
   gr->SetTDC2LenTab_GR();
 
   ssd = new anassd();
+
+  kine = new kinema();
   
   //serv = new THttpServer("http:8080");
 
@@ -472,6 +474,67 @@ int analysis::AnaParFile(){
   printf("---------------------\n");
   
   return 0;
+}
+
+void analysis::SetKinema(){
+
+  int nucl_size = (int)(kine->nucl_data.size());
+  printf("Nucl database: %d\n", nucl_size);
+  
+  // search the target nuclei
+  for(int i=0; i<nucl_size; i++){
+    if(strcmp(par.target_nucl, kine->nucl_data[i].name)==0){
+      kine->target_nucl = kine->nucl_data[i];
+      break;
+    }
+    if(i==nucl_size-1){
+      printf("Cannot find the target in data: %s\n",
+	     par.target_nucl);
+    }
+  }
+  
+  // search the beam nuclei
+  for(int i=0; i<nucl_size; i++){
+    if(strcmp(par.beam_nucl, kine->nucl_data[i].name)==0){
+      kine->beam_nucl = kine->nucl_data[i];
+      break;
+    }
+    if(i==nucl_size-1){
+      printf("Cannot find the beam in data: %s\n",
+	     par.beam_nucl);
+    }
+  }
+
+  // search the scattered nuclei
+  for(int i=0; i<nucl_size; i++){
+    if(strcmp(par.scat_nucl, kine->nucl_data[i].name)==0){
+      kine->scat_nucl = kine->nucl_data[i];
+      break;
+    }
+    if(i==nucl_size-1){
+      printf("Cannot find the scattered nucleus in data: %s\n",
+	     par.scat_nucl);
+    }
+  }
+
+  // search the recoil nuclei
+  for(int i=0; i<nucl_size; i++){
+    if(strcmp(par.recoil_nucl, kine->nucl_data[i].name)==0){
+      kine->recoil_nucl = kine->nucl_data[i];
+      break;
+    }
+    if(i==nucl_size-1){
+      printf("Cannot find the recoil nucleus in data: %s\n",
+	     par.recoil_nucl);
+    }
+  }
+  
+  kine->beam_ene = par.beam_ene;
+  kine->gr_ang = par.gr_ang;
+  kine->gr_mag = par.gr_mag;    
+  
+  // Calculate the rest mass
+  kine->SetMass();
 }
 
 void analysis::InitEvt(){

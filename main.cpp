@@ -96,6 +96,7 @@ int main(int iarg, char *argv[]) {
   ana->ShowCommandOption();
 
   ana->AnaParFile();
+  ana->SetKinema();
   
   /* Open .bld file */
   int bldres = ana->OpenBLDFile();

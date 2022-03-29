@@ -314,8 +314,7 @@ static double get_d_value(char *s_value, double default_value){
 	if(!regexec(&preg_num3, s_value, 2, pmatch, 0)){
 		get_matched_string(str, s_value, pmatch, 1);
 		d_num = strtod(str, &endptr);
-		//		if(!errno && *endptr==0) return d_num;
-		printf("d_num=%f\n", d_num);
+		if(!errno && *endptr==0) return d_num;
 		return d_num;		
 		fprintf(stderr,
 						"Error in number conversion of '%s'. Using the default value %lf.\n",

@@ -15,7 +15,11 @@ struct optdata{
 struct pardata{
   char target_nucl[256];
   char beam_nucl[256];
+  char scat_nucl[256];
+  char recoil_nucl[256];
   double beam_ene;
+  double gr_ang;
+  double gr_mag;  
 };
 
 struct evtdata{

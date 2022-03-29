@@ -44,7 +44,11 @@ int main(int iarg, char *argv[]) {
 
   /* analyze the command option */
   for(int i=0; i<iarg; i++){
-
+    // show help
+    if(strstr(argv[i], "-h") != NULL){
+      ana->SetUseage();
+    }
+    
     // input file
     if(strstr(argv[i], ".bld") != NULL){
       ana->SetBLDFile(argv[i]);
@@ -81,10 +85,11 @@ int main(int iarg, char *argv[]) {
   }
   
   /* Print how to use */
-  if(ana->GetUseage()) {
-    printf("usage: ./ana xxxx.bld xxxx.root\n");
-    printf("eg.)\n");
-    printf("$ ./ana run7144.bld run7144.root\n");
+  if(ana->GetUseage() || iarg==1) {
+    printf("usage: ./ana xxxx.bld xxxx.root [options]\n");
+    printf("Example: $> ./ana run7144.bld run7144.root\n");
+    printf("Options: \n");
+    printf(" -online: Online mode. When the program reaches at the eond of file, it will stand-by and wait for another data.\n");
     exit(0);
   }
 

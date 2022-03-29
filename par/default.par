@@ -1,4 +1,11 @@
+// Analysis parameters (read by config.c)
+
 target_nucl = 20Ne
 beam_nucl = 4He
-beam_ene = -10
-hoge = a
+scat_nucl = 20Ne
+recoil_nucl = 4He
+
+beam_ene = 386.0  //in MeV
+gr_ang = 0.0      //in deg
+gr_mag = 1.0      //in T
+

@@ -443,13 +443,33 @@ int analysis::AnaParFile(){
   sprintf(par.beam_nucl, "%s",
 	  config_get_s_value("beam_nucl", 0, "1H"));
 
+  // Read scattered nuclei
+  sprintf(par.scat_nucl, "%s",
+	  config_get_s_value("scat_nucl", 0, "1H"));
+  
+  // Read recoil nuclei
+  sprintf(par.recoil_nucl, "%s",
+	  config_get_s_value("recoil_nucl", 0, "12C"));
+
   // Read beam nuclei
   par.beam_ene = config_get_d_value("beam_ene", 0, 100.0);
 
+  // Read GR angle set
+  par.gr_ang = config_get_d_value("gr_ang", 0, 4.0);
+
+  // Read GR angle set
+  par.gr_mag = config_get_d_value("gr_mag", 0, 0.90);
+
   // Show results
-  printf("Target nuclei: %s\n", par.target_nucl);
-  printf("Beam   nuclei: %s\n", par.beam_nucl);
-  printf("Beam energy  : %f\n", par.beam_ene);    
+  printf("------ Ana parameters ------\n");
+  printf("Target nuclei   : %s\n",     par.target_nucl);
+  printf("Beam nuclei     : %s\n",     par.beam_nucl);
+  printf("Scattered nuclei: %s\n",     par.scat_nucl);
+  printf("Recoil nuclei   : %s\n",     par.recoil_nucl);
+  printf("Beam energy     : %f MeV\n", par.beam_ene);
+  printf("GR angle        : %f deg\n", par.gr_ang);
+  printf("GR mag field    : %f T\n"  , par.gr_mag);        
+  printf("---------------------\n");
   
   return 0;
 }

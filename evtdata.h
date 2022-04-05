@@ -58,7 +58,8 @@ struct evtdata{
 
   int good_fit;
 
-  float grp_rela;
+  double grp_rela;
+  double grp;
 
   unsigned int camac_inp[N_INP];
   unsigned int vme_inp[N_INP];  

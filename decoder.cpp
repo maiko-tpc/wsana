@@ -501,12 +501,13 @@ int ana_unixtime(evtdata *evt, unsigned int *rawdata, unsigned int size,
 	    int field){
 
   unsigned int data;
-  unsigned short data16;
 
-  printf("ana_unixtime, field=%d\n", field);
   data=(ntohl(rawdata[0]));
-  data16=(data>>16)&0xffff;
-
+  evt->unixtime = data;
+  
+  //  printf("ana_unixtime, field=%d\n", field);
+  //  printf("time=%d\n", data);
+  
   return 0;
 }
 

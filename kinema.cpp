@@ -24,7 +24,9 @@ kinema::kinema(){
   nucl_data.push_back((nucl){"10B",    10,  5,  12.050});
   nucl_data.push_back((nucl){"10C",    10,  6,  15.6986});
   nucl_data.push_back((nucl){"11B",    11,  5,   8.668});
-  nucl_data.push_back((nucl){"12C",    12,  6,   0.000});
+  nucl_data.push_back((nucl){"11C",    11,  6,  10.650});  
+  nucl_data.push_back((nucl){"12Be",   12,  4,  25.077});
+  nucl_data.push_back((nucl){"12C",    12,  6,   0.000});  
   nucl_data.push_back((nucl){"13C",    13,  6,   3.125});
   nucl_data.push_back((nucl){"14C",    14,  6,   3.0199});
   nucl_data.push_back((nucl){"14N",    14,  7,   2.8634});
@@ -32,6 +34,7 @@ kinema::kinema(){
   nucl_data.push_back((nucl){"18O",    18,  8,  -0.7821});
   nucl_data.push_back((nucl){"20Ne",   20, 10,  -7.0419});
   nucl_data.push_back((nucl){"24Mg",   24, 12, -13.93340});
+  nucl_data.push_back((nucl){"58Ni",   58, 28, -60.223});  
   nucl_data.push_back((nucl){"197Au", 197, 79, -31.158});
   nucl_data.push_back((nucl){"208Pb", 208, 82, -21.764});
 
@@ -58,4 +61,17 @@ void kinema::SetMass(){
   m2 = AMU*beam_nucl.A   + beam_nucl.mass_ex;
   m3 = AMU*scat_nucl.A   + scat_nucl.mass_ex;
   m4 = AMU*recoil_nucl.A + recoil_nucl.mass_ex;  
+
+  p1 = 0;
+}
+
+void kinema::SetBrho(pardata *par){
+  gr_mag = par->gr_mag;
+  gr_brho = gr_mag * rho_gr;
+  p3_cen  = gr_brho * scat_nucl.Z * c*1.0e-6;
+}
+
+double kinema::Calc_p3(evtdata *evt){
+  p3 = p3_cen*(1+(evt->grp_rela)/100.0);
+  return p3;
 }

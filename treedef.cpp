@@ -6,6 +6,7 @@ void analysis::TreeDef(){
   tree->Branch("run",  &evt.run, "run/I");
   tree->Branch("blk",  &evt.blk, "blk/I");
   tree->Branch("eve",  &evt.eve, "eve/I");
+  tree->Branch("unixtime",  &evt.unixtime, "unixtime/I");  
   tree->Branch("camac_inp", &evt.camac_inp, Form("camac_inp[%d]/I", N_INP));
   tree->Branch("vme_inp", &evt.vme_inp, Form("vme_inp[%d]/I", N_INP));  
   
@@ -49,7 +50,8 @@ void analysis::TreeDef(){
   tree->Branch("grthx", &evt.grthx, "grthx/F");
   tree->Branch("grthy", &evt.grthy, "grthy/F");
 
-  tree->Branch("grp_rela", &evt.grp_rela, "grp_rela/F");    
+  tree->Branch("grp_rela", &evt.grp_rela, "grp_rela/D");
+  tree->Branch("grp", &evt.grp, "grp/D");      
 }
 
 void analysis::TreeWrite(){

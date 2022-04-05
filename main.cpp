@@ -86,7 +86,7 @@ int main(int iarg, char *argv[]) {
   
   /* Print how to use */
   if(ana->GetUseage() || iarg==1) {
-    printf("usage: ./ana xxxx.bld xxxx.root [options]\n");
+    printf("Usage: ./ana xxxx.bld xxxx.root [options]\n");
     printf("Example: $> ./ana run7144.bld run7144.root\n");
     printf("Options: \n");
     printf(" -online: Online mode. When the program reaches at the eond of file, it will stand-by and wait for another data.\n");

@@ -18,7 +18,9 @@
 #include "moduledata.h"
 #include "evtdata.h"
 
-const double AMU = 931.4943;  // atomic mass unit
+const double AMU = 931.4943;     // atomic mass unit
+const double rho_gr = 3.0;       // orbit radius of GR [m]
+const double c = 299792458;
 
 struct nucl{
   char name[16];
@@ -43,10 +45,17 @@ public:
   double beam_ene;
   double gr_ang;
   double gr_mag;    
+
+  double gr_brho;
   
   double m1, m2, m3, m4;  // rest mass
-
+  double p1, p2, p3, p4;  // momentum
+  double p3_cen;          // center momentum of scattered particle [MeV/c]
+  
   void SetMass();
+  void SetBrho(pardata *par);  
+  double Calc_p3(evtdata *evt);
+  
 private:
 };
 

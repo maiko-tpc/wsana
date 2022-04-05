@@ -139,7 +139,7 @@ int analysis::AnaFld(){
       ana_camac_sca(&evt, tmpdata, region_size, field_id);
       break;
     case 0x8:  // UNIX time
-      //      ana_unixtime(&evt, tmpdata, region_size, field_id);
+      ana_unixtime(&evt, tmpdata, region_size, field_id);
       break;
     case 0x9:  // V830 scaler
       // will be implemented later...
@@ -212,7 +212,10 @@ int  analysis::AnaEvt(){
   // GR VDC
   gr->anavdc(&evt);
 
-
+  // kinema
+  evt.grp=kine->Calc_p3(&evt);
+  
+  
   if(evt.eve%10000==0){
     printf("Analyzed %d events\n", evt.eve);
   }
@@ -337,7 +340,8 @@ void analysis::AnaRunHeader(){
   unsigned long t;
   t = ntohl(com->time);
   evt.run = ((com->run<<8) + (com->run>>8))&0x0000ffff;
-
+  evt.unixtime = (int)t;
+  
   printf("---------------------------\n");
   printf("Run %04d\n", evt.run);
   printf("%s\n", ctime((time_t*)&t));
@@ -533,8 +537,10 @@ void analysis::SetKinema(){
   kine->gr_ang = par.gr_ang;
   kine->gr_mag = par.gr_mag;    
   
-  // Calculate the rest mass
+  // Prepare the kinema calc
   kine->SetMass();
+  kine->SetBrho(&par);
+  
 }
 
 void analysis::InitEvt(){
@@ -591,7 +597,8 @@ void analysis::InitEvt(){
 
   evt.good_fit=1;
 
-  evt.grp_rela = 1000;
+  evt.grp_rela = -5;
+  evt.grp = (kine->p3_cen)*(1+(evt.grp_rela)/100.0);
 
   for(int i=0; i<N_INP; i++){
     evt.camac_inp[i]=0;

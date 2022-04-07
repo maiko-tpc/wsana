@@ -12,6 +12,8 @@
 #include <TTree.h>
 #include <TH1F.h>
 #include <TH2F.h>
+#include <THttpServer.h>
+#include "TSystem.h"
 
 #include "mtformat.h"
 #include "moduledata.h"
@@ -40,7 +42,6 @@ int main(int iarg, char *argv[]) {
 
   /* main analysis frame */
   analysis *ana = new analysis();
-
 
   /* analyze the command option */
   int portnum=8080;
@@ -116,6 +117,10 @@ int main(int iarg, char *argv[]) {
   ana->TreeDef();
   ana->HistDef();
   if(ana->GetWeb()) ana->MakeTHttp(portnum);
+
+//  TH1D *hpx = new TH1D("hpx","This is the px distribution",100,-4,4);  
+//  THttpServer *serv = new THttpServer("http:5902?thrds=2");
+//  serv->Register("/", hpx);
   
   ana->AnaRunHeader();
 
@@ -129,6 +134,10 @@ int main(int iarg, char *argv[]) {
     if(!(ana->IsBLDeof())){
       ana->AnaBlk();
       blkcnt++;
+
+      // IMPORTANT: one should regularly call ProcessEvents
+      // to let http server process requests
+      if(gSystem->ProcessEvents()) break;
     }
     if(ana->GetOnline() && ana->IsBLDeof()){
       printf("Waiting for data... (eve: %d)\n", ana->GetEveNum());
@@ -150,6 +159,13 @@ int main(int iarg, char *argv[]) {
   
   printf("\nAnalyzed %d events (%d blocks)\n", ana->GetEveNum(), blkcnt);
   
+  if(ana->GetWeb()){
+    while(!eflag){
+      gSystem->Sleep(10); // sleep minimal time
+      if(gSystem->ProcessEvents()) break;
+    }
+  }
+
   return 0;
 }
 

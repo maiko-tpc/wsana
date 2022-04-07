@@ -64,8 +64,9 @@ void analysis::CloseROOTFile(){
 
 void analysis::MakeTHttp(int portnum){
   char address[256];
-  sprintf(address, "http:%d", portnum);
+  sprintf(address, "http:%d;rw", portnum);
   serv = new THttpServer(address);
+  //  serv->Register("", outfile);
 }
 
 void analysis::CloseTHttp(){

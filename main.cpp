@@ -115,7 +115,7 @@ int main(int iarg, char *argv[]) {
   ana->MakeROOTFile();
   ana->TreeDef();
   ana->HistDef();
-  ana->MakeTHttp(portnum);
+  if(ana->GetWeb()) ana->MakeTHttp(portnum);
   
   ana->AnaRunHeader();
 

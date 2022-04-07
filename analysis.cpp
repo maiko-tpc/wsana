@@ -62,8 +62,10 @@ void analysis::CloseROOTFile(){
   outfile->Close();
 }
 
-void analysis::MakeTHttp(){
-  serv = new THttpServer("http:5906");
+void analysis::MakeTHttp(int portnum){
+  char address[256];
+  sprintf(address, "http:%d", portnum);
+  serv = new THttpServer(address);
 }
 
 void analysis::CloseTHttp(){

@@ -43,6 +43,7 @@ int main(int iarg, char *argv[]) {
 
 
   /* analyze the command option */
+  int portnum=8080;
   for(int i=0; i<iarg; i++){
     // show help
     if(strstr(argv[i], "-h") != NULL){
@@ -74,6 +75,7 @@ int main(int iarg, char *argv[]) {
 
     // THttp flag
     if(strstr(argv[i], "-web") != NULL){
+      portnum=atoi(argv[i+1]);
       ana->SetWeb();      
     }
     
@@ -113,7 +115,7 @@ int main(int iarg, char *argv[]) {
   ana->MakeROOTFile();
   ana->TreeDef();
   ana->HistDef();
-  ana->MakeTHttp();
+  ana->MakeTHttp(portnum);
   
   ana->AnaRunHeader();
 

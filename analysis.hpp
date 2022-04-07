@@ -49,7 +49,7 @@ public:
   void InitEvt();
   void MakeROOTFile();
   void CloseROOTFile();  
-  void MakeTHttp();
+  void MakeTHttp(int portnum);
   void CloseTHttp();  
   TFile* GetFile();
   int GetRunNum();

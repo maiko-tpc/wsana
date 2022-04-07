@@ -63,7 +63,7 @@ void analysis::CloseROOTFile(){
 }
 
 void analysis::MakeTHttp(){
-  serv = new THttpServer("http:8080");
+  serv = new THttpServer("http:5906");
 }
 
 void analysis::CloseTHttp(){

@@ -49,6 +49,8 @@ public:
   void InitEvt();
   void MakeROOTFile();
   void CloseROOTFile();  
+  void MakeTHttp();
+  void CloseTHttp();  
   TFile* GetFile();
   int GetRunNum();
   int GetEveNum();
@@ -61,6 +63,8 @@ public:
   void UnsetUseage();
   int GetUseage();    
   void SetOnline();
+  int GetWeb();  
+  void SetWeb();
   int GetOnline();  
   void ShowCommandOption();
   void ShowCamacSca();

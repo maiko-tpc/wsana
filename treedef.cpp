@@ -6,7 +6,7 @@ void analysis::TreeDef(){
   tree->Branch("run",  &evt.run, "run/I");
   tree->Branch("blk",  &evt.blk, "blk/I");
   tree->Branch("eve",  &evt.eve, "eve/I");
-  tree->Branch("unixtime",  &evt.unixtime, "unixtime/I");  
+  tree->Branch("unixtime",  &evt.unixtime, "unixtime/I");
   tree->Branch("camac_inp", &evt.camac_inp, Form("camac_inp[%d]/I", N_INP));
   tree->Branch("vme_inp", &evt.vme_inp, Form("vme_inp[%d]/I", N_INP));  
   

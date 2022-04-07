@@ -223,7 +223,7 @@ int ana_v1190(vector<v1190_hit> &v1190_hit_all,
   unsigned int measure;
   int i,j;
   
-  int counter=0;
+  //  int counter=0;
   
   int tmp_lead[V1190_MAX_GEO][N_V1190_CH][V1190_MAX_MULTI]={0};   // 128ch
   int tmp_trail[V1190_MAX_GEO][N_V1190_CH][V1190_MAX_MULTI]={0};  // 128ch  
@@ -245,7 +245,7 @@ int ana_v1190(vector<v1190_hit> &v1190_hit_all,
     if(data>>27 == 0x08){  // global header
       geo=data&0x1f;
       //      printf("field=%d, geo=%d\n", field_id, geo);
-      counter=(data>>5)&0x3fffff;
+      //      counter=(data>>5)&0x3fffff;
         
       while(1){
 	data=flip_32bit(ntohl(rawdata[rp]));

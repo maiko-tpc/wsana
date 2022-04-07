@@ -8,6 +8,7 @@ struct optdata{
   char bldfname[256];
   char rootfname[256];  
   int online_flag;
+  int web_flag;  
   int useage_flag;
   char parfname[256];
 };

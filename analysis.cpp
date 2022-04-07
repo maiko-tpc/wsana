@@ -9,6 +9,7 @@ analysis::analysis(){
 
   sprintf(opt.rootfname, "out.root");
   opt.online_flag=0;
+  opt.web_flag=0;  
   opt.useage_flag=1;  
   sprintf(opt.parfname, "par/default.par");
   
@@ -24,8 +25,6 @@ analysis::analysis(){
 
   kine = new kinema();
   
-  //serv = new THttpServer("http:8080");
-
   par_debug_mode = 0;
 }
 
@@ -61,6 +60,13 @@ void analysis::MakeROOTFile(){
 
 void analysis::CloseROOTFile(){
   outfile->Close();
+}
+
+void analysis::MakeTHttp(){
+  serv = new THttpServer("http:8080");
+}
+
+void analysis::CloseTHttp(){
 }
 
 TFile* analysis::GetFile(){
@@ -409,6 +415,14 @@ int analysis::GetOnline(){
   return opt.online_flag;
 }
 
+void analysis::SetWeb(){
+  opt.web_flag=1;
+}
+
+int analysis::GetWeb(){
+  return opt.web_flag;
+}
+
 void analysis::SetParFile(char *fname){
   sprintf(opt.parfname, fname);
 }
@@ -419,6 +433,9 @@ void analysis::ShowCommandOption(){
   printf("Output file: %s\n", opt.rootfname);
   if(opt.online_flag){
     printf("Online mode\n");
+  }
+  if(opt.web_flag){
+    printf("THttp server is enabled\n");
   }
 }
 

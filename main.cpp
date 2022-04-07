@@ -72,6 +72,11 @@ int main(int iarg, char *argv[]) {
       ana->SetOnline();
     }
 
+    // THttp flag
+    if(strstr(argv[i], "-web") != NULL){
+      ana->SetWeb();      
+    }
+    
     // parameter file name
     if(strstr(argv[i], "-par") != NULL){
       if(strstr(argv[i+1], ".par") == NULL){
@@ -97,6 +102,8 @@ int main(int iarg, char *argv[]) {
 
   ana->AnaParFile();
   ana->SetKinema();
+  if(ana->GetWeb()){
+  }
   
   /* Open .bld file */
   int bldres = ana->OpenBLDFile();

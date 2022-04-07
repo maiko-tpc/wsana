@@ -20,7 +20,7 @@
 
 const double AMU = 931.4943;     // atomic mass unit
 const double rho_gr = 3.0;       // orbit radius of GR [m]
-const double c = 299792458;
+const double c = 299792458.0;
 
 struct nucl{
   char name[16];

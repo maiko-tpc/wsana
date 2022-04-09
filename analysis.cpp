@@ -427,7 +427,7 @@ int analysis::GetWeb(){
 }
 
 void analysis::SetParFile(char *fname){
-  sprintf(opt.parfname, fname);
+  sprintf(opt.parfname, "%s", fname);
 }
 
 void analysis::ShowCommandOption(){

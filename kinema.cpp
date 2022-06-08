@@ -69,9 +69,22 @@ void kinema::SetBrho(pardata *par){
   gr_mag = par->gr_mag;
   gr_brho = gr_mag * rho_gr;
   p3_cen  = gr_brho * scat_nucl.Z * c*1.0e-6;
+  e3_cen = sqrt(p3_cen*p3_cen + m3*m3) - m3;
+  printf("brho=%f Tm, p3_cen=%.2f MeV/c, e3_cen=%.2f MeV\n",
+	 gr_brho, p3_cen, e3_cen);
 }
 
 double kinema::Calc_p3(evtdata *evt){
   p3 = p3_cen*(1+(evt->grp_rela)/100.0);
   return p3;
+}
+
+double kinema::Calc_TotEne(nucl particle, double p){
+  double m = particle.A*AMU + particle.mass_ex;
+  return sqrt(p*p + m*m);
+}
+
+double kinema::Calc_KineEne(nucl particle, double tot_ene){
+  double m = particle.A*AMU + particle.mass_ex;
+  return tot_ene - m;
 }

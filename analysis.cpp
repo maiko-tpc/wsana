@@ -67,6 +67,10 @@ void analysis::MakeTHttp(int portnum){
   sprintf(address, "http:%d?thrds=2;rw", portnum);
   serv = new THttpServer(address);
   serv->Register("", outfile);
+  serv->Register("/GR/", hwire[0]);
+  serv->Register("/GR/", hwire[1]);
+  serv->Register("/GR/", hwire[2]);
+  serv->Register("/GR/", hwire[3]);    
 }
 
 void analysis::CloseTHttp(){
@@ -223,6 +227,8 @@ int  analysis::AnaEvt(){
 
   // kinema
   evt.grp=kine->Calc_p3(&evt);
+  evt.grtote = kine->Calc_TotEne(kine->scat_nucl, evt.grp);
+  evt.gre = kine->Calc_KineEne(kine->scat_nucl, evt.grtote);  
   
   
   if(evt.eve%10000==0){
@@ -619,7 +625,9 @@ void analysis::InitEvt(){
 
   evt.grp_rela = -5;
   evt.grp = (kine->p3_cen)*(1+(evt.grp_rela)/100.0);
-
+  evt.grtote = kine->Calc_TotEne(kine->scat_nucl, evt.grp);
+  evt.gre = kine->Calc_KineEne(kine->scat_nucl, evt.grtote);  
+  
   for(int i=0; i<N_INP; i++){
     evt.camac_inp[i]=0;
     evt.vme_inp[i]=0;

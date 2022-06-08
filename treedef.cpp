@@ -51,7 +51,8 @@ void analysis::TreeDef(){
   tree->Branch("grthy", &evt.grthy, "grthy/F");
 
   tree->Branch("grp_rela", &evt.grp_rela, "grp_rela/D");
-  tree->Branch("grp", &evt.grp, "grp/D");      
+  tree->Branch("grp", &evt.grp, "grp/D");
+  tree->Branch("gre", &evt.gre, "gre/D");        
 }
 
 void analysis::TreeWrite(){

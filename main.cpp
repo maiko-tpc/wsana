@@ -149,11 +149,6 @@ int main(int iarg, char *argv[]) {
     }
   }
   
-  /* Save output ROOT */
-  ana->TreeWrite();
-  ana->HistWrite();
-  ana->CloseROOTFile();
-
   ana->CloseBLDFile();
   ana->ShowCamacSca();
   
@@ -166,6 +161,11 @@ int main(int iarg, char *argv[]) {
     }
   }
 
+  /* Save output ROOT */
+  ana->TreeWrite();
+  ana->HistWrite();
+  ana->CloseROOTFile();
+  
   return 0;
 }
 

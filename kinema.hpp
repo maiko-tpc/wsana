@@ -51,10 +51,13 @@ public:
   double m1, m2, m3, m4;  // rest mass
   double p1, p2, p3, p4;  // momentum
   double p3_cen;          // center momentum of scattered particle [MeV/c]
-  
+  double e3_cen;          // center energy of scattered particle [MeV/c]  
+
   void SetMass();
   void SetBrho(pardata *par);  
   double Calc_p3(evtdata *evt);
+  double Calc_TotEne(nucl particle, double p);
+  double Calc_KineEne(nucl particle, double tot_ene);  
   
 private:
 };

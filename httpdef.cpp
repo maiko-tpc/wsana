@@ -15,6 +15,26 @@ void analysis::MakeTHttp(int portnum){
   for(int i=0; i<N_VDCPLANE; i++){
     serv->Register("/GR", hdriftlen[i]);
   }
+
+  for(int i=0; i<4; i++){
+    serv->Register("/GR_pla", hgrfqdc[i]);
+  }
+  for(int i=0; i<4; i++){
+    serv->Register("/GR_pla", hgrvqdc[i]);
+  }
+  for(int i=0; i<4; i++){
+    serv->Register("/GR_pla", hgrqdccor[i]);
+  }
+
+  for(int i=0; i<4; i++){
+    serv->Register("/LAS_pla", hlasfqdc[i]);
+  }
+  for(int i=0; i<4; i++){
+    serv->Register("/LAS_pla", hlasvqdc[i]);
+  }
+  for(int i=0; i<4; i++){
+    serv->Register("/LAS_pla", hlasqdccor[i]);
+  }
 }
 
 void analysis::CloseTHttp(){

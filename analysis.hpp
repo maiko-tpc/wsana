@@ -16,6 +16,7 @@
 #include <TFile.h>
 #include <TTree.h>
 #include <TH1.h>
+#include <TH2.h>
 #include <THttpServer.h>
 #include <TInterpreter.h>
 
@@ -102,6 +103,16 @@ private:
   TH1F *hwire[N_VDCPLANE];
   TH1F *hdrifttime[N_VDCPLANE];
   TH1F *hdriftlen[N_VDCPLANE];  
+
+  TH1F *hgrfqdc[4];
+  TH1F *hgrvqdc[4];
+
+  TH1F *hlasfqdc[4];
+  TH1F *hlasvqdc[4];
+
+  TH2F *hgrqdccor[4];
+  TH2F *hlasqdccor[4];  
+  //
   
   char comment[100000];
 

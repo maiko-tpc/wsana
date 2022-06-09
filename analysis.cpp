@@ -66,7 +66,7 @@ void analysis::MakeTHttp(int portnum){
   char address[256];
   sprintf(address, "http:%d?thrds=2;rw", portnum);
   serv = new THttpServer(address);
-  serv->Register("", outfile);
+  //  serv->Register("", outfile);
   serv->Register("/GR", hwire[0]);
   serv->Register("/GR", hwire[1]);
   serv->Register("/GR", hwire[2]);

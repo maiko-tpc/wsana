@@ -2,6 +2,10 @@
 
 void analysis::MakeTHttp(int portnum){
   serv = new THttpServer(Form("http:%d?thrds=2;rw", portnum));
+
+  // One could specify location of newer version of JSROOT
+  //serv->SetJSROOT("https://root.cern.ch/js/latest/");
+
   //  serv->Register("", outfile);
 
   for(int i=0; i<N_VDCPLANE; i++){
@@ -35,6 +39,9 @@ void analysis::MakeTHttp(int portnum){
   for(int i=0; i<4; i++){
     serv->Register("/LAS_pla", hlasqdccor[i]);
   }
+
+  serv->SetItemField("/GR_pla","_drawopt","col");
+ 
 }
 
 void analysis::CloseTHttp(){

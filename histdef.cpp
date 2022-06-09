@@ -1,14 +1,20 @@
 #include "analysis.hpp"
 
 void analysis::HistDef(){
+  std::vector<std::string> gr_plane_name =
+    {"gr_X1", "gr_V1", "gr_X2", "gr_U2"};
+
   for(int i=0; i<N_VDCPLANE; i++){
-    hwire[i] = new TH1F(Form("h%d", 1000+i), Form("VDC plane %d hit", i),
+    hwire[i] = new TH1F(Form("h_%s_hit", gr_plane_name[i].c_str()),
+			Form("GR VDC %s hit", gr_plane_name[i].c_str()),
                         PLANE_SIZE, 0, PLANE_SIZE);
-    hdrifttime[i] = new TH1F(Form("h%d", 1010+i),
-			     Form("VDC plane %d drift time", i),
+
+    hdrifttime[i] = new TH1F(Form("h_%s_tdc", gr_plane_name[i].c_str()),
+			     Form("GR VDC %s TDC", gr_plane_name[i].c_str()),
                              MAX_VDC_TDC, 0, MAX_VDC_TDC);
-    hdriftlen[i]  = new TH1F(Form("h%d", 1020+i),
-			     Form("VDC plane %d drift length", i),
+
+    hdriftlen[i]  = new TH1F(Form("h_%s_len", gr_plane_name[i].c_str()),
+			     Form("GR VDC %s drift length", gr_plane_name[i].c_str()),
                              512, 0, 16);
   }
 }

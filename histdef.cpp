@@ -53,7 +53,11 @@ void analysis::HistDef(){
 			     Form("LAS plastic VME QDC vs FERA QDC ch%d", i),
 			     256, 0, 4096, 256, 0, 4096);
   }
-  
+
+  for(int i=0; i<N_VDCPLANE; i++){
+  }
+     
+
 }
 
 void analysis::HistFill(){

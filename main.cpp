@@ -151,6 +151,7 @@ int main(int iarg, char *argv[]) {
   
   ana->CloseBLDFile();
   ana->ShowCamacSca();
+  ana->ShowGREff();
   
   printf("\nAnalyzed %d events (%d blocks)\n", ana->GetEveNum(), blkcnt);
   

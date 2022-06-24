@@ -220,6 +220,7 @@ int  analysis::AnaEvt(){
   
   if(evt.eve%10000==0){
     CalcGREff();
+    //    ShowProg();
     printf("Analyzed %d events\n", evt.eve);
   }
 
@@ -446,6 +447,21 @@ void analysis::ShowCamacSca(){
   printf("**********************\n");
 }
 
+void analysis::ShowGREff(){
+  printf("\n");
+  printf("GR Hit Efficiencies\n");
+  printf("X1: %.3f, U1: %.3f, X2: %.3f, U2: %.3f\n",
+	 evt.gr_hit_eff[0], evt.gr_hit_eff[1], evt.gr_hit_eff[2], evt.gr_hit_eff[3]);
+  printf("Total Hit Efficiency: %.3f\n", evt.gr_hit_eff_all);
+  printf("\n");
+
+  printf("GR Cluster Efficiencies\n");
+  printf("X1: %.3f, U1: %.3f, X2: %.3f, U2: %.3f\n",
+	 evt.gr_clst_eff[0], evt.gr_clst_eff[1], evt.gr_clst_eff[2], evt.gr_clst_eff[3]);
+  printf("Total Cluster Efficiency: %.3f\n", evt.gr_clst_eff_all);
+  printf("\n");
+}
+
 void analysis::ClearCamacSca(){
   for(int i=0; i<CAMAC_SCA_CH; i++){
     evt.camac_sca[i]=0;
@@ -564,6 +580,11 @@ void analysis::CalcGREff(){
   }
   evt.gr_hit_eff_all = hhiteffall->GetBinContent(2)/hhiteffall->GetEntries();
   evt.gr_clst_eff_all = hclsteffall->GetBinContent(2)/hclsteffall->GetEntries();  
+}
+
+void analysis::ShowProg(){
+  mvprintw(1, 2, "1:Start,  2:Stop,  3:Reset,  Ctrl-c:Exit \n");
+  refresh();
 }
 
 void analysis::InitEvt(){  

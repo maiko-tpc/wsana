@@ -12,6 +12,7 @@
 #include <signal.h>
 #include <string.h>
 #include <vector>
+#include <ncurses.h>
 
 #include <TFile.h>
 #include <TTree.h>
@@ -71,6 +72,7 @@ public:
   void ShowCamacSca();
   void ClearCamacSca();
   void SetParFile(char *fname);
+  void ShowGREff();
   
   // defined in histdef.cpp
   void HistDef();  
@@ -89,6 +91,8 @@ public:
   void SetKinema();
 
   void CalcGREff();
+
+  void ShowProg();
   
 private:
   std::ifstream bldfile;

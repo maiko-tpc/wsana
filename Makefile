@@ -6,7 +6,7 @@ ROOTFLAGS = $(shell root-config --cflags)
 ROOTLIBS  = $(shell root-config --libs) -lRHTTP
 OBJECTS = $(addprefix $(OBJDIR)/, $(SOURCES:.cpp=.o)) $(OBJDIR)/config.o
 
-CFLAGS = -O2 -Wall -Wno-write-strings -mtune=native -march=native ${ROOTFLAGS}
+CFLAGS = -O2 -Wall -Wno-write-strings -mtune=native -march=native -lncurses ${ROOTFLAGS}
 LIBS = ${ROOTLIBS}
 DEBAG = -g
 

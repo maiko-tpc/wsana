@@ -48,8 +48,15 @@ struct evtdata{
   int nclst[N_VDCPLANE];
   int clst_size[N_VDCPLANE];
 
+  int gr_good_hit;
   int gr_good_clst;
 
+  float gr_hit_eff[N_VDCPLANE];
+  float gr_clst_eff[N_VDCPLANE];  
+  float gr_hit_eff_all;
+  float gr_clst_eff_all;  
+
+  
   float redchi2[N_VDCPLANE];
   float wire_pos[N_VDCPLANE];
   float residual[N_VDCPLANE];  

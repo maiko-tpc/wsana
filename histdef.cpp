@@ -16,8 +16,19 @@ void analysis::HistDef(){
     hdriftlen[i]  = new TH1F(Form("h_%s_len", gr_plane_name[i].c_str()),
 			     Form("GR VDC %s drift length", gr_plane_name[i].c_str()),
                              512, 0, 16);
+
+    hhiteff[i]  = new TH1F(Form("h_%s_hit_eff", gr_plane_name[i].c_str()),
+			   Form("GR VDC %s hit efficiency", gr_plane_name[i].c_str()),
+			   2, 0, 2);
+    
+    hclsteff[i]  = new TH1F(Form("h_%s_clst_eff", gr_plane_name[i].c_str()),
+			    Form("GR VDC %s cluster efficiency", gr_plane_name[i].c_str()),
+			   2, 0, 2);
   }
 
+  hhiteffall  = new TH1F("h_hit_eff_all", "GR VDC hit efficiency all", 2, 0, 2);
+  hclsteffall = new TH1F("h_clst_eff_all", "GR VDC cluster efficiency all", 2, 0, 2);  
+    
   for(int i=0; i<4; i++){
     hgrfqdc[i] = new TH1F(Form("h_gr_fqdc_ch%d", i),
 			  Form("GR plastic FERA QDC ch%d", i),
@@ -42,6 +53,7 @@ void analysis::HistDef(){
 			  512, 0, 4096);
   }
 
+  
   for(int i=0; i<4; i++){
     hgrqdccor[i] = new TH2F(Form("h_gr_qdc_cor_ch%d", i),
 			    Form("GR plastic VME QDC vs FERA QDC ch%d", i),
@@ -74,6 +86,7 @@ void analysis::HistFill(){
     }
   }  
 
+
   for(int i=0; i<4; i++){
     hgrfqdc[i]->Fill(evt.grpla.fqdc[i]);
     hgrvqdc[i]->Fill(evt.grpla.vqdc[i]);    
@@ -85,6 +98,18 @@ void analysis::HistFill(){
     hlasvqdc[i]->Fill(evt.laspla.vqdc[i]);    
     hlasqdccor[i]->Fill(evt.laspla.fqdc[i], evt.laspla.vqdc[i]);
   }
+
+  // small analysis for VDC efficiency
+  for(int i=0; i<N_VDCPLANE; i++){
+    if(evt.nhit_plane[i]==0) hhiteff[i]->Fill(0);
+    if(evt.nhit_plane[i] >0) hhiteff[i]->Fill(1);    
+  }
+
+  if(evt.gr_good_hit==0) hhiteffall->Fill(0);
+  if(evt.gr_good_hit==1) hhiteffall->Fill(1);  
+
+  if(evt.gr_good_clst==0) hclsteffall->Fill(0);
+  if(evt.gr_good_clst==1) hclsteffall->Fill(1);  
 }
 
 void analysis::HistWrite(){
@@ -97,4 +122,15 @@ void analysis::HistWrite(){
   for(int i=0; i<N_VDCPLANE; i++){
     hdriftlen[i]->Write();    
   }
+  for(int i=0; i<N_VDCPLANE; i++){
+    hdriftlen[i]->Write();    
+  }
+  for(int i=0; i<N_VDCPLANE; i++){
+    hhiteff[i]->Write();    
+  }
+  for(int i=0; i<N_VDCPLANE; i++){
+    hclsteff[i]->Write();    
+  }
+  hhiteffall->Write();
+  hclsteffall->Write();      
 }

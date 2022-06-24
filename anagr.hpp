@@ -49,6 +49,7 @@ public:
   void SetGRPars();
   void SetTDC2LenTab_GR();
 
+  int IsGoodHit(evtdata *);
   int IsGoodClst(evtdata *);
   
   int  FitOnePlane(evtdata *, unsigned int planeid);

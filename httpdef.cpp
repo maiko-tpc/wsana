@@ -20,6 +20,17 @@ void analysis::MakeTHttp(int portnum){
     serv->Register("/GR", hdriftlen[i]);
   }
 
+  for(int i=0; i<N_VDCPLANE; i++){
+    serv->Register("/GR", hhiteff[i]);
+  }
+
+  for(int i=0; i<N_VDCPLANE; i++){
+    serv->Register("/GR", hclsteff[i]);
+  }
+
+  serv->Register("/GR", hhiteffall);
+  serv->Register("/GR", hclsteffall);  
+  
   for(int i=0; i<4; i++){
     serv->Register("/GR_pla", hgrfqdc[i]);
   }

@@ -176,6 +176,7 @@ void anagr::anavdc(evtdata *evt){
     
   TDC2Len_GR(evt);
   cal_nclst(evt);
+  evt->gr_good_hit=IsGoodHit(evt);
   evt->gr_good_clst=IsGoodClst(evt);
 
   if(evt->gr_good_clst==1){
@@ -321,6 +322,14 @@ void anagr::SetTDC2LenTab_GR(){
   if(tdc_bin_wid<=0) tdc_bin_wid = 1;
 }
 
+int anagr::IsGoodHit(evtdata *evt){
+  int result=1;
+  for(int i=0; i<N_VDCPLANE; i++){
+    if(evt->nhit_plane[i]==0) result=0;
+  }
+  return result;
+}
+
 int anagr::IsGoodClst(evtdata *evt){
   int result=1;
   for(int i=0; i<N_VDCPLANE; i++){
@@ -329,6 +338,7 @@ int anagr::IsGoodClst(evtdata *evt){
   }
   return result;
 }
+
 
 int anagr::FitOnePlane(evtdata *evt, unsigned int planeid){
 

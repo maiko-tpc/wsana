@@ -87,6 +87,8 @@ public:
   void GetTargetPart();
   
   void SetKinema();
+
+  void CalcGREff();
   
 private:
   std::ifstream bldfile;
@@ -102,8 +104,12 @@ private:
   /* Definition of output histograms */
   TH1F *hwire[N_VDCPLANE];
   TH1F *hdrifttime[N_VDCPLANE];
-  TH1F *hdriftlen[N_VDCPLANE];  
-
+  TH1F *hdriftlen[N_VDCPLANE];
+  TH1F *hhiteff[N_VDCPLANE];
+  TH1F *hclsteff[N_VDCPLANE];    
+  TH1F* hhiteffall;
+  TH1F* hclsteffall;  
+  
   TH1F *hgrfqdc[4];
   TH1F *hgrvqdc[4];
 

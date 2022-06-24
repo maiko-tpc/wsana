@@ -219,6 +219,7 @@ int  analysis::AnaEvt(){
   
   
   if(evt.eve%10000==0){
+    CalcGREff();
     printf("Analyzed %d events\n", evt.eve);
   }
 
@@ -556,7 +557,16 @@ void analysis::SetKinema(){
   
 }
 
-void analysis::InitEvt(){
+void analysis::CalcGREff(){
+  for(int i=0; i<N_VDCPLANE; i++){
+    evt.gr_hit_eff[i] = hhiteff[i]->GetBinContent(2)/hhiteff[i]->GetEntries();
+    evt.gr_clst_eff[i] = hclsteff[i]->GetBinContent(2)/hclsteff[i]->GetEntries();
+  }
+  evt.gr_hit_eff_all = hhiteffall->GetBinContent(2)/hhiteffall->GetEntries();
+  evt.gr_clst_eff_all = hclsteffall->GetBinContent(2)/hclsteffall->GetEntries();  
+}
+
+void analysis::InitEvt(){  
   init_madc32_data(&evt.madc);
   evt.mxdc32_hit_all.clear();
 
@@ -595,6 +605,7 @@ void analysis::InitEvt(){
     evt.grpla.de[i]=-100;    
   }
 
+  evt.gr_good_hit=0;
   evt.gr_good_clst=0;
 
   for(int i=0; i<N_VDCPLANE; i++){

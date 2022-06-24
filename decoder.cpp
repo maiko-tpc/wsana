@@ -435,7 +435,7 @@ int ana_fera(vector<fera_hit> &fera_hit_all, unsigned int *rawdata, unsigned int
   
   data=(ntohl(rawdata[0]));
   data16=(data>>16)&0xffff;
-  //  ndata=(data16>>11)&0xf;
+  //  ndata=(data16>>11)&0x1f;
   vsn=data16&0xff;
   int qdc_tdc = 0;
 

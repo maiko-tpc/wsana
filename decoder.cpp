@@ -429,15 +429,17 @@ int ana_fera(vector<fera_hit> &fera_hit_all, unsigned int *rawdata, unsigned int
   unsigned int data;
 
   unsigned short data16;
-  unsigned int ndata;
+  //  unsigned int ndata;
   int vsn;
   int ich,tmp_adc;
   
   data=(ntohl(rawdata[0]));
   data16=(data>>16)&0xffff;
-  ndata=(data16>>11)&0xf;
+  //  ndata=(data16>>11)&0xf;
   vsn=data16&0xff;
   int qdc_tdc = 0;
+
+  //  printf("header data16=%x\n", data16);
   
   if(region==0xd) qdc_tdc = 0;
   if(region==0xe) qdc_tdc = 1;  
@@ -450,19 +452,24 @@ int ana_fera(vector<fera_hit> &fera_hit_all, unsigned int *rawdata, unsigned int
   unsigned int cnt=0;
   int rawdata_index;
 
-  while(cnt<ndata){
+  //  printf("header size=%d, field=%d, ndata=%d, vsn=%d\n", size, field, ndata, vsn);
+  
+  //  while(cnt<ndata){
+  while(cnt<size-1){    
     rawdata_index=(int)(cnt/2+cnt%2);
     data=(ntohl(rawdata[rawdata_index]));
     if(cnt==0) data16=data&0xffff;
     if(cnt>0 && (cnt%2)==0) data16=data&0xffff;
     if(cnt>0 && (cnt%2)==1) data16=(data>>16)&0xffff;
+    //    printf("data16=%x\n", data16);
     if(data16!=0){
       ich=(data16>>11)&0x0f;
       tmp_adc=data16&0x7ff;
 
       fera_hit.ch = ich;
       fera_hit.val = tmp_adc;
-
+      //      printf("field=%d, vsn=%d\n", field, vsn);
+      
       fera_hit_all.push_back(fera_hit);
     }
     

@@ -94,6 +94,8 @@ int anapla::GetFERAHit(evtdata *evt){
     ch = evt->fera_hit_all[i].ch;
     val = evt->fera_hit_all[i].val;      
 
+    //    printf("vsn=%d\n", vsn);
+
     // GR QDC
     if(vsn == VSN_GRQDC1){
       if(ch<N_PLA_CH){

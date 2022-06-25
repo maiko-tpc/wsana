@@ -20,11 +20,14 @@ void anapla::analyze(evtdata *evt){
   // Hit position by TDC difference
   evt->grpla.pos[0] = evt->grpla.ftdc[0] - evt->grpla.ftdc[1];
   evt->grpla.pos[1] = evt->grpla.ftdc[2] - evt->grpla.ftdc[3];
+
+  evt->laspla.pos[0] = evt->laspla.ftdc[0] - evt->laspla.ftdc[1];
   
   // Energy deposite by QDC mean
   evt->grpla.de[0] = TMath::Sqrt(evt->grpla.fqdc[0] * evt->grpla.fqdc[1]);
   evt->grpla.de[1] = TMath::Sqrt(evt->grpla.fqdc[2] * evt->grpla.fqdc[3]); 
-  
+
+  evt->laspla.de[0] = TMath::Sqrt(evt->laspla.fqdc[0] * evt->laspla.fqdc[1]);  
 }
 
 int anapla::GetMQDCHit(evtdata *evt){

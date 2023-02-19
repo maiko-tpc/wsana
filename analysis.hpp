@@ -1,7 +1,7 @@
 #ifndef ANALYSIS_HPP_
 #define ANALYSIS_HPP_
 
-//#define ANASSD   // comment out to disable ssd analysis
+#define ANASSD   // comment out to disable ssd analysis
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -94,6 +94,10 @@ public:
 
   void ShowProg();
   
+  void AnaV1190Ref();
+
+  void AnaV1190inpreg();  
+
 private:
   std::ifstream bldfile;
 
@@ -122,6 +126,16 @@ private:
 
   TH2F *hgrqdccor[4];
   TH2F *hlasqdccor[4];  
+
+  TH2F* hv1190tdc;
+  
+  TH2F* hmadc_raw;
+  TH2F* hmadc_tdc;
+  TH2F* hmadc_ene;    
+
+#ifdef ANASSD
+  TH2F* hsakra_hit[6];
+#endif
   //
   
   char comment[100000];

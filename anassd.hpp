@@ -21,14 +21,27 @@
 #include "evtdata.h"
 #include "decoder.hpp"
 
+#define SI_CH 96
 
 class anassd{
+private:
+  double ene_calib_par[SI_CH][2];
+
+  double sakra_r_wid;
+  double sakra_theta_wid;  
+  double sakra_r_cen[16];
+  double sakra_theta_cen[8];      
+  
 public:
   anassd();
   ~anassd();
 
+  void init_data(evtdata *);
   void V1190Hit2SSDTDC(evtdata *);
   void Mxdc32Hit2SSDADC(evtdata *);
+  void ana_rf(evtdata *);
+  void ene_calib(evtdata *);
+  void ana_clst(evtdata *);
   void analyze(evtdata *);
 };
 

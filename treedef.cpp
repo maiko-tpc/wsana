@@ -9,6 +9,8 @@ void analysis::TreeDef(){
   tree->Branch("unixtime",  &evt.unixtime, "unixtime/I");
   tree->Branch("camac_inp", &evt.camac_inp, Form("camac_inp[%d]/I", N_INP));
   tree->Branch("vme_inp", &evt.vme_inp, Form("vme_inp[%d]/I", N_INP));  
+  tree->Branch("v1190_hit_ref", evt.v1190_hit_ref,
+	       Form("v1190_hit_ref[%d]/I", V1190_MAX_GEO));
   
 #ifdef ANASSD
   tree->Branch("madc", &evt.madc,
@@ -16,11 +18,17 @@ void analysis::TreeDef(){
 		    N_MADC, N_MADC_CH, N_MADC));
 
   tree->Branch("v1190_ssd", &evt.v1190_ssd,
-	       Form("lead[%d][%d]/I:trail[%d][%d]/I:tot[%d][%d]/I:multi[%d]/I:counter/I",
-		    N_V1190_CH, V1190_MAX_MULTI,
-		    N_V1190_CH, V1190_MAX_MULTI,
-		    N_V1190_CH, V1190_MAX_MULTI,
-		    N_V1190_CH));
+	       Form("hit[%d]/I:multi[%d]/I:tdc_raw[%d]/I:tdc_cor[%d]/I",
+		    SSD_TDC_CH, SSD_TDC_CH, SSD_TDC_CH, SSD_TDC_CH));
+  tree->Branch("rf_ssd", &evt.rf_ssd, Form("rf_ssd[%d]/I", MAX_RF_MULTI));
+  tree->Branch("ssd_ene", &evt.ssd_ene, "ssd_ene[96]/F");
+
+  tree->Branch("ssd_clst_multi", &evt.ssd_clst_multi,
+	       Form("ssd_clst_multi[%d]/I", N_SSD_CLST));  
+  tree->Branch("ssd_clst_ene", &evt.ssd_clst_ene,
+	       Form("ssd_clst_ene[%d]/F", N_SSD_CLST));  
+  tree->Branch("ssd_clst_tdc", &evt.ssd_clst_tdc,
+	       Form("ssd_clst_tdc[%d]/I", N_SSD_CLST));  
 #endif
   
   tree->Branch("grpla", &evt.grpla,
@@ -53,6 +61,8 @@ void analysis::TreeDef(){
   tree->Branch("grp_rela", &evt.grp_rela, "grp_rela/D");
   tree->Branch("grp", &evt.grp, "grp/D");
   tree->Branch("gre", &evt.gre, "gre/D");        
+
+  tree->Branch("v1190pla_multi", &evt.v1190pla_multi, "v1190pla_multi[16]/I");
 }
 
 void analysis::TreeWrite(){

@@ -31,9 +31,11 @@ struct evtdata{
   mqdc32_data mqdc;  
   std::vector<mxdc32_hit> mxdc32_hit_all;
 
-  v1190_data v1190_ssd;
+  v1190ssd_data v1190_ssd;
   std::vector<v1190_hit> v1190_hit_all;
 
+  int v1190_hit_ref[V1190_MAX_GEO];
+  
   std::vector<fera_hit> fera_hit_all;
   
   pla_data grpla;
@@ -77,6 +79,20 @@ struct evtdata{
 
   unsigned int camac_sca_flag;
   unsigned long int camac_sca[CAMAC_SCA_CH];  
+
+  unsigned int v1190pla_multi[16];
+
+  int rf_ssd[MAX_RF_MULTI];
+  float ssd_ene[96];
+
+  int ssd_clst_multi[N_SSD_CLST];
+  float ssd_clst_ene[N_SSD_CLST];
+  int ssd_clst_tdc[N_SSD_CLST];
+  int ssd_clst_hitch[N_SSD_CLST];    
+
+  int sakra_good_hit[N_SAKRA];
+  float sakra_r[N_SAKRA];
+  float sakra_theta[N_SAKRA];    
 };
 
 #endif

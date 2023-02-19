@@ -332,6 +332,7 @@ int ana_v1190(vector<v1190_hit> &v1190_hit_all,
       } // end of multi-hit loop
     } // end of ref_flag
   } // end of geo loop
+
   return total_hit;
 }
 
@@ -492,12 +493,6 @@ int ana_inp(evtdata *evt, unsigned int *rawdata, unsigned int size,
   if(field==FIELD_GR_NEW){  // .gv data, CAMAC
     for(int i=0; i<N_INP; i++){
       evt->camac_inp[i] = (data16>>i)&0x1;
-    }
-  }
-
-  if(field==FIELD_PLA){ // .pla data, VME
-    for(int i=0; i<N_INP; i++){
-      evt->vme_inp[i] = (data16>>i)&0x1;
     }
   }
 

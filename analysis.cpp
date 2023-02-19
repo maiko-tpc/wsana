@@ -201,6 +201,12 @@ int  analysis::AnaEvt(){
   
   /* Event by event analysis */
 
+  // Analyze v1190 ref hit
+  AnaV1190Ref();
+  
+  // Analyze input register by V1190
+  AnaV1190inpreg();
+  
   // GR plastic
   pla->analyze(&evt);
      
@@ -587,11 +593,50 @@ void analysis::ShowProg(){
   refresh();
 }
 
+void analysis::AnaV1190Ref(){
+  unsigned int tmp_field;
+  unsigned int tmp_geo, tmp_ch;
+  int hit_size = (int)(evt.v1190_hit_all.size());
+
+  for(int i=0; i<hit_size; i++){
+    tmp_field = evt.v1190_hit_all[i].field;
+    tmp_geo = evt.v1190_hit_all[i].geo;
+
+    if(tmp_field == FIELD_SSD || tmp_field == FIELD_GV_NEW ||
+       tmp_field == FIELD_GV_OLD){
+      tmp_ch = evt.v1190_hit_all[i].ch;
+      if(tmp_ch==127) evt.v1190_hit_ref[tmp_geo]=1;
+    }
+
+    if(tmp_field == FIELD_PLA){
+      tmp_ch = evt.v1190_hit_all[i].ch;
+      if(tmp_ch==15) evt.v1190_hit_ref[tmp_geo]=1;
+    }
+  }
+}
+
+void analysis::AnaV1190inpreg(){
+  unsigned int tmp_field, tmp_ch;
+  int hit_size = (int)(evt.v1190_hit_all.size());
+
+  for(int i=0; i<hit_size; i++){
+    tmp_field = evt.v1190_hit_all[i].field;
+    tmp_ch = evt.v1190_hit_all[i].ch;
+    
+    if(tmp_field == FIELD_PLA && tmp_ch>15 && tmp_ch<32){
+      evt.vme_inp[tmp_ch-16] = 1;
+    }
+  }
+}
+
 void analysis::InitEvt(){  
   init_madc32_data(&evt.madc);
   evt.mxdc32_hit_all.clear();
 
-  init_v1190_data(&evt.v1190_ssd);
+  //  init_v1190_data(&evt.v1190_ssd);
+#ifdef ANASSD
+  ssd->init_data(&evt);
+#endif
   init_grpla_data(&evt.grpla);
   init_grpla_data(&evt.laspla);  
   evt.grvdc.clear();
@@ -626,6 +671,10 @@ void analysis::InitEvt(){
     evt.grpla.de[i]=-100;    
   }
 
+  for(int i=0; i<V1190_MAX_GEO; i++){
+    evt.v1190_hit_ref[i]=0;
+  }
+  
   evt.gr_good_hit=0;
   evt.gr_good_clst=0;
 
@@ -653,6 +702,11 @@ void analysis::InitEvt(){
   }
 
   evt.camac_sca_flag=0;
+
+  for(int i=0; i<16; i++){
+    evt.v1190pla_multi[i]=0;
+  }
+
 }
 
 

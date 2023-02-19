@@ -37,8 +37,8 @@ int anapla::GetMQDCHit(evtdata *evt){
   
   for(i=0; i<mqdc32_size; i++){
 
-    // GR 
-    if(evt->mxdc32_hit_all[i].geo==0){
+    // GR pla
+    if(evt->mxdc32_hit_all[i].geo==0 && evt->mxdc32_hit_all[i].field==FIELD_PLA){
       ch = evt->mxdc32_hit_all[i].ch;
       if(ch<N_PLA_CH){
 	evt->grpla.vqdc[ch] = evt->mxdc32_hit_all[i].adc;
@@ -46,8 +46,8 @@ int anapla::GetMQDCHit(evtdata *evt){
       }
     }
 
-    // LAS
-    if(evt->mxdc32_hit_all[i].geo==1){
+    // LAS pla
+    if(evt->mxdc32_hit_all[i].geo==1 && evt->mxdc32_hit_all[i].field==FIELD_PLA){
       ch = evt->mxdc32_hit_all[i].ch;
       if(ch<N_PLA_CH){
 	evt->laspla.vqdc[ch] = evt->mxdc32_hit_all[i].adc;
@@ -71,6 +71,7 @@ int anapla::GetV1190Hit(evtdata *evt){
 
       // GR       
       if(ch>=0 && ch<16){
+	evt->v1190pla_multi[ch]++;
 	evt->grpla.vtdc[ch] = evt->v1190_hit_all[i].lead_cor+VDC_OFFSET;
 	cnt++;
       }

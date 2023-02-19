@@ -31,13 +31,17 @@ int vdccalib(int tmin=-1, int tmax=-1){
   int integ_x1, integ_u1, integ_x2, integ_u2;
   
   /* get the histograms from the current file */
-  gDirectory->GetObject("h1010",hx1);
-  gDirectory->GetObject("h1011",hu1);
-  gDirectory->GetObject("h1012",hx2);
-  gDirectory->GetObject("h1013",hu2);
+  //  gDirectory->GetObject("h1010",hx1);
+  //  gDirectory->GetObject("h1011",hu1);
+  //  gDirectory->GetObject("h1012",hx2);
+  //  gDirectory->GetObject("h1013",hu2);
+  gDirectory->GetObject("h_gr_X1_tdc",hx1);
+  gDirectory->GetObject("h_gr_U1_tdc",hu1);
+  gDirectory->GetObject("h_gr_X2_tdc",hx2);
+  gDirectory->GetObject("h_gr_U2_tdc",hu2);
 
-  int start_integ = h1010->FindBin(tmin);
-  int stop_integ = h1010->FindBin(tmax);
+  int start_integ = h_gr_X1_tdc->FindBin(tmin);
+  int stop_integ = h_gr_X1_tdc->FindBin(tmax);
 
   printf("\n");
   printf("-------------------------------------\n");

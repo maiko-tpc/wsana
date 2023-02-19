@@ -2,7 +2,7 @@
 
 void analysis::HistDef(){
   std::vector<std::string> gr_plane_name =
-    {"gr_X1", "gr_V1", "gr_X2", "gr_U2"};
+    {"gr_X1", "gr_U1", "gr_X2", "gr_U2"};
 
   for(int i=0; i<N_VDCPLANE; i++){
     hwire[i] = new TH1F(Form("h_%s_hit", gr_plane_name[i].c_str()),
@@ -69,7 +69,36 @@ void analysis::HistDef(){
   for(int i=0; i<N_VDCPLANE; i++){
   }
      
+  hv1190tdc = new TH2F("hv1190tdc","Pla V1190 TDC pattern",
+		       16,0,16, 1000, -10000, 10000);
+  
+  hmadc_raw = new TH2F("hmadc_raw", "MADC32 without TDC gate",
+		       N_MADC_CH,0,N_MADC_CH, 1024,0,4096);
+  hmadc_tdc = new TH2F("hmadc_tdc", "MADC32 with TDC gate",
+		       N_MADC_CH,0,N_MADC_CH, 1024,0,4096);    
+  hmadc_ene = new TH2F("hmadc_ene", "MADC32 with TDC gate, calibrated",
+		       N_MADC_CH,0,N_MADC_CH, 2048,0,50);    
 
+#ifdef ANASSD
+  
+  // layer 1
+  for(int i=0; i<3; i++){
+    hsakra_hit[i] = new TH2F(Form("hsakra_hit%d", i),
+			     Form("SAKRA hit pattern %d", i),
+			     8, -1.0*sakra_ang*TMath::DegToRad(), sakra_ang*TMath::DegToRad(),
+			     //			     8, -TMath::Pi(), TMath::Pi(), 
+			     16, sakra_rmin, sakra_rmax);
+  }
+
+  // layer 2
+  for(int i=3; i<6; i++){
+    hsakra_hit[i] = new TH2F(Form("hsakra_hit%d", i),
+			     Form("SAKRA hit pattern %d", i),
+			     8, -1.0*sakra_ang*TMath::DegToRad(), sakra_ang*TMath::DegToRad(),
+			     1, sakra_rmin, sakra_rmax);
+  }
+
+#endif
 }
 
 void analysis::HistFill(){
@@ -110,7 +139,28 @@ void analysis::HistFill(){
 
   if(evt.gr_good_clst==0) hclsteffall->Fill(0);
   if(evt.gr_good_clst==1) hclsteffall->Fill(1);  
-}
+
+  // MADC histogram
+#ifdef ANASSD
+  for(int i=0; i<N_MADC_CH; i++){
+    hmadc_raw->Fill(i, evt.madc.adc[i]);
+    if(evt.v1190_ssd.hit[i]==1){
+      hmadc_tdc->Fill(i, evt.madc.adc[i]);
+      if(i<96) hmadc_ene->Fill(i, evt.ssd_ene[i]);
+    }
+  }
+
+  for(int i=0; i<N_SAKRA; i++){
+    if(evt.sakra_good_hit[i]==1){
+      hsakra_hit[i]->Fill(evt.sakra_theta[i], evt.sakra_r[i]);
+      //if(i==2) printf("sakra %f %f\n", evt.sakra_theta[i], evt.sakra_r[i]);
+    }
+  }
+#endif
+
+
+} // end of function
+
 
 void analysis::HistWrite(){
   for(int i=0; i<N_VDCPLANE; i++){
@@ -133,4 +183,13 @@ void analysis::HistWrite(){
   }
   hhiteffall->Write();
   hclsteffall->Write();      
+
+#ifdef ANASSD
+  hmadc_raw->Write();
+  hmadc_tdc->Write();
+  hmadc_ene->Write();    
+  for(int i=0; i<N_SAKRA; i++){
+    hsakra_hit[i]->Write();
+  }
+#endif
 }

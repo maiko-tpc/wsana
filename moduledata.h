@@ -1,21 +1,23 @@
 #ifndef MODULEDATA_H_
 #define MODULEDATA_H_
 
-#define N_MADC 2
+#define N_MADC 4
 #define N_MQDC 2
 #define N_V1190 1
 #define V1190_MAX_MULTI 2
 #define N_VDCPLANE 4
 #define PLANE_SIZE 256
 
-#define MQDC_START_GEO 10
-#define MADC_START_GEO 0
+#define MQDC_START_GEO 0
+#define MADC_START_GEO 10
 #define PLA_V1190_GEO 30
+#define V1190_MAX_GEO 32
 
 #define N_INP 16
 
 #define CAMAC_SCA_CH 16
 
+#define FIELD_SSD 29555
 #define FIELD_PLA 28780
 #define FIELD_GV_OLD 0
 #define FIELD_GV_NEW 26486
@@ -37,6 +39,16 @@ const int MAX_VDC_TDC = 5000;
 
 const int VDC_OFFSET = 4000;
 
+#define SSD_TDC_CH 128
+
+#define MAX_RF_MULTI 8
+#define N_SSD_CLST 9
+#define N_SAKRA 6
+
+const double sakra_ang=72/2.0;       
+const double sakra_rmin=32.6;       // active area inner radius [mm]
+const double sakra_rmax=135.1;
+
 typedef struct madc32_data{
   unsigned int wrdcnt[N_MADC];
   unsigned int adc[N_MADC_CH];
@@ -48,6 +60,13 @@ typedef struct mqdc32_data{
   unsigned int adc[N_MQDC_CH];
   unsigned int counter[N_MQDC];
 } mqdc32_data;
+
+typedef struct v1190ssd_data{
+  unsigned int hit[SSD_TDC_CH];
+  unsigned int multi[SSD_TDC_CH];
+  unsigned int tdc_raw[SSD_TDC_CH];
+  unsigned int tdc_cor[SSD_TDC_CH];
+} v1190ssd_data;
 
 typedef struct mxdc32_hit{
   int field;

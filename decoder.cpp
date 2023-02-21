@@ -486,16 +486,18 @@ int ana_inp(evtdata *evt, unsigned int *rawdata, unsigned int size,
   unsigned int data;
   unsigned short data16;
 
-  //  printf("ana_inp, field=%d\n", field);
-  data=(ntohl(rawdata[0]));
-  data16=(data>>16)&0xffff;
-
-  if(field==FIELD_GR_NEW){  // .gv data, CAMAC
-    for(int i=0; i<N_INP; i++){
-      evt->camac_inp[i] = (data16>>i)&0x1;
+  if(evt->first_camac_inp==1 && field==FIELD_GR_NEW){
+    //  printf("ana_inp, field=%d\n", field);
+    data=(ntohl(rawdata[0]));
+    data16=(data>>16)&0xffff;
+    
+    if(field==FIELD_GR_NEW){  // .gv data, CAMAC
+      for(int i=0; i<N_INP; i++){
+	evt->camac_inp[i] = (data16>>i)&0x1;
+      }
     }
+    evt->first_camac_inp=0;
   }
-
   return 0;
 }
 

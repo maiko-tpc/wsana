@@ -11,7 +11,7 @@ anassd::anassd(){
 
   // open energy calibration parameter file
   std::ifstream calib_file;
-  string calib_fname = "/home/tamidaq/ana/furuno/calib/par/ssdcalib.dat";
+  string calib_fname = "/home/tamidaq/ana/furuno/calib/ssdcalib.dat";
   calib_file.open(calib_fname.c_str(), std::ios::in);
   if(!calib_file){
     printf("Cannot open the SSD calibration file: %s\n",

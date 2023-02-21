@@ -73,7 +73,8 @@ struct evtdata{
   double grtote, gre;
   
   unsigned int camac_inp[N_INP];
-  unsigned int vme_inp[N_INP];  
+  unsigned int vme_inp[N_INP];
+  unsigned int first_camac_inp;
 
   unsigned int unixtime;
 
@@ -93,6 +94,11 @@ struct evtdata{
   int sakra_good_hit[N_SAKRA];
   float sakra_r[N_SAKRA];
   float sakra_theta[N_SAKRA];    
+
+  // for E552 on 2023 Feb.
+  int band_v1190_multi[32];
+  int band_v1190_lead[32];  
+
 };
 
 #endif

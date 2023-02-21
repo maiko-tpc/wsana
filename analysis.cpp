@@ -616,15 +616,20 @@ void analysis::AnaV1190Ref(){
 }
 
 void analysis::AnaV1190inpreg(){
-  unsigned int tmp_field, tmp_ch;
+  unsigned int tmp_field, tmp_ch, inp_ch;
   int hit_size = (int)(evt.v1190_hit_all.size());
+
+  for(int i=0; i<5; i++) evt.vme_inp[i]=1; // level input
 
   for(int i=0; i<hit_size; i++){
     tmp_field = evt.v1190_hit_all[i].field;
     tmp_ch = evt.v1190_hit_all[i].ch;
     
     if(tmp_field == FIELD_PLA && tmp_ch>15 && tmp_ch<32){
-      evt.vme_inp[tmp_ch-16] = 1;
+      inp_ch = tmp_ch-16;
+
+      if(inp_ch>=0 && inp_ch<5)  evt.vme_inp[inp_ch] = 0; // level input
+      if(inp_ch>=5 && inp_ch<16) evt.vme_inp[inp_ch] = 1; // pulse input
     }
   }
 }
@@ -700,11 +705,18 @@ void analysis::InitEvt(){
     evt.camac_inp[i]=0;
     evt.vme_inp[i]=0;
   }
-
+  evt.first_camac_inp=1;
+  
   evt.camac_sca_flag=0;
 
   for(int i=0; i<16; i++){
     evt.v1190pla_multi[i]=0;
+  }
+
+  // for E552 on 2023 Feb.
+  for(int i=0; i<32; i++){
+    evt.band_v1190_multi[i]=0;
+    evt.band_v1190_lead[i]=-1000000;    
   }
 
 }

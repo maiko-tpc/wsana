@@ -82,6 +82,12 @@ int anapla::GetV1190Hit(evtdata *evt){
 	cnt++;
       }
 
+      // E552 analysis on 2023 Feb
+      if(ch>=32 && ch<64){
+	evt->band_v1190_multi[ch-32]++;
+	evt->band_v1190_lead[ch-32] = evt->v1190_hit_all[i].lead_cor+VDC_OFFSET;      
+      }
+
     } // end of  if(evt->v1190_hit_all[i].field == FIELD_PLA)
         
   } // end of   for(i=0; i<v1190_size; i++)
@@ -136,3 +142,4 @@ int anapla::GetFERAHit(evtdata *evt){
 
   return cnt;
 }
+

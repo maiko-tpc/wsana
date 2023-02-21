@@ -131,7 +131,7 @@ int analysis::AnaFld(){
       //	ana_madc32(&evt.madc, tmpdata, region_size);
       //      ana_mxdc32(&evt, tmpdata, region_size);
       ana_mxdc32(evt.mxdc32_hit_all, tmpdata, region_size, field_id);		
-	break;
+      break;
     case 0x5:  // Scaler64?
       // will be implemented later...	  
       break;

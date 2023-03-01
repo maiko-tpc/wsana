@@ -83,6 +83,7 @@ struct evtdata{
 
   unsigned long int vme_sca[VME_SCA_CH];
 
+  unsigned int v1190_first_hit[V1190_MAX_GEO][N_V1190_CH];
   unsigned int v1190pla_multi[16];
 
   int rf_ssd[MAX_RF_MULTI];

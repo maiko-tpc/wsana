@@ -6,7 +6,11 @@
 
 #define V1190_SSD_GEO 24
 #define V1190_MAX_GEO 32
+
+#define V1190_SUBTRACT_REF 1
 #define V1190_REF_CH 127
+#define V1190_REF_CH_PLA 15
+
 #define VSN_GR 1
 
 using namespace std;
@@ -234,7 +238,7 @@ int ana_v1190(vector<v1190_hit> &v1190_hit_all,
   int ref_flag[V1190_MAX_GEO]={0};  
 
   unsigned int ref_ch=V1190_REF_CH;
-  if(field_id == FIELD_PLA) ref_ch = 15;
+  if(field_id == FIELD_PLA) ref_ch = V1190_REF_CH_PLA;
   
   // multiple module data is coming (not single module)
   while(rp<size/2){
@@ -292,7 +296,7 @@ int ana_v1190(vector<v1190_hit> &v1190_hit_all,
     } // end of global header
   } // end of all data loop 
   
-  // reanalysis
+  // reanalysis 
   int total_hit=0;
   v1190_hit tmp_hit;
 
@@ -310,7 +314,10 @@ int ana_v1190(vector<v1190_hit> &v1190_hit_all,
 	    tmp_hit.geo=geo;
 	    tmp_hit.ch=i;
 	    tmp_hit.lead_raw = tmp_lead[geo][i][j];
-	    tmp_hit.lead_cor = tmp_lead[geo][i][j]-ref_lead[geo];
+	    tmp_hit.lead_cor = tmp_lead[geo][i][j];
+	    if(V1190_SUBTRACT_REF==1){
+	      tmp_hit.lead_cor -= ref_lead[geo];	    
+	    }
 	    
 	    if(lead_cnt[geo][i]==trail_cnt[geo][i]){
 	      tmp_hit.trail_raw = tmp_trail[geo][i][j];

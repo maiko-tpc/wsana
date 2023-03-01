@@ -72,22 +72,32 @@ int anapla::GetV1190Hit(evtdata *evt){
       // GR       
       if(ch>=0 && ch<16){
 	evt->v1190pla_multi[ch]++;
-	evt->grpla.vtdc[ch] = evt->v1190_hit_all[i].lead_cor+VDC_OFFSET;
+	if(evt->v1190_first_hit[PLA_V1190_GEO][ch] == 1){
+	  evt->grpla.vtdc[ch] = evt->v1190_hit_all[i].lead_cor+VDC_OFFSET;
+	  evt->v1190_first_hit[PLA_V1190_GEO][ch] = 0;
+	}
 	cnt++;
       }
 
       // LAS
       if(ch>=16 && ch<32){
-	evt->laspla.vtdc[ch-16] = evt->v1190_hit_all[i].lead_cor+VDC_OFFSET;
+	if(evt->v1190_first_hit[PLA_V1190_GEO][ch] == 1){
+	  evt->laspla.vtdc[ch-16] = evt->v1190_hit_all[i].lead_cor+VDC_OFFSET;
+	  evt->v1190_first_hit[PLA_V1190_GEO][ch] = 0;
+	}
 	cnt++;
       }
 
       // E552 analysis on 2023 Feb
       if(ch>=32 && ch<64){
 	evt->band_v1190_multi[ch-32]++;
-	evt->band_v1190_lead[ch-32] = evt->v1190_hit_all[i].lead_cor+VDC_OFFSET;      
+	if(evt->v1190_first_hit[PLA_V1190_GEO][ch] == 1){
+	  evt->band_v1190_lead[ch-32] = evt->v1190_hit_all[i].lead_cor+VDC_OFFSET;
+	  evt->v1190_first_hit[PLA_V1190_GEO][ch] = 0;
+	}
+	cnt++;
       }
-
+      
     } // end of  if(evt->v1190_hit_all[i].field == FIELD_PLA)
         
   } // end of   for(i=0; i<v1190_size; i++)

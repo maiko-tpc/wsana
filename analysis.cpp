@@ -726,6 +726,12 @@ void analysis::InitEvt(){
   
   evt.camac_sca_flag=0;
 
+  for(int i=0; i<V1190_MAX_GEO; i++){
+    for(int j=0; j<N_V1190_CH; j++){
+      evt.v1190_first_hit[i][j]=1;
+    }
+  }
+  
   for(int i=0; i<16; i++){
     evt.v1190pla_multi[i]=0;
   }

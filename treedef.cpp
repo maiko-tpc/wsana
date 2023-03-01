@@ -9,6 +9,8 @@ void analysis::TreeDef(){
   tree->Branch("unixtime",  &evt.unixtime, "unixtime/I");
   tree->Branch("camac_inp", &evt.camac_inp, Form("camac_inp[%d]/I", N_INP));
   tree->Branch("vme_inp", &evt.vme_inp, Form("vme_inp[%d]/I", N_INP));  
+  tree->Branch("camac_sca", &evt.camac_sca, Form("camac_sca[%d]/l", CAMAC_SCA_CH));
+  tree->Branch("vme_sca", &evt.vme_sca, Form("vme_sca[%d]/l", VME_SCA_CH));  
   tree->Branch("v1190_hit_ref", evt.v1190_hit_ref,
 	       Form("v1190_hit_ref[%d]/I", V1190_MAX_GEO));
   

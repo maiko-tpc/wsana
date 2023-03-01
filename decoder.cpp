@@ -404,24 +404,24 @@ int ana_grpla_tdc(pla_data *grpla, unsigned int *rawdata, unsigned int size){
   unsigned int cnt=1;
   int rawdata_index;
 
-    data16=data&0xffff;
-    ich=(data16>>11)&0x0f;
-    tmp_tdc=data16&0x7ff;
-    if(ich<N_GRPLA_CH)grpla->tdc[ich]=tmp_tdc;
+  data16=data&0xffff;
+  ich=(data16>>11)&0x0f;
+  tmp_tdc=data16&0x7ff;
+  if(ich<N_GRPLA_CH)grpla->tdc[ich]=tmp_tdc;
     
-    while(cnt<ndata){
-      rawdata_index=(int)(cnt/2+cnt%2);
-      data=(ntohl(rawdata[rawdata_index]));
-      if((cnt%2)==0) data16=data&0xffff;
-      if((cnt%2)==1) data16=(data>>16)&0xffff;
-      if(data16!=0){
-	ich=(data16>>11)&0x0f;
-	tmp_tdc=data16&0x7ff;
-	if(ich<N_GRPLA_CH)grpla->tdc[ich]=tmp_tdc;
-      }
-      
-      cnt++;
+  while(cnt<ndata){
+    rawdata_index=(int)(cnt/2+cnt%2);
+    data=(ntohl(rawdata[rawdata_index]));
+    if((cnt%2)==0) data16=data&0xffff;
+    if((cnt%2)==1) data16=(data>>16)&0xffff;
+    if(data16!=0){
+      ich=(data16>>11)&0x0f;
+      tmp_tdc=data16&0x7ff;
+      if(ich<N_GRPLA_CH)grpla->tdc[ich]=tmp_tdc;
     }
+    
+    cnt++;
+  }
   return vsn;
 }
 
@@ -530,6 +530,79 @@ int ana_camac_sca(evtdata *evt, unsigned int *rawdata, unsigned int size,
       evt->camac_sca[ich] += tmpdata;
       ich++;
     }  
+  }
+  return 0;
+}
+
+int ana_vme_sca(evtdata *evt, unsigned int *rawdata, unsigned int size,
+		  int field){
+  unsigned int rp=0;
+  unsigned int tmpdata;
+
+  printf("ana_vme_sca\n");
+
+  if(field==FIELD_PLA){
+    int ich=0;
+    while(rp<size/2){
+      tmpdata=flip_32bit(ntohl(rawdata[rp]));
+      rp++;
+
+      if(ich<VME_SCA_CH) evt->vme_sca[ich] = tmpdata;
+      ich++;
+    }  
+  }
+  return 0;
+}
+
+int ana_vme_sca64(evtdata *evt, unsigned int *rawdata, unsigned int size,
+		  int field){
+
+  //  unsigned int tmpdata;
+  unsigned int tmpdata12, tmpdata0, tmpdata3;
+  //  unsigned short data16;
+  int rawdata_index12, rawdata_index0, rawdata_index3;
+  unsigned long int sca0,sca1,sca2,sca3;
+  
+  if(field==FIELD_PLA){
+    //    if(evt->eve <10)printf("ana_vme_sca64*******************\n");
+
+    // Read the Extended ID (should be 0x0200)
+    //    tmpdata = (ntohl(rawdata[0]));
+    //    data16=(tmpdata>>16)&0xffff;
+
+    //    if(evt->eve <10) printf("ID=0x%04x\n", data16);
+    
+    // Read scaler data (divided into 16 bit data)
+    int nch = (size-1)/4;
+    int ich = 0;
+    while(ich<nch){
+      rawdata_index12=(int)(ich*2 + 1);
+      rawdata_index0 =rawdata_index12 -1;
+      rawdata_index3 =rawdata_index12 +1;      
+
+      tmpdata12=(ntohl(rawdata[rawdata_index12]));
+      tmpdata0 =(ntohl(rawdata[rawdata_index0]));
+      tmpdata3 =(ntohl(rawdata[rawdata_index3]));      
+      
+      sca0 = tmpdata0  & 0xffff;
+      sca1 = (tmpdata12 >>16) & 0xffff;      
+      sca2 = tmpdata12  & 0xffff;
+      sca3 = (tmpdata3 >>16) & 0xffff;
+
+      if(ich<VME_SCA_CH){
+	evt->vme_sca[ich] =
+	  ((sca3<<48) & 0xffff000000000000) +
+	  ((sca2<<32) & 0x0000ffff00000000) +
+	  ((sca1<<16) & 0x00000000ffff0000) +
+	  ((sca0)     & 0x000000000000ffff);
+      }
+      
+      //      if(evt->eve <10) printf("ch%d: 0x %04lx %04lx %04lx %04lx\n", ich, sca3, sca2, sca1, sca0);
+      //      if(evt->eve <10) printf("ch%d: 0x %016lx\n", ich, evt->vme_sca[ich]);      
+      
+      ich++;
+    }    
+    //    if(evt->eve <10)printf("*******************\n");
   }
   return 0;
 }

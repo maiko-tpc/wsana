@@ -35,4 +35,10 @@ int ana_unixtime(evtdata *evt, unsigned int *rawdata, unsigned int size,
 int ana_camac_sca(evtdata *evt, unsigned int *rawdata, unsigned int size,
 		  int field);
 
+int ana_vme_sca(evtdata *evt, unsigned int *rawdata, unsigned int size,
+		int field);
+
+int ana_vme_sca64(evtdata *evt, unsigned int *rawdata, unsigned int size,
+		  int field);
+
 #endif // end of include guard

@@ -17,6 +17,8 @@
 
 #define CAMAC_SCA_CH 16
 
+#define VME_SCA_CH 32
+
 #define FIELD_SSD 29555
 #define FIELD_PLA 28780
 #define FIELD_GV_OLD 0

@@ -79,7 +79,9 @@ struct evtdata{
   unsigned int unixtime;
 
   unsigned int camac_sca_flag;
-  unsigned long int camac_sca[CAMAC_SCA_CH];  
+  unsigned long int camac_sca[CAMAC_SCA_CH];
+
+  unsigned long int vme_sca[VME_SCA_CH];
 
   unsigned int v1190pla_multi[16];
 

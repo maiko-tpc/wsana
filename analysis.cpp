@@ -14,6 +14,7 @@ analysis::analysis(){
   sprintf(opt.parfname, "par/default.par");
   
   ClearCamacSca();
+  ClearVmeSca();
   
   pla = new anapla();
 
@@ -133,16 +134,16 @@ int analysis::AnaFld(){
       ana_mxdc32(evt.mxdc32_hit_all, tmpdata, region_size, field_id);		
       break;
     case 0x5:  // Scaler64?
-      // will be implemented later...	  
+      ana_vme_sca64(&evt, tmpdata, region_size, field_id);
       break;
-    case 0x6:  // CAMAC scaler?
+    case 0x6:  // CAMAC scaler
       ana_camac_sca(&evt, tmpdata, region_size, field_id);
       break;
     case 0x8:  // UNIX time
       ana_unixtime(&evt, tmpdata, region_size, field_id);
       break;
     case 0x9:  // V830 scaler
-      // will be implemented later...
+      //      ana_vme_sca(&evt, tmpdata, region_size, field_id);
       break;	  
     case 0xd:  // FERA QDC
       //      ana_grpla_qdc(&evt.grpla, tmpdata, region_size);
@@ -453,6 +454,16 @@ void analysis::ShowCamacSca(){
   printf("**********************\n");
 }
 
+void analysis::ShowVmeSca(){
+  char sca_name[256];
+  printf("*********** VME Scaler64 (pla node)  ***********\n");
+  for(int i=0; i<VME_SCA_CH; i++){
+    sprintf(sca_name, "Sca %02d", i);
+    printf("%s: %012ld\n", sca_name, evt.vme_sca[i]);
+  }
+  printf("**********************\n");
+}
+
 void analysis::ShowGREff(){
   printf("\n");
   printf("GR Hit Efficiencies\n");
@@ -471,6 +482,12 @@ void analysis::ShowGREff(){
 void analysis::ClearCamacSca(){
   for(int i=0; i<CAMAC_SCA_CH; i++){
     evt.camac_sca[i]=0;
+  }
+}
+
+void analysis::ClearVmeSca(){
+  for(int i=0; i<VME_SCA_CH; i++){
+    evt.vme_sca[i]=0;
   }
 }
 

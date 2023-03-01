@@ -70,7 +70,9 @@ public:
   int GetOnline();  
   void ShowCommandOption();
   void ShowCamacSca();
+  void ShowVmeSca();  
   void ClearCamacSca();
+  void ClearVmeSca();  
   void SetParFile(char *fname);
   void ShowGREff();
   

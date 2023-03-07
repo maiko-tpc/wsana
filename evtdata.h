@@ -102,6 +102,8 @@ struct evtdata{
   int band_v1190_multi[32];
   int band_v1190_lead[32];  
 
+  unsigned int mqdc_nhit[2]; //[0]:GR, [1]:LAS
+
 };
 
 #endif

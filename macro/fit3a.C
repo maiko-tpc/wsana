@@ -109,7 +109,7 @@ int fit3a(){
     
     fprintf(fp, "%d %f %f\n", i, p0, p1);
 
-    c1->SaveAs(Form("~/ana/furuno/macro/pic/ch%d.png", i));
+    //    c1->SaveAs(Form("~/ana/furuno/macro/pic/ch%d.png", i));
     sleep(1);
   }
   fclose(fp);

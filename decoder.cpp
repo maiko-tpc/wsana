@@ -509,7 +509,7 @@ int ana_inp(evtdata *evt, unsigned int *rawdata, unsigned int size,
 }
 
 int ana_unixtime(evtdata *evt, unsigned int *rawdata, unsigned int size,
-	    int field){
+		 int field){
 
   unsigned int data;
 

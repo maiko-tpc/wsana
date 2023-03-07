@@ -742,6 +742,9 @@ void analysis::InitEvt(){
     evt.band_v1190_lead[i]=-1000000;    
   }
 
+  for(int i=0; i<2; i++){
+    evt.mqdc_nhit[i]=0;
+  }
 }
 
 

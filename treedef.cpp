@@ -69,7 +69,8 @@ void analysis::TreeDef(){
   // for E552 on 2023 Feb.
   tree->Branch("band_v1190_multi", &evt.band_v1190_multi, "band_v1190_multi[32]/I");
   tree->Branch("band_v1190_lead", &evt.band_v1190_lead, "band_v1190_lead[32]/I");  
-
+  tree->Branch("mqdc_nhit", &evt.mqdc_nhit, "mqdc_nhit[2]/i");
+  
 } // end of void analysis::TreeDef(){
 
 void analysis::TreeWrite(){

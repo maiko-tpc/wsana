@@ -1,5 +1,8 @@
 #include "anapla.hpp"
 
+#define PLA_V1190_LEAD_MIN = -100000
+#define PLA_V1190_LEAD_MAX =  100000
+
 anapla::anapla(){
 }
 
@@ -40,6 +43,7 @@ int anapla::GetMQDCHit(evtdata *evt){
     // GR pla
     if(evt->mxdc32_hit_all[i].geo==0 && evt->mxdc32_hit_all[i].field==FIELD_PLA){
       ch = evt->mxdc32_hit_all[i].ch;
+      evt->mqdc_nhit[0]++;
       if(ch<N_PLA_CH){
 	evt->grpla.vqdc[ch] = evt->mxdc32_hit_all[i].adc;
 	cnt++;
@@ -49,6 +53,7 @@ int anapla::GetMQDCHit(evtdata *evt){
     // LAS pla
     if(evt->mxdc32_hit_all[i].geo==1 && evt->mxdc32_hit_all[i].field==FIELD_PLA){
       ch = evt->mxdc32_hit_all[i].ch;
+      evt->mqdc_nhit[1]++;
       if(ch<N_PLA_CH){
 	evt->laspla.vqdc[ch] = evt->mxdc32_hit_all[i].adc;
 	cnt++;
@@ -63,15 +68,18 @@ int anapla::GetV1190Hit(evtdata *evt){
   int i, ch;
   int v1190_size = (int)(evt->v1190_hit_all.size());  
   int cnt=0;
+  //  int lead_raw=0;
   
   for(i=0; i<v1190_size; i++){
 
     if(evt->v1190_hit_all[i].field == FIELD_PLA){
       ch = evt->v1190_hit_all[i].ch;
-
+      //      lead_raw = evt->v1190_hit_all[i].lead_raw;
+      
       // GR       
       if(ch>=0 && ch<16){
 	evt->v1190pla_multi[ch]++;
+	// take only the first hit
 	if(evt->v1190_first_hit[PLA_V1190_GEO][ch] == 1){
 	  evt->grpla.vtdc[ch] = evt->v1190_hit_all[i].lead_cor+VDC_OFFSET;
 	  evt->v1190_first_hit[PLA_V1190_GEO][ch] = 0;
@@ -81,6 +89,7 @@ int anapla::GetV1190Hit(evtdata *evt){
 
       // LAS
       if(ch>=16 && ch<32){
+	// take only the first hit
 	if(evt->v1190_first_hit[PLA_V1190_GEO][ch] == 1){
 	  evt->laspla.vtdc[ch-16] = evt->v1190_hit_all[i].lead_cor+VDC_OFFSET;
 	  evt->v1190_first_hit[PLA_V1190_GEO][ch] = 0;
@@ -91,6 +100,7 @@ int anapla::GetV1190Hit(evtdata *evt){
       // E552 analysis on 2023 Feb
       if(ch>=32 && ch<64){
 	evt->band_v1190_multi[ch-32]++;
+	// take only the first hit
 	if(evt->v1190_first_hit[PLA_V1190_GEO][ch] == 1){
 	  evt->band_v1190_lead[ch-32] = evt->v1190_hit_all[i].lead_cor+VDC_OFFSET;
 	  evt->v1190_first_hit[PLA_V1190_GEO][ch] = 0;

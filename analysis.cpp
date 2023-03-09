@@ -636,7 +636,8 @@ void analysis::AnaV1190inpreg(){
   unsigned int tmp_field, tmp_ch, inp_ch;
   int hit_size = (int)(evt.v1190_hit_all.size());
 
-  for(int i=0; i<5; i++) evt.vme_inp[i]=1; // level input
+  for(int i=0; i<5; i++) evt.vme_inp[i] = 1; // level input
+  evt.vme_inp[15] = 1; // level input  
 
   for(int i=0; i<hit_size; i++){
     tmp_field = evt.v1190_hit_all[i].field;
@@ -646,7 +647,8 @@ void analysis::AnaV1190inpreg(){
       inp_ch = tmp_ch-16;
 
       if(inp_ch>=0 && inp_ch<5)  evt.vme_inp[inp_ch] = 0; // level input
-      if(inp_ch>=5 && inp_ch<16) evt.vme_inp[inp_ch] = 1; // pulse input
+      if(inp_ch>=5 && inp_ch<15) evt.vme_inp[inp_ch] = 1; // pulse input
+      if(inp_ch==15)             evt.vme_inp[inp_ch] = 0; // level input
     }
   }
 }

@@ -69,15 +69,11 @@ int main(int iarg, char *argv[]) {
       ana->SetOnline();
     }
 
-    // online flag
-    if(strstr(argv[i], "-online") != NULL){
-      ana->SetOnline();
-    }
-
     // THttp flag
     if(strstr(argv[i], "-web") != NULL){
       portnum=atoi(argv[i+1]);
       ana->SetWeb();      
+      ana->SetOnline();
     }
     
     // parameter file name

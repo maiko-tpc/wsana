@@ -515,7 +515,14 @@ int ana_unixtime(evtdata *evt, unsigned int *rawdata, unsigned int size,
 
   data=(ntohl(rawdata[0]));
   evt->unixtime = data;
+
+  evt->unixtimesub = evt->unixtime - evt->unixtimefirst;
   
+  if(evt->eve<1000){
+    evt->unixtimesub = 0;
+    evt->unixtimefirst = evt->unixtime;    
+  }
+
   //  printf("ana_unixtime, field=%d\n", field);
   //  printf("time=%d\n", data);
   

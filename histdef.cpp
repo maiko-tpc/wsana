@@ -99,6 +99,9 @@ void analysis::HistDef(){
   }
 
 #endif
+
+  hunixtimesub = new TH1F("unixtimesub", "time diff from run start", 500, 0, 10000);
+
 }
 
 void analysis::HistFill(){
@@ -158,7 +161,8 @@ void analysis::HistFill(){
   }
 #endif
 
-
+  hunixtimesub->Fill(evt.unixtimesub);
+  
 } // end of function
 
 
@@ -192,4 +196,6 @@ void analysis::HistWrite(){
     hsakra_hit[i]->Write();
   }
 #endif
+
+  hunixtimesub->Write();
 }

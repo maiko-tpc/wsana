@@ -52,7 +52,8 @@ void analysis::MakeTHttp(int portnum){
   }
 
   serv->SetItemField("/GR_pla","_drawopt","col");
- 
+
+  serv->Register("/etc", hunixtimesub);
 }
 
 void analysis::CloseTHttp(){

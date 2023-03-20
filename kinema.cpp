@@ -34,9 +34,20 @@ kinema::kinema(){
   nucl_data.push_back((nucl){"18O",    18,  8,  -0.7821});
   nucl_data.push_back((nucl){"20Ne",   20, 10,  -7.0419});
   nucl_data.push_back((nucl){"24Mg",   24, 12, -13.93340});
-  nucl_data.push_back((nucl){"58Ni",   58, 28, -60.223});  
+  nucl_data.push_back((nucl){"40Ca",   40, 20, -34.846402});
+  nucl_data.push_back((nucl){"42Ca",   42, 20, -38.54729});
+  nucl_data.push_back((nucl){"43Ca",   43, 20, -38.40887});
+  nucl_data.push_back((nucl){"44Ca",   44, 20, -41.4687});
+  nucl_data.push_back((nucl){"46Ca",   46, 20, -43.1396});
+  nucl_data.push_back((nucl){"48Ca",   48, 20, -44.224868});            
+  nucl_data.push_back((nucl){"58Ni",   58, 28, -60.223});
+  nucl_data.push_back((nucl){"60Ni",   60, 28, -64.4732});  
+  nucl_data.push_back((nucl){"90Zr",   90, 40, -88.77255});
+  nucl_data.push_back((nucl){"91Zr",   91, 40, -87.89559});
+  nucl_data.push_back((nucl){"92Zr",   92, 40, -88.45902});
+  nucl_data.push_back((nucl){"94Zr",   94, 40, -87.26933});          
   nucl_data.push_back((nucl){"197Au", 197, 79, -31.158});
-  nucl_data.push_back((nucl){"208Pb", 208, 82, -21.764});
+  nucl_data.push_back((nucl){"208Pb", 208, 82, -21.7485});
 
   // Set the default nuclei
   for(int i=0; i<(int)nucl_data.size(); i++){

@@ -140,7 +140,8 @@ int main(int iarg, char *argv[]) {
       if(gSystem->ProcessEvents()) break;
     }
     if(ana->GetOnline() && ana->IsBLDeof()){
-      printf("Waiting for data... (eve: %d)\n", ana->GetEveNum());
+      printf("Waiting for data... (eve: %d)\r", ana->GetEveNum());
+      fflush(stdout);
       ana->ClearBLDError();
       sleep(10);
     }

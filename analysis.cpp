@@ -200,43 +200,47 @@ int  analysis::AnaEvt(){
     field_cnt++;
   }
   
-  /* Event by event analysis */
-
-  // Analyze v1190 ref hit
-  AnaV1190Ref();
+  /* Event by event analysis from here */
+  if( (SKIP_BLK_END==0) || (SKIP_BLK_END==1 && evt.vme_inp[15]==0) ){
   
-  // Analyze input register by V1190
-  AnaV1190inpreg();
-  
-  // GR plastic
-  pla->analyze(&evt);
-     
-  // SSD
+    // Analyze v1190 ref hit
+    AnaV1190Ref();
+    
+    // Analyze input register by V1190
+    AnaV1190inpreg();
+    
+    // GR plastic
+    pla->analyze(&evt);
+    
+    // SSD
 #ifdef ANASSD
-  ssd->analyze(&evt);
+    ssd->analyze(&evt);
 #endif
-  
-  // GR VDC
-  gr->anavdc(&evt);
-
-  // kinema
-  evt.grp=kine->Calc_p3(&evt);
-  evt.grtote = kine->Calc_TotEne(kine->scat_nucl, evt.grp);
-  evt.gre = kine->Calc_KineEne(kine->scat_nucl, evt.grtote);  
-  
-  
-  if(evt.eve%10000==0){
-    CalcGREff();
-    //    ShowProg();
-    //    printf("Analyzed %d events\n", evt.eve);
-    printf("Analyzed %d events\r", evt.eve);
-    fflush(stdout);
-  }
-
-  tree->Fill();
-  HistFill();
+    
+    // GR VDC
+    gr->anavdc(&evt);
+    
+    // kinema
+    evt.grp=kine->Calc_p3(&evt);
+    evt.grtote = kine->Calc_TotEne(kine->scat_nucl, evt.grp);
+    evt.gre = kine->Calc_KineEne(kine->scat_nucl, evt.grtote);  
+    
+    
+    if(evt.eve%10000==0){
+      CalcGREff();
+      //    ShowProg();
+      //    printf("Analyzed %d events\n", evt.eve);
+      printf("Analyzed %d events\r", evt.eve);
+      fflush(stdout);
+    }
+    
+    tree->Fill();
+    HistFill();
+    
+  } //if( (SKIP_BLK_END==0)...
 
   evt.eve++;
+
   return evt.eve;
 }
 

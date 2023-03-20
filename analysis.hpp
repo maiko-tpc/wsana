@@ -2,6 +2,7 @@
 #define ANALYSIS_HPP_
 
 //#define ANASSD   // comment out to disable ssd analysis
+#define SKIP_BLK_END 1
 
 #include <stdio.h>
 #include <stdlib.h>

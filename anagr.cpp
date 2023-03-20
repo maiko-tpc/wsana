@@ -480,8 +480,13 @@ int anagr::calc_center_pos(evtdata *evt){
 }
 
 double anagr::fit_planes(evtdata *evt){
-  evt->grx = (center_pos[0] + center_pos[2])/2.0;
-  evt->gry = (center_pos[1] + center_pos[3])/2.0;  
+  //  evt->grx = (center_pos[0] + center_pos[2])/2.0;
+  //  evt->gry = (center_pos[1] + center_pos[3])/2.0;  
+
+  // 2023.03.21  focal plane is at the exit window of GR
+  //  which is close to the X1 plane
+  evt->grx = center_pos[0];
+  evt->gry = center_pos[1];  
   
   evt->grthx = atan((center_pos[2]-center_pos[0])/chamb_space)*TMath::RadToDeg();
   evt->grthy = atan((center_pos[3]-center_pos[1])/chamb_space)*TMath::RadToDeg();  

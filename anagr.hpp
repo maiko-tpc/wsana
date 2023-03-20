@@ -87,7 +87,8 @@ private:
   float center_pos[N_VDCPLANE]; // in XY coordinate
   
   /* spectrometer parameter */
-  float gr_disp = 15451.0;
+  //  float gr_disp = 15451.0;
+  float gr_disp = 37100;
   float grx_size = 1250.0;
   
 };

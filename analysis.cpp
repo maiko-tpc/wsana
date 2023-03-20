@@ -463,7 +463,7 @@ void analysis::ShowCamacSca(){
 void analysis::ShowVmeSca(){
   char sca_name[256];
   printf("*********** VME Scaler64 (pla node)  ***********\n");
-  for(int i=0; i<VME_SCA_CH; i++){
+  for(int i=0; i<4; i++){
     sprintf(sca_name, "Sca %02d", i);
     printf("%s: %012ld\n", sca_name, evt.vme_sca[i]);
   }

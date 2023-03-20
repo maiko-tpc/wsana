@@ -201,14 +201,14 @@ int  analysis::AnaEvt(){
   }
   
   /* Event by event analysis from here */
-  if( (SKIP_BLK_END==0) || (SKIP_BLK_END==1 && evt.vme_inp[15]==0) ){
   
-    // Analyze v1190 ref hit
-    AnaV1190Ref();
-    
-    // Analyze input register by V1190
-    AnaV1190inpreg();
-    
+  // Analyze v1190 ref hit
+  AnaV1190Ref();
+  
+  // Analyze input register by V1190
+  AnaV1190inpreg();
+  
+  if( (SKIP_BLK_END==0) || (SKIP_BLK_END==1 && evt.vme_inp[15]==0) ){
     // GR plastic
     pla->analyze(&evt);
     

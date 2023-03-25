@@ -495,5 +495,5 @@ double anagr::fit_planes(evtdata *evt){
 
 
 void anagr::calc_rela_momentum(evtdata *evt){
-  evt->grp_rela = (evt->grx - grx_size/2.0)*100/gr_disp;
+  evt->grp_rela = (evt->grx - grx_size/2.0)*100/(gr_disp/sqrt(2.0));
 }

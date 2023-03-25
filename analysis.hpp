@@ -81,7 +81,8 @@ public:
   void HistDef();  
   void HistWrite();
   void HistFill();  
-
+  void FillGRTrack();
+  
   // defined in treedef.cpp
   void TreeDef();
   void TreeWrite();
@@ -141,6 +142,11 @@ private:
 #ifdef ANASSD
   TH2F* hsakra_hit[6];
 #endif
+
+  TH2F* hgrtrackx;
+  TH2F* hgrtracky;  
+
+
   //
   
   char comment[100000];

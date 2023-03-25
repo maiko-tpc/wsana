@@ -102,6 +102,16 @@ void analysis::HistDef(){
 
   hunixtimesub = new TH1F("unixtimesub", "time diff from run start", 500, 0, 10000);
 
+  hgrtrackx = new TH2F("hgrtrackx", "trajectory of particles X",
+		       500, -500,500, 400, 0, 1200);
+  hgrtrackx->GetXaxis()->SetTitle("Z (mm)");
+  hgrtrackx->GetYaxis()->SetTitle("X (mm)");  
+  
+  hgrtracky = new TH2F("hgrtracky", "trajectory of particles Y",
+		       500, -500,500, 500, -500, 500);
+  hgrtracky->GetXaxis()->SetTitle("Z (mm)");
+  hgrtracky->GetYaxis()->SetTitle("Y (mm)");  
+  
 }
 
 void analysis::HistFill(){
@@ -162,7 +172,9 @@ void analysis::HistFill(){
 #endif
 
   hunixtimesub->Fill(evt.unixtimesub);
-  
+
+  if(evt.good_fit==1) FillGRTrack();
+
 } // end of function
 
 
@@ -198,4 +210,32 @@ void analysis::HistWrite(){
 #endif
 
   hunixtimesub->Write();
+
+  hgrtrackx->Write();
+  hgrtracky->Write();  
+}
+
+void analysis::FillGRTrack(){
+
+  int nbinx;
+  float x,y;
+  
+  // X track
+  nbinx = hgrtrackx->GetXaxis()->GetNbins();
+  
+  for(int i=0; i<nbinx; i++){
+    x = hgrtrackx->GetXaxis()->GetBinCenter(i);
+    y = x*tan(evt.grthx * TMath::DegToRad()) + evt.grx;
+    hgrtrackx->Fill(x,y);
+  }
+
+  // Y Track
+  nbinx = hgrtracky->GetXaxis()->GetNbins();
+  
+  for(int i=0; i<nbinx; i++){
+    x = hgrtracky->GetXaxis()->GetBinCenter(i);
+    y = x*tan(evt.grthy * TMath::DegToRad()) + evt.gry;
+    hgrtracky->Fill(x,y);
+  }
+
 }

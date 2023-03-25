@@ -30,6 +30,9 @@ void analysis::MakeTHttp(int portnum){
 
   serv->Register("/GR", hhiteffall);
   serv->Register("/GR", hclsteffall);  
+
+  serv->Register("/GR", hgrtrackx);
+  serv->Register("/GR", hgrtracky);  
   
   for(int i=0; i<4; i++){
     serv->Register("/GR_pla", hgrfqdc[i]);

@@ -13,6 +13,8 @@
     grpidcut->SetLineWidth(2);    
     printf("\n------------\n");
     printf("GR PID cut name: %s\n", grpid->GetName());
+    printf("PID Par X: %s\n", grpidcut->GetVarX());
+    printf("PID Par Y: %s\n", grpidcut->GetVarY());    
     printf("------------\n\n");
 
   }

@@ -334,7 +334,6 @@ int anagr::IsGoodClst(evtdata *evt){
   int result=1;
   for(int i=0; i<N_VDCPLANE; i++){
     if(evt->nclst[i]!=1) result=0;
-    if(evt->clst_size[i]<3) result=0;    
   }
   return result;
 }
@@ -495,5 +494,5 @@ double anagr::fit_planes(evtdata *evt){
 
 
 void anagr::calc_rela_momentum(evtdata *evt){
-  evt->grp_rela = (evt->grx - grx_size/2.0)*100/(gr_disp/sqrt(2.0));
+  evt->grp_rela = (evt->grx - grx_size/2.0)*100/(gr_disp*sqrt(2.0));
 }

@@ -490,16 +490,17 @@ double anagr::fit_planes(evtdata *evt){
 
   // 2023.03.21  focal plane is at the exit window of GR
   //  which is close to the X1 plane
-  evt->grx = center_pos[0];
-  evt->gry = center_pos[1];  
+  evt->grx = center_pos[0] - grx_size/2.0;
+  evt->gry = center_pos[1] - gry_size/2.0;  
   
-  evt->grthx = atan((center_pos[2]-center_pos[0])/chamb_space)*TMath::RadToDeg();
+  evt->grthx = atan((center_pos[2]+chamb_space - center_pos[0])/chamb_space)*TMath::RadToDeg()-45.0;  
+  evt->grthx2 = atan((center_pos[2]-center_pos[0])/chamb_space)*TMath::RadToDeg();
   evt->grthy = atan((center_pos[3]-center_pos[1])/chamb_space)*TMath::RadToDeg();
-  evt->grthx2 = atan((center_pos[2]+chamb_space - center_pos[0])/chamb_space)*TMath::RadToDeg()-45.0;  
+
   return 0;
 }
 
 
 void anagr::calc_rela_momentum(evtdata *evt){
-  evt->grp_rela = (evt->grx - grx_size/2.0)*100/(gr_disp*sqrt(2.0));
+  evt->grp_rela = evt->grx/(gr_disp*sqrt(2.0))*100.0;
 }

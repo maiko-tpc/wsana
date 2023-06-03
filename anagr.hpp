@@ -89,6 +89,7 @@ private:
   /* spectrometer parameter */
   float gr_disp = 15451.0;
   float grx_size = 1250.0;
+  float gry_size = 100.0;  
   
 };
 

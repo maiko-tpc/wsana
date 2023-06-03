@@ -2,10 +2,12 @@
 #include <stdlib.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include <sys/types.h>
 #include <fcntl.h>
 #include <fstream>
 #include <signal.h>
 #include <string.h>
+
 #include <vector>
 
 #include <TFile.h>
@@ -28,6 +30,8 @@
 void abrt_handler(int sig, siginfo_t *info, void *ctx);
 volatile sig_atomic_t eflag;  
 
+void fit_handler(int sig);
+int FIT_FLAG=0;
 
 
 int main(int iarg, char *argv[]) {
@@ -42,11 +46,20 @@ int main(int iarg, char *argv[]) {
     exit(1);
   }
 
+  /* define action for fit button */
+  signal(SIGUSR1, fit_handler);  // SIGID=10 (user definition signal1)
+
+  /* Get pid of myself */
+  pid_t my_pid = getpid();
+  printf("PID: %d\n", (int)my_pid);
+  
+
   /* main analysis frame */
   analysis *ana = new analysis();
-
+  ana->SetPID(my_pid);
+  
   /* analyze the command option */
-  int portnum=8080;
+  int portnum=5920;
   for(int i=0; i<iarg; i++){
     // show help
     if(strstr(argv[i], "-h") != NULL){
@@ -148,6 +161,12 @@ int main(int iarg, char *argv[]) {
       if(gSystem->ProcessEvents()) break;
     }
     if(ana->GetOnline() && ana->IsBLDeof()){
+
+      if(FIT_FLAG==1){
+	ana->HttpHistFit();
+	FIT_FLAG=0;
+      }
+
       printf("Waiting for data... (eve: %d)\r", ana->GetEveNum());
       fflush(stdout);
       ana->ClearBLDError();
@@ -188,4 +207,9 @@ void abrt_handler(int sig, siginfo_t *info, void *ctx) {
   printf("Saving output file...\n");
   printf("\n");
   eflag = 1;
+}
+
+void fit_handler(int signal){
+  printf("fit signal!\n");
+  FIT_FLAG = 1;
 }

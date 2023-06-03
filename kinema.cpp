@@ -99,3 +99,7 @@ double kinema::Calc_KineEne(nucl particle, double tot_ene){
   double m = particle.A*AMU + particle.mass_ex;
   return tot_ene - m;
 }
+
+double kinema::GetBeamEne(){
+  return beam_ene;
+}

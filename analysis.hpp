@@ -14,11 +14,17 @@
 #include <string.h>
 #include <vector>
 #include <ncurses.h>
+#include <time.h>
 
+#include "TSystem.h"
 #include <TFile.h>
 #include <TTree.h>
 #include <TH1.h>
 #include <TH2.h>
+#include <TCanvas.h>
+#include <TF1.h>
+#include <TLatex.h>
+
 #include <THttpServer.h>
 #include <TInterpreter.h>
 
@@ -39,6 +45,7 @@ public:
   analysis();
   ~analysis();
 
+  void SetPID(int pidnum);
   void error_exit(TFile *file, int i);  
   int OpenBLDFile();
   void CloseBLDFile();  
@@ -109,6 +116,8 @@ public:
 
   
 private:
+  int pid;
+
   std::ifstream bldfile;
 
   optdata opt;
@@ -145,6 +154,10 @@ private:
   TH2F* hmadc_ene;    
 
   TH1F* hunixtimesub;
+  
+  TCanvas* fitcan;  // for web monitor
+
+  TH1F* hgrx;
   
 #ifdef ANASSD
   TH2F* hsakra_hit[6];

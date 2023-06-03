@@ -39,6 +39,10 @@ analysis::~analysis(){
   delete gr;
 }
 
+void analysis::SetPID(int pidnum){
+  pid = pidnum;
+}
+
 int analysis::OpenBLDFile(){
   bldfile.open(GetBLDFile(), ios_base::in|ios::binary);
   if(!bldfile){
@@ -244,11 +248,17 @@ int  analysis::AnaEvt(){
     HistFill();
     
     // http control
+    extern int FIT_FLAG;
+
+    if(GetWeb() && FIT_FLAG==1){
+      HttpHistFit();  // only reset when the bottun is pressed
+      FIT_FLAG=0;
+    }
+    
     if(GetWeb()){
       HttpHistReset();  // only reset when the bottun is pressed
-      HttpHistFit();  // only reset when the bottun is pressed    
     }
-
+    
   } //if( (SKIP_BLK_END==0)...
 
   evt.eve++;

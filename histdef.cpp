@@ -116,7 +116,13 @@ void analysis::HistDef(){
   hgrtracky->GetXaxis()->SetTitle("Z (mm)");
   hgrtracky->GetYaxis()->SetTitle("Y (mm)");  
   
-}
+  fitcan = new TCanvas("fitcan", "Fit result");
+  fitcan->SetGridx(1);
+  fitcan->SetGridy(1);  
+  
+  hgrx = new TH1F("hgrx", "GR X position", 600, -600, 600);
+
+} // end of histdef
 
 void analysis::HistFill(){
   for(int i=0; i<(int)(evt.grvdc.size()); i++){
@@ -180,7 +186,11 @@ void analysis::HistFill(){
 
   hunixtimesub->Fill(evt.unixtimesub);
 
-  if(evt.good_fit==1) FillGRTrack();
+  if(evt.good_fit==1){
+    FillGRTrack();
+
+    hgrx->Fill(evt.grx);
+  }
 
 } // end of function
 

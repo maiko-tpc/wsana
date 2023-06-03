@@ -58,6 +58,7 @@ public:
   double Calc_p3(evtdata *evt);
   double Calc_TotEne(nucl particle, double p);
   double Calc_KineEne(nucl particle, double tot_ene);  
+  double GetBeamEne();
   
 private:
 };

@@ -125,7 +125,13 @@ void anagr::V1190Hit2VDCData(evtdata *evt){
       tmp_vdc_data.wire = tmp_wire;
       tmp_vdc_data.geo = evt->v1190_hit_all[i].geo;
       tmp_vdc_data.lead_raw = evt->v1190_hit_all[i].lead_raw;
-      tmp_vdc_data.lead_cor = evt->v1190_hit_all[i].lead_cor + VDC_OFFSET;
+      //      tmp_vdc_data.lead_cor = evt->v1190_hit_all[i].lead_cor + VDC_OFFSET; // obsolate
+
+      //      tmp_vdc_data.lead_cor = evt->v1190_hit_all[i].lead_cor -
+      //      	(int)((evt->grpla.vtdc[0]+evt->grpla.vtdc[1])/2.0) + VDC_OFFSET2; // before run40990
+
+      tmp_vdc_data.lead_cor = evt->v1190_hit_all[i].lead_cor - evt->grpla.vtdc[15] + VDC_OFFSET2; //from run4090
+
       tmp_vdc_data.clst_flag = 0;                  
       if(tmp_vdc_data.plane<4 &&
 	 tmp_vdc_data.wire>0 && tmp_vdc_data.wire<1000 &&
@@ -488,7 +494,8 @@ double anagr::fit_planes(evtdata *evt){
   evt->gry = center_pos[1];  
   
   evt->grthx = atan((center_pos[2]-center_pos[0])/chamb_space)*TMath::RadToDeg();
-  evt->grthy = atan((center_pos[3]-center_pos[1])/chamb_space)*TMath::RadToDeg();  
+  evt->grthy = atan((center_pos[3]-center_pos[1])/chamb_space)*TMath::RadToDeg();
+  evt->grthx2 = atan((center_pos[2]+chamb_space - center_pos[0])/chamb_space)*TMath::RadToDeg()-45.0;  
   return 0;
 }
 

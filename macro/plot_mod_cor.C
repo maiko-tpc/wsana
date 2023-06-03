@@ -16,6 +16,8 @@
   c_qdc_cor->cd(4);
   tree->Draw("grpla.vqdc[1]:laspla.vqdc[21]>>qdc_cor_h4(200,0,4000, 200,0,4000)","","colz");  
 
+  c_qdc_cor->SaveAs("pic/qdc_cor.png");
+  
   // Correlation between vmepla V1190, GR MQDC, and vmegr v1190
   TCanvas *c_tdc_cor = new TCanvas("c_tdc_cor", "TDC correlation for DAQ debug", 600,800);
   c_tdc_cor->Divide(1,2);
@@ -25,5 +27,7 @@
 	     "", "colz");
 
   c_tdc_cor->cd(2);
-  tree->Draw("meanwire[0]:vtdc[0]-grpla.vtdc[1]>>tdc_cor_h2(150,-150,150, 100,0,200)","","colz");
+  tree->Draw("meanwire[0]:grpla.vtdc[0]-grpla.vtdc[1]>>tdc_cor_h2(150,-150,150, 100,0,200)","meanwire[0]>0","colz");
+
+  c_tdc_cor->SaveAs("pic/tdc_cor.png");
 }

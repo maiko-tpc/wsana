@@ -4,11 +4,17 @@
 
 #define MAX_REGION 100000
 
+// Thttp control
+//bool bResetHist = kFALSE;
+//bool bFitHist = kFALSE;
+
+
 analysis::analysis(){
   evt.eve=0;
 
   sprintf(opt.rootfname, "out.root");
   opt.online_flag=0;
+  opt.last_flag=0;  
   opt.web_flag=0;  
   opt.useage_flag=1;  
   sprintf(opt.parfname, "par/default.par");
@@ -237,6 +243,12 @@ int  analysis::AnaEvt(){
     tree->Fill();
     HistFill();
     
+    // http control
+    if(GetWeb()){
+      HttpHistReset();  // only reset when the bottun is pressed
+      HttpHistFit();  // only reset when the bottun is pressed    
+    }
+
   } //if( (SKIP_BLK_END==0)...
 
   evt.eve++;
@@ -422,8 +434,16 @@ void analysis::SetOnline(){
   opt.online_flag=1;
 }
 
+void analysis::SetLast(){
+  opt.last_flag=1;
+}
+
 int analysis::GetOnline(){
   return opt.online_flag;
+}
+
+int analysis::GetLast(){
+  return opt.last_flag;
 }
 
 void analysis::SetWeb(){
@@ -448,6 +468,40 @@ void analysis::ShowCommandOption(){
   if(opt.web_flag){
     printf("THttp server is enabled\n");
   }
+}
+
+int analysis::SeekLastBlk(){
+//  unsigned int tmpdata, tmpdata2;
+//  bldfile.seekg(0, ios_base::end);  // go to the file end
+//
+//  while(1){
+//    bldfile.seekg(-sizeof(int)*2, ios_base::cur);
+//    bldfile.read((char*)&tmpdata, sizeof(int));  
+//    tmpdata2 = flip_32bit(ntohl(tmpdata));
+//    if(tmpdata == 0x424c4431){
+//      printf("bld1 header\n");
+//      break;
+//    }
+//  }
+
+  unsigned short tmpdata;
+  bldfile.seekg(0, ios_base::end);  // go to the file end
+
+  while(1){
+    bldfile.seekg(-sizeof(short)*2, ios_base::cur);
+    bldfile.read((char*)&tmpdata, sizeof(short));  
+    if(tmpdata == 0x424c){
+      //      bldfile.seekg(-sizeof(short)*2, ios_base::cur);
+      bldfile.read((char*)&tmpdata, sizeof(short));  
+      printf("0x%x\n", tmpdata);
+      printf("bld1 header\n");
+      break;
+    }
+  }
+  
+
+
+  return 0;
 }
 
 void analysis::ShowCamacSca(){
@@ -717,6 +771,7 @@ void analysis::InitEvt(){
   evt.grx = 100000;
   evt.gry = 100000;  
   evt.grthx = 100000;
+  evt.grthx2= 100000;  
   evt.grthy = 100000;  
 
   evt.good_fit=1;
@@ -752,6 +807,10 @@ void analysis::InitEvt(){
 
   for(int i=0; i<2; i++){
     evt.mqdc_nhit[i]=0;
+  }
+
+  for(int i=0; i<N_RF; i++){
+    evt.rf[i]=0;
   }
 }
 

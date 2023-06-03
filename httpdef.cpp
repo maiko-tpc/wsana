@@ -1,13 +1,18 @@
 #include "analysis.hpp"
 
+bool bResetHist = FALSE;
+
 void analysis::MakeTHttp(int portnum){
   serv = new THttpServer(Form("http:%d?thrds=2;rw", portnum));
 
   // One could specify location of newer version of JSROOT
-  //serv->SetJSROOT("https://root.cern.ch/js/latest/");
+  //  serv->SetJSROOT("/home/tamidaq/cern/root/v6.26.04/js/");
 
-  //  serv->Register("", outfile);
-
+  serv->SetItemField("/", "_drawopt", "colz");
+  serv->SetItemField("/","_monitoring","1000");
+  
+  serv->RegisterCommand("/Clear","gSystem->Exec(\"ls\");", "button;rootsys/icons/bld_delete.png");
+  
   for(int i=0; i<N_VDCPLANE; i++){
     serv->Register("/GR", hwire[i]);
   }
@@ -54,9 +59,18 @@ void analysis::MakeTHttp(int portnum){
     serv->Register("/LAS_pla", hlasqdccor[i]);
   }
 
-  serv->SetItemField("/GR_pla","_drawopt","col");
+}
 
-  serv->Register("/etc", hunixtimesub);
+void analysis::HttpHistReset(){
+  if(bResetHist){
+    printf("reset hist\n");
+  }
+}
+
+void analysis::HttpHistFit(){
+  //  if(bFitHist){
+  //    bFitHist = kFALSE;
+  //  }
 }
 
 void analysis::CloseTHttp(){

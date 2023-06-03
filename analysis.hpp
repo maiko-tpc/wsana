@@ -53,6 +53,8 @@ public:
   void MakeROOTFile();
   void CloseROOTFile();  
   void MakeTHttp(int portnum);
+  void HttpHistReset();
+  void HttpHistFit();  
   void CloseTHttp();  
   TFile* GetFile();
   int GetRunNum();
@@ -66,9 +68,11 @@ public:
   void UnsetUseage();
   int GetUseage();    
   void SetOnline();
+  void SetLast();  
   int GetWeb();  
   void SetWeb();
-  int GetOnline();  
+  int GetOnline();
+  int GetLast();    
   void ShowCommandOption();
   void ShowCamacSca();
   void ShowVmeSca();  
@@ -76,6 +80,7 @@ public:
   void ClearVmeSca();  
   void SetParFile(char *fname);
   void ShowGREff();
+  int SeekLastBlk();
   
   // defined in histdef.cpp
   void HistDef();  
@@ -102,6 +107,7 @@ public:
 
   void AnaV1190inpreg();  
 
+  
 private:
   std::ifstream bldfile;
 
@@ -116,6 +122,7 @@ private:
   /* Definition of output histograms */
   TH1F *hwire[N_VDCPLANE];
   TH1F *hdrifttime[N_VDCPLANE];
+  TH1F *hdrifttime_coin[N_VDCPLANE];  
   TH1F *hdriftlen[N_VDCPLANE];
   TH1F *hhiteff[N_VDCPLANE];
   TH1F *hclsteff[N_VDCPLANE];    

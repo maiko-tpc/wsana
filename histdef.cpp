@@ -8,11 +8,15 @@ void analysis::HistDef(){
     hwire[i] = new TH1F(Form("h_%s_hit", gr_plane_name[i].c_str()),
 			Form("GR VDC %s hit", gr_plane_name[i].c_str()),
                         PLANE_SIZE, 0, PLANE_SIZE);
-
+    
     hdrifttime[i] = new TH1F(Form("h_%s_tdc", gr_plane_name[i].c_str()),
 			     Form("GR VDC %s TDC", gr_plane_name[i].c_str()),
-                             MAX_VDC_TDC, 0, MAX_VDC_TDC);
+    			     MAX_VDC_TDC, 0, MAX_VDC_TDC);
 
+    hdrifttime_coin[i] = new TH1F(Form("h_%s_tdc_coin", gr_plane_name[i].c_str()),
+				  Form("GR VDC %s TDC coin trig", gr_plane_name[i].c_str()),
+				  MAX_VDC_TDC, -10000, 10000);
+    
     hdriftlen[i]  = new TH1F(Form("h_%s_len", gr_plane_name[i].c_str()),
 			     Form("GR VDC %s drift length", gr_plane_name[i].c_str()),
                              512, 0, 16);
@@ -32,25 +36,25 @@ void analysis::HistDef(){
   for(int i=0; i<4; i++){
     hgrfqdc[i] = new TH1F(Form("h_gr_fqdc_ch%d", i),
 			  Form("GR plastic FERA QDC ch%d", i),
-			  512, 0, 4096);
+			  512, 0, 2048);
   }
 
   for(int i=0; i<4; i++){
     hgrvqdc[i] = new TH1F(Form("h_gr_vqdc_ch%d", i),
 			  Form("GR plastic VME QDC ch%d", i),
-			  512, 0, 4096);
+			  1024, 0, 4096);
   }
 
   for(int i=0; i<4; i++){
     hlasfqdc[i] = new TH1F(Form("h_las_fqdc_ch%d", i),
 			  Form("LAS plastic FERA QDC ch%d", i),
-			  512, 0, 4096);
+			  512, 0, 2048);
   }
 
   for(int i=0; i<4; i++){
     hlasvqdc[i] = new TH1F(Form("h_las_vqdc_ch%d", i),
 			  Form("LAS plastic VME QDC ch%d", i),
-			  512, 0, 4096);
+			  1024, 0, 4096);
   }
 
   
@@ -122,6 +126,7 @@ void analysis::HistFill(){
     if(wire>0){
       hwire[plane]->Fill(wire);
       hdrifttime[plane]->Fill(evt.grvdc[i].lead_cor);
+      if(evt.vme_inp[8]==1) hdrifttime_coin[plane]->Fill(evt.grvdc[i].lead_cor);      
       hdriftlen[plane]->Fill(evt.grvdc[i].dlen);      
       evt.nhit_plane[plane]++;
       evt.mean_wire[plane]+=wire;
@@ -145,6 +150,8 @@ void analysis::HistFill(){
   for(int i=0; i<N_VDCPLANE; i++){
     if(evt.nhit_plane[i]==0) hhiteff[i]->Fill(0);
     if(evt.nhit_plane[i] >0) hhiteff[i]->Fill(1);    
+    if(evt.nclst[i]==1) hclsteff[i]->Fill(1);
+    if(evt.nclst[i]!=1) hclsteff[i]->Fill(0);            
   }
 
   if(evt.gr_good_hit==0) hhiteffall->Fill(0);
@@ -184,6 +191,7 @@ void analysis::HistWrite(){
   }
   for(int i=0; i<N_VDCPLANE; i++){
     hdrifttime[i]->Write();
+    hdrifttime_coin[i]->Write();    
   }
   for(int i=0; i<N_VDCPLANE; i++){
     hdriftlen[i]->Write();    

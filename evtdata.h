@@ -8,6 +8,7 @@ struct optdata{
   char bldfname[256];
   char rootfname[256];  
   int online_flag;
+  int last_flag;  
   int web_flag;  
   int useage_flag;
   char parfname[256];
@@ -64,7 +65,8 @@ struct evtdata{
   float residual[N_VDCPLANE];  
 
   float grx, gry;
-  float grthx, grthy;  
+  float grthx, grthy;
+  float grthx2;
 
   int good_fit;
 
@@ -106,6 +108,8 @@ struct evtdata{
 
   unsigned int mqdc_nhit[2]; //[0]:GR, [1]:LAS
 
+  int rf[N_RF];
+  
 };
 
 #endif

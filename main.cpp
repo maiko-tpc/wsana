@@ -28,6 +28,8 @@
 void abrt_handler(int sig, siginfo_t *info, void *ctx);
 volatile sig_atomic_t eflag;  
 
+
+
 int main(int iarg, char *argv[]) {
   
   /* define action when Cntl-c is given */
@@ -69,6 +71,11 @@ int main(int iarg, char *argv[]) {
       ana->SetOnline();
     }
 
+    // last flag
+    if(strstr(argv[i], "-last") != NULL){
+      ana->SetLast();
+    }
+    
     // THttp flag
     if(strstr(argv[i], "-web") != NULL){
       portnum=atoi(argv[i+1]);
@@ -90,10 +97,18 @@ int main(int iarg, char *argv[]) {
   
   /* Print how to use */
   if(ana->GetUseage() || iarg==1) {
+    printf("\n");
+    printf("=========================\n");
     printf("Usage: ./ana xxxx.bld xxxx.root [options]\n");
+    printf("\n");
     printf("Example: $> ./ana run7144.bld run7144.root\n");
+    printf("\n");
     printf("Options: \n");
-    printf(" -online: Online mode. When the program reaches at the eond of file, it will stand-by and wait for another data.\n");
+    printf(" -online: Online mode. When the program reaches at the eond of file, it will stand-by and wait for another event.\n");
+    printf(" -web [port num]: Enable THttp server. http://aino-1:[port num] \n");
+    printf(" -last: Analyze from the last block. \n");        
+    printf("=========================\n");
+    printf("\n");
     exit(0);
   }
 
@@ -114,18 +129,15 @@ int main(int iarg, char *argv[]) {
   ana->HistDef();
   if(ana->GetWeb()) ana->MakeTHttp(portnum);
 
-//  TH1D *hpx = new TH1D("hpx","This is the px distribution",100,-4,4);  
-//  THttpServer *serv = new THttpServer("http:5902?thrds=2");
-//  serv->Register("/", hpx);
-  
   ana->AnaRunHeader();
 
+  /* Seek the last block */
+  if(ana->GetLast()){
+    ana->SeekLastBlk();
+  }
+  
   /* Analyze blocks */
   unsigned int blkcnt=0;
-//  while(!(ana->IsBLDeof()) && !eflag){
-//    ana->AnaBlk();
-//    blkcnt++;
-//  }
   while(!eflag){
     if(!(ana->IsBLDeof())){
       ana->AnaBlk();
@@ -139,7 +151,8 @@ int main(int iarg, char *argv[]) {
       printf("Waiting for data... (eve: %d)\r", ana->GetEveNum());
       fflush(stdout);
       ana->ClearBLDError();
-      sleep(10);
+      //      sleep(10);
+      usleep(100000);      
     }
     if( ((ana->GetOnline())!=1) && ana->IsBLDeof()){
       break;
@@ -161,8 +174,8 @@ int main(int iarg, char *argv[]) {
   }
 
   /* Save output ROOT */
-  ana->TreeWrite();
   ana->HistWrite();
+  ana->TreeWrite();  
   ana->CloseROOTFile();
   
   return 0;

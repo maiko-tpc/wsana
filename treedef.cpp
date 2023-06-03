@@ -44,6 +44,7 @@ void analysis::TreeDef(){
 		    N_PLA_CH, N_PLA_CH, N_GRPLA, N_GRPLA,
 		    N_PLA_CH, N_PLA_CH, N_PLA_CH, N_PLA_CH));
   
+  tree->Branch("rf", &evt.rf, Form("rf[%d]/I", N_RF));
   tree->Branch("vdcnhit", &evt.nhit_plane, Form("vdcnhit[%d]/I", N_VDCPLANE));
   tree->Branch("meanwire", &evt.mean_wire, Form("vdcwire[%d]/F", N_VDCPLANE));
 
@@ -59,6 +60,7 @@ void analysis::TreeDef(){
   tree->Branch("grx", &evt.grx, "grx/F");
   tree->Branch("gry", &evt.gry, "gry/F");
   tree->Branch("grthx", &evt.grthx, "grthx/F");
+  tree->Branch("grthx2", &evt.grthx2, "grthx2/F");  
   tree->Branch("grthy", &evt.grthy, "grthy/F");
 
   tree->Branch("grp_rela", &evt.grp_rela, "grp_rela/D");

@@ -9,7 +9,7 @@
 
 #define V1190_SUBTRACT_REF 1
 #define V1190_REF_CH 127
-#define V1190_REF_CH_PLA 15
+#define V1190_REF_CH_PLA 14
 
 #define VSN_GR 1
 

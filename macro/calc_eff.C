@@ -3,28 +3,28 @@
   c_eff->Divide(4,2);
   
   c_eff->cd(1);
-  tree->Draw("nclst[0]>>eff_h1(5,0,5)");
+  tree->Draw("nclst[0]>>eff_h1(5,0,5)", "grpidcut");
   eff_h1->SetTitle("X1 cluster eff");
   double eff1 = eff_h1->GetBinContent(2)/eff_h1->GetEntries();
   TLatex tex_eff1;
   tex_eff1.DrawLatexNDC(0.5,0.7, Form("eff = %.3f", eff1));
   
   c_eff->cd(2);
-  tree->Draw("nclst[1]>>eff_h2(5,0,5)");
+  tree->Draw("nclst[1]>>eff_h2(5,0,5)", "grpidcut");
   eff_h2->SetTitle("U1 cluster eff");
   double eff2 = eff_h2->GetBinContent(2)/eff_h2->GetEntries();
   TLatex tex_eff2;
   tex_eff2.DrawLatexNDC(0.5,0.7, Form("eff = %.3f", eff2));
 
   c_eff->cd(3);
-  tree->Draw("nclst[2]>>eff_h3(5,0,5)");
+  tree->Draw("nclst[2]>>eff_h3(5,0,5)", "grpidcut");
   eff_h3->SetTitle("X2 cluster eff");
   double eff3 = eff_h3->GetBinContent(2)/eff_h3->GetEntries();
   TLatex tex_eff3;
   tex_eff3.DrawLatexNDC(0.5,0.7, Form("eff = %.3f", eff3));
 
   c_eff->cd(4);
-  tree->Draw("nclst[3]>>eff_h4(5,0,5)");
+  tree->Draw("nclst[3]>>eff_h4(5,0,5)", "grpidcut");
   eff_h4->SetTitle("U2 cluster eff");
   double eff4 = eff_h4->GetBinContent(2)/eff_h4->GetEntries();
   TLatex tex_eff4;

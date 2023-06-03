@@ -31,6 +31,8 @@
   grpid_h4->SetMinimum(1);
   gPad->SetLogz();
 
+  c_gr_pid->SaveAs("pic/tmp.png");
+  
   // With PID cut
 
   TCanvas *c_gr_pid2 = new TCanvas("c_gr_pid2","GR PID witgrpid_h plastic with CUT", 800, 800);

@@ -91,6 +91,13 @@ void analysis::HttpHistReset(){
 
 void analysis::HttpHistFit(){  
   printf("fit function\n");  
+
+  /* get fit region from the file */
+  read_config_file(opt.parfname);
+  double fit_min = config_get_d_value("gr_fit_min", 0, -600.0);
+  double fit_max = config_get_d_value("gr_fit_max", 0,  600.0);  
+  printf("fit region: from %.1f to %.1f\n", fit_min, fit_max);
+  
   TF1 *fitfunc = new TF1("fitfunc", "gaus");
   TH1F *histtemp = (TH1F*)hgrx->Clone();
 
@@ -105,7 +112,7 @@ void analysis::HttpHistFit(){
   latex2.SetTextAlign(11);
   latex2.SetTextSize(0.04);
   
-  histtemp->Fit("fitfunc", "","", -250, 0);
+  histtemp->Fit("fitfunc", "","", fit_min, fit_max);
   
   fitcan->Clear();
   fitcan->cd();

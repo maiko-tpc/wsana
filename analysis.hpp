@@ -166,6 +166,7 @@ private:
   TCanvas* fitcan;  // for web monitor
 
   TH1F* hgrx;
+  TH1F* hgrx_thxgate;  
   TH1F* hgry;
 
   TH1F* hgrangx;

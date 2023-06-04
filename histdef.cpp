@@ -140,7 +140,9 @@ void analysis::HistDef(){
   fitcan->SetGridx(1);
   fitcan->SetGridy(1);  
   
-  hgrx = new TH1F("hgrx", "GR X position", 600, -600, 600);
+  hgrx = new TH1F("hgrx", "GR X position", 1200, -600, 600);
+  hgrx_thxgate = new TH1F("hgrx_thxgate", "GR X position angle gated",
+			  1200, -600, 600);  
   hgry = new TH1F("hgry", "GR Y position", 100,  -50,  50);  
 
   hgrangx = new TH1F("hgrangx", "GR X angle", 200, -10, 10);
@@ -234,6 +236,10 @@ void analysis::HistFill(){
     FillGRTrack();
 
     hgrx->Fill(evt.grx);
+    if(evt.grthx>par.gr_ang_gate_min && evt.grthx<par.gr_ang_gate_max){
+      hgrx_thxgate->Fill(evt.grx);
+    }
+    
     hgry->Fill(evt.gry);    
     hgrangx->Fill(evt.grthx);
     hgrangy->Fill(evt.grthy);    
@@ -284,6 +290,7 @@ void analysis::HistWrite(){
   }
   
   hgrx->Write();
+  hgrx_thxgate->Write();
   hgry->Write();  
   hgrangx->Write();
   hgrangy->Write();  

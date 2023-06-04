@@ -85,6 +85,7 @@ void analysis::MakeTHttp(int portnum){
   serv->Register("/Fit", fitcan);
 
   serv->Register("/GR", hgrx);
+  serv->Register("/GR", hgrx_thxgate);  
   serv->Register("/GR", hgry);    
   serv->Register("/GR", hgrangx);
   serv->Register("/GR", hgrangy);    
@@ -104,14 +105,19 @@ void analysis::HttpHistFit(){
   printf("fit function\n");  
 
   /* get fit region from the file */
-  read_config_file(opt.parfname);
+  //  read_config_file(opt.parfname);
   double fit_min = config_get_d_value("gr_fit_min", 0, -600.0);
   double fit_max = config_get_d_value("gr_fit_max", 0,  600.0);  
   printf("fit region: from %.1f to %.1f\n", fit_min, fit_max);
+  printf("theta X gate: from %.1f to %.1f\n",
+	 par.gr_ang_gate_min, par.gr_ang_gate_max);  
+  printf("\n");
   
   TF1 *fitfunc = new TF1("fitfunc", "gaus");
-  TH1F *histtemp = (TH1F*)hgrx->Clone();
+  fitfunc->SetNpx(1000);
 
+  TH1F *histtemp = (TH1F*)hgrx_thxgate->Clone();  
+  
   TLatex latex1;
   latex1.SetTextAlign(13);
 

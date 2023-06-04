@@ -5,9 +5,12 @@ beam_nucl = 1H
 scat_nucl = 1H
 recoil_nucl = 12C
 
-beam_ene = 392  //in MeV
+beam_ene = 392    //in MeV
 gr_ang = 4.5      //in deg
 gr_mag = 0.967    //in T
 
 gr_fit_min = -200.0  // for resolution check, in mm
 gr_fit_max =    0.0  // for resolution check, in mm
+
+gr_ang_gate_min = -1.0 // for resolution check, in deg
+gr_ang_gate_max = -0.5 // for resolution check, in deg

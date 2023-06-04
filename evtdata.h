@@ -22,6 +22,8 @@ struct pardata{
   double beam_ene;
   double gr_ang;
   double gr_mag;  
+  double gr_ang_gate_min;
+  double gr_ang_gate_max;  
 };
 
 struct evtdata{

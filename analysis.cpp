@@ -589,6 +589,10 @@ int analysis::AnaParFile(){
   // Read GR angle set
   par.gr_mag = config_get_d_value("gr_mag", 0, 0.90);
 
+  // Read GR angle gate
+  par.gr_ang_gate_min = config_get_d_value("gr_ang_gate_min", 0, -10.0);
+  par.gr_ang_gate_max = config_get_d_value("gr_ang_gate_max", 0,  10.0);  
+  
   // Show results
   printf("------ Ana parameters ------\n");
   printf("Target nuclei   : %s\n",     par.target_nucl);

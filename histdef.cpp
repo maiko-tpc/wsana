@@ -127,7 +127,7 @@ void analysis::HistDef(){
   hunixtimesub = new TH1F("unixtimesub", "time diff from run start", 500, 0, 10000);
 
   hgrtrackx = new TH2F("hgrtrackx", "trajectory of particles X",
-		       500, -500,500, 400, 0, 1200);
+		       500, -500,500, 400, -800, 800);
   hgrtrackx->GetXaxis()->SetTitle("Z (mm)");
   hgrtrackx->GetYaxis()->SetTitle("X (mm)");  
   
@@ -141,7 +141,15 @@ void analysis::HistDef(){
   fitcan->SetGridy(1);  
   
   hgrx = new TH1F("hgrx", "GR X position", 600, -600, 600);
+  hgry = new TH1F("hgry", "GR Y position", 100,  -50,  50);  
 
+  hgrangx = new TH1F("hgrangx", "GR X angle", 200, -10, 10);
+  hgrangy = new TH1F("hgrangy", "GR Y angle", 200, -10, 10);  
+  
+  hgrthx = new TH2F("hgrthx", "GR theta vs X", 200,-600,600, 200,-10,10);
+  hgryx  = new TH2F("hgryx",  "GR Y vs X", 200,-600,600, 100,-50,50);  
+
+  hgrrelap = new TH1F("hgrrelap", "GR relative momentum", 200,-4,4);  
 } // end of histdef
 
 void analysis::HistFill(){
@@ -226,6 +234,13 @@ void analysis::HistFill(){
     FillGRTrack();
 
     hgrx->Fill(evt.grx);
+    hgry->Fill(evt.gry);    
+    hgrangx->Fill(evt.grthx);
+    hgrangy->Fill(evt.grthy);    
+    hgrthx->Fill(evt.grx, evt.grthx);
+    hgryx->Fill(evt.grx, evt.gry);    
+    
+    hgrrelap->Fill(evt.grp_rela);
   }
 
 } // end of function
@@ -267,6 +282,15 @@ void analysis::HistWrite(){
   for(int i=0; i<2; i++){
     hgrplarfde[i]->Write();
   }
+  
+  hgrx->Write();
+  hgry->Write();  
+  hgrangx->Write();
+  hgrangy->Write();  
+  hgrthx->Write();
+  hgryx->Write();  
+
+  hgrrelap->Write();
   
 #ifdef ANASSD
   hmadc_raw->Write();

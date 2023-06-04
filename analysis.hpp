@@ -166,7 +166,16 @@ private:
   TCanvas* fitcan;  // for web monitor
 
   TH1F* hgrx;
+  TH1F* hgry;
+
+  TH1F* hgrangx;
+  TH1F* hgrangy;  
   
+  TH2F* hgrthx;
+  TH2F* hgryx;  
+  
+  TH1F* hgrrelap;
+
 #ifdef ANASSD
   TH2F* hsakra_hit[6];
 #endif

@@ -40,7 +40,9 @@ void analysis::MakeTHttp(int portnum){
   serv->Register("/GR", hhiteffall);
   serv->Register("/GR", hclsteffall);  
 
-  serv->Register("/GR", hgrtrackx);
+  hgrtrackx->SetOption("colz");
+  hgrtracky->SetOption("colz");  
+  serv->Register("/GR", hgrtrackx);  
   serv->Register("/GR", hgrtracky);  
   
   for(int i=0; i<4; i++){
@@ -82,8 +84,17 @@ void analysis::MakeTHttp(int portnum){
 
   serv->Register("/Fit", fitcan);
 
-  serv->Register("/GR", hgrx);  
+  serv->Register("/GR", hgrx);
+  serv->Register("/GR", hgry);    
+  serv->Register("/GR", hgrangx);
+  serv->Register("/GR", hgrangy);    
 
+  hgrthx->SetOption("colz");
+  hgryx->SetOption("colz");  
+  serv->Register("/GR", hgrthx);
+  serv->Register("/GR", hgryx);
+
+  serv->Register("/GR", hgrrelap);    
 }
 
 void analysis::HttpHistReset(){

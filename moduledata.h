@@ -108,25 +108,25 @@ typedef struct v1190_data{
 } v1190_data;
 
 typedef struct grpla_data{
-  unsigned int adc[N_PLA_CH];
-  unsigned int tdc[N_PLA_CH];
+  int adc[N_PLA_CH];
+  int tdc[N_PLA_CH];
   float pos[N_GRPLA];
   float  de[N_GRPLA];
-  unsigned int fqdc[N_PLA_CH];
-  unsigned int ftdc[N_PLA_CH];  
-  unsigned int vqdc[N_PLA_CH];
-  unsigned int vtdc[N_PLA_CH];  
+  int fqdc[N_PLA_CH];
+  int ftdc[N_PLA_CH];  
+  int vqdc[N_PLA_CH];
+  int vtdc[N_PLA_CH];  
 } grpla_data;
 
 typedef struct pla_data{
-  unsigned int adc[N_PLA_CH];
-  unsigned int tdc[N_PLA_CH];
+  int adc[N_PLA_CH];
+  int tdc[N_PLA_CH];
   float pos[N_GRPLA];
   float de[N_GRPLA];
-  unsigned int fqdc[N_PLA_CH];
-  unsigned int ftdc[N_PLA_CH];  
-  unsigned int vqdc[N_PLA_CH];
-  unsigned int vtdc[N_PLA_CH];  
+  int fqdc[N_PLA_CH];
+  int ftdc[N_PLA_CH];  
+  int vqdc[N_PLA_CH];
+  int vtdc[N_PLA_CH];  
 } pla_data;
 
 typedef struct grvdc_data{

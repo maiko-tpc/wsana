@@ -9,12 +9,13 @@ void analysis::MakeTHttp(int portnum){
   // One could specify location of newer version of JSROOT
   //  serv->SetJSROOT("/home/tamidaq/cern/root/v6.26.04/js/");
 
-  serv->SetItemField("/", "_drawopt", "colz");
-  serv->SetItemField("/","_monitoring","1000");
+  //  serv->SetItemField("/", "_drawopt", "colz");
+  //  serv->SetItemField("/","_monitoring","1000");
   
-  string fitcommand = Form("gSystem->Exec(\"kill -10 %d\");", pid);
-  serv->RegisterCommand("/Commands/Fit", fitcommand.c_str(),
-			"button;rootsys/icons/bld_delete.png");  
+  string fitcmd = Form("gSystem->Exec(\"kill -10 %d\");", pid);
+  serv->RegisterCommand("/Commands/Fit", fitcmd.c_str(),
+  			"button;rootsys/icons/bld_delete.png");  
+
   
   for(int i=0; i<N_VDCPLANE; i++){
     serv->Register("/GR", hwire[i]);
@@ -43,23 +44,40 @@ void analysis::MakeTHttp(int portnum){
   serv->Register("/GR", hgrtracky);  
   
   for(int i=0; i<4; i++){
-    serv->Register("/GR_pla", hgrfqdc[i]);
+    serv->Register("/GR_PLA", hgrfqdc[i]);
   }
   for(int i=0; i<4; i++){
-    serv->Register("/GR_pla", hgrvqdc[i]);
+    serv->Register("/GR_PLA", hgrvqdc[i]);
   }
   for(int i=0; i<4; i++){
-    serv->Register("/GR_pla", hgrqdccor[i]);
+    hgrqdccor[i]->SetOption("colz");
+    serv->Register("/GR_PLA", hgrqdccor[i]);
   }
 
   for(int i=0; i<4; i++){
-    serv->Register("/LAS_pla", hlasfqdc[i]);
+    hgrplaposq[i]->SetOption("colz");
+    serv->Register("/GR_PLA", hgrplaposq[i]);    
+  }   
+
+  for(int i=0; i<2; i++){
+    hgrplarfde[i]->SetOption("colz");
+    serv->Register("/GR_PLA", hgrplarfde[i]);
+  }
+  
+  for(int i=0; i<N_RF; i++){
+    serv->Register("/GR_RF", hgrrf[i]);
+  }
+
+  serv->Register("/GR_LAS", hgrlascoin);  
+  
+  for(int i=0; i<4; i++){
+    serv->Register("/LAS_PLA", hlasfqdc[i]);
   }
   for(int i=0; i<4; i++){
-    serv->Register("/LAS_pla", hlasvqdc[i]);
+    serv->Register("/LAS_PLA", hlasvqdc[i]);
   }
   for(int i=0; i<4; i++){
-    serv->Register("/LAS_pla", hlasqdccor[i]);
+    serv->Register("/LAS_PLA", hlasqdccor[i]);
   }
 
   serv->Register("/Fit", fitcan);

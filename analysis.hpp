@@ -153,6 +153,14 @@ private:
   TH2F* hmadc_tdc;
   TH2F* hmadc_ene;    
 
+  TH1F *hgrrf[N_RF];
+
+  TH1F *hgrlascoin;
+  
+  /* GR PLA PID */
+  TH2F *hgrplaposq[4];
+  TH2F *hgrplarfde[2];
+  
   TH1F* hunixtimesub;
   
   TCanvas* fitcan;  // for web monitor

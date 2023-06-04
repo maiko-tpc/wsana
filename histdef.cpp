@@ -83,6 +83,26 @@ void analysis::HistDef(){
   hmadc_ene = new TH2F("hmadc_ene", "MADC32 with TDC gate, calibrated",
 		       N_MADC_CH,0,N_MADC_CH, 2048,0,50);    
 
+  for(int i=0; i<N_RF; i++){
+    hgrrf[i] = new TH1F(Form("hgrrf%d", i), Form("GR RF CH%d", i),
+			2048, 0, 4096);
+  }
+
+  hgrlascoin = new TH1F("hGR_LAS_coin", "GR LAS coin timing", 2048,0,8192);
+
+  /* GR PID */
+  char *name_grpla[4] = {"1L", "1R", "2L", "2R"};
+  for(int i=0; i<4; i++){
+    hgrplaposq[i] = new TH2F(Form("hgrpla_%s_pos", name_grpla[i]),
+			     Form("GR PLA QDC %s vs pos", name_grpla[i]),
+			     150, -150, 150, 400,0,4000);
+    }
+
+  hgrplarfde[0] = new TH2F("hgrpla_1st_rfq", "GR PLA 1st dE vs RF",
+			   200,0,4000, 200,0,4000);
+  hgrplarfde[1] = new TH2F("hgrpla_2nd_rfq", "GR PLA 1st dE vs RF",
+			   200,0,4000, 200,0,4000);
+  
 #ifdef ANASSD
   
   // layer 1
@@ -166,6 +186,22 @@ void analysis::HistFill(){
   if(evt.gr_good_clst==0) hclsteffall->Fill(0);
   if(evt.gr_good_clst==1) hclsteffall->Fill(1);  
 
+  for(int i=0; i<N_RF; i++){
+    hgrrf[i]->Fill(evt.rf[i]);
+  }
+
+  if(evt.vme_inp[8]==1){
+    hgrlascoin->Fill(evt.grpla.vtdc[11]-evt.grpla.vtdc[15]);
+  }
+
+  for(int i=0; i<4; i++){
+    hgrplaposq[i]->Fill(evt.grpla.pos[i/2], evt.grpla.vqdc[i]);
+  }
+
+  for(int i=0; i<2; i++){
+    hgrplarfde[i]->Fill(evt.rf[0], evt.grpla.de[i]);
+  }
+  
   // MADC histogram
 #ifdef ANASSD
   for(int i=0; i<N_MADC_CH; i++){
@@ -218,6 +254,20 @@ void analysis::HistWrite(){
   hhiteffall->Write();
   hclsteffall->Write();      
 
+  for(int i=0; i<N_RF; i++){
+    hgrrf[i]->Write();
+  }
+
+  hgrlascoin->Write();
+  
+  for(int i=0; i<4; i++){
+    hgrplaposq[i]->Write();
+  }
+
+  for(int i=0; i<2; i++){
+    hgrplarfde[i]->Write();
+  }
+  
 #ifdef ANASSD
   hmadc_raw->Write();
   hmadc_tdc->Write();

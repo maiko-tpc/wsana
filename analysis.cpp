@@ -238,6 +238,7 @@ int  analysis::AnaEvt(){
     
     if(evt.eve%10000==0){
       CalcGREff();
+      if(GetWeb()) HttpInfoUpdate();
       //    ShowProg();
       //    printf("Analyzed %d events\n", evt.eve);
       printf("Analyzed %d events\r", evt.eve);

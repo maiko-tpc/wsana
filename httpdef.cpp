@@ -16,6 +16,8 @@ void analysis::MakeTHttp(int portnum){
   serv->RegisterCommand("/Commands/Fit", fitcmd.c_str(),
   			"button;rootsys/icons/bld_delete.png");  
 
+
+  serv->Register("/Info", cinfo);
   
   for(int i=0; i<N_VDCPLANE; i++){
     serv->Register("/GR", hwire[i]);
@@ -113,7 +115,7 @@ void analysis::HttpHistFit(){
 	 par.gr_ang_gate_min, par.gr_ang_gate_max);  
   printf("\n");
   
-  TF1 *fitfunc = new TF1("fitfunc", "gaus");
+  TF1 *fitfunc = new TF1("fitfunc", "gaus", fit_min, fit_max);
   fitfunc->SetNpx(1000);
 
   TH1F *histtemp = (TH1F*)hgrx_thxgate->Clone();  
@@ -149,6 +151,24 @@ void analysis::HttpHistFit(){
   
   gSystem->ProcessEvents();
   
+}
+
+void analysis::HttpInfoUpdate(){
+  cinfo->Clear();
+  cinfo->cd();
+  
+  time_t t = time(NULL);
+  struct tm tm;
+  localtime_r(&t, &tm);
+
+  TLatex latex1;
+  latex1.SetTextAlign(11);
+  
+  latex1.DrawLatexNDC(0.15, 0.80, Form("%04d/%02d/%02d %02d:%02d:%02d",
+				       tm.tm_year+1900, tm.tm_mon+1, tm.tm_mday,
+				       tm.tm_hour, tm.tm_min, tm.tm_sec));
+  latex1.DrawLatexNDC(0.15, 0.75, Form("Run %04d", evt.run));
+  latex1.DrawLatexNDC(0.15, 0.70, Form("Analyzed %d events (%d blk)", evt.eve, evt.blk));    
 }
 
 void analysis::CloseTHttp(){

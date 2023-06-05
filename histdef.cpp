@@ -1,6 +1,8 @@
 #include "analysis.hpp"
 
 void analysis::HistDef(){
+  cinfo = new TCanvas("cinfo", "Run Info");
+
   std::vector<std::string> gr_plane_name =
     {"gr_X1", "gr_U1", "gr_X2", "gr_U2"};
 

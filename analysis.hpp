@@ -61,7 +61,8 @@ public:
   void CloseROOTFile();  
   void MakeTHttp(int portnum);
   void HttpHistReset();
-  void HttpHistFit();  
+  void HttpHistFit();
+  void HttpInfoUpdate();    
   void CloseTHttp();  
   TFile* GetFile();
   int GetRunNum();
@@ -127,6 +128,9 @@ private:
   TTree *tree;
 
   THttpServer* serv;
+
+  /* Definition of Canvas for http */
+  TCanvas* cinfo;
   
   /* Definition of output histograms */
   TH1F *hwire[N_VDCPLANE];

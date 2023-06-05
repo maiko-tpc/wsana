@@ -127,10 +127,20 @@ void anagr::V1190Hit2VDCData(evtdata *evt){
       tmp_vdc_data.lead_raw = evt->v1190_hit_all[i].lead_raw;
       //      tmp_vdc_data.lead_cor = evt->v1190_hit_all[i].lead_cor + VDC_OFFSET; // obsolate
 
-      //      tmp_vdc_data.lead_cor = evt->v1190_hit_all[i].lead_cor -
-      //      	(int)((evt->grpla.vtdc[0]+evt->grpla.vtdc[1])/2.0) + VDC_OFFSET2; // before run40990
+      // changed on 2023.06.05 T. Furuno
+      if((evt->run) <4090){
+	tmp_vdc_data.lead_cor = evt->v1190_hit_all[i].lead_cor -
+	  (int)((evt->grpla.vtdc[0]+evt->grpla.vtdc[1]))/2 + VDC_OFFSET2 - 1500; // before run4090
+//	printf("%d, %d, %d, %d, %d\n", evt->v1190_hit_all[i].lead_cor,
+//	       evt->grpla.vtdc[0], evt->grpla.vtdc[1],
+//	       (int)((evt->grpla.vtdc[0])+(evt->grpla.vtdc[1]))/2,
+//	       tmp_vdc_data.lead_cor);
+      }
 
-      tmp_vdc_data.lead_cor = evt->v1190_hit_all[i].lead_cor - evt->grpla.vtdc[15] + VDC_OFFSET2; //from run4090
+      if((evt->run) >=4090){  // E552 after circuit change, reference is GR trig
+	tmp_vdc_data.lead_cor = evt->v1190_hit_all[i].lead_cor - evt->grpla.vtdc[15] + VDC_OFFSET2;
+      }
+
 
       tmp_vdc_data.clst_flag = 0;                  
       if(tmp_vdc_data.plane<4 &&

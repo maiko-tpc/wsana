@@ -24,10 +24,14 @@ analysis::analysis(){
   
   pla = new anapla();
 
-  gr = new anagr();
+  gr = new anagr(0);
   gr->SetGRPars();
   gr->SetTDC2LenTab_GR();
 
+  las = new anagr(1);
+  las->SetGRPars();
+  las->SetTDC2LenTab_GR();
+  
   ssd = new anassd();
 
   kine = new kinema();

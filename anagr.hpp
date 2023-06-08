@@ -27,14 +27,14 @@
 
 class anagr{
 public:
-  anagr();
+  anagr(int gr_las);
   ~anagr();
 
   void anavdc(evtdata *);
 
   void V1190Hit2VDCData(evtdata *);
   void GetXUHits(evtdata *);
-  int GetPlane(int geo);
+  int GetPlane(int geo, int ch);
   int GetWire(int geo, int ch);
   
   void TDC2Len_GR(evtdata *);
@@ -65,6 +65,9 @@ public:
   void calc_rela_momentum(evtdata *evt);
   
 private:
+  /* GR or LAS */
+  int i_gr_las; // 0:GR, 1:LAS
+
   /* Tracking parameters */
   unsigned int min_clst_size = 2;
   unsigned int max_clst_size = 10;

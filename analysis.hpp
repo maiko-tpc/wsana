@@ -2,6 +2,9 @@
 #define ANALYSIS_HPP_
 
 //#define ANASSD   // comment out to disable ssd analysis
+#define ANALAS   // comment out to disable LAS analysis
+
+
 #define SKIP_BLK_END 1
 
 #include <stdio.h>
@@ -195,6 +198,7 @@ private:
 
   anapla *pla;
   anagr *gr;
+  anagr *las;  
   anassd *ssd;  
   kinema *kine;
   

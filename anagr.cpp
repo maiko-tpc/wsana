@@ -2,7 +2,10 @@
 
 using namespace std;
 
-anagr::anagr(){
+anagr::anagr(int gr_las){
+  if(gr_las==0 || gr_las==1) i_gr_las = gr_las;
+  else i_gr_las = 0;
+
   rnd = new TRandom3();
   rnd->SetSeed(0);
   SetTDC2LenTab_GR();
@@ -49,11 +52,28 @@ void anagr::SetGRPars(){
   SetChambSpace(250.0);
 }
 
-int anagr::GetPlane(int geo){
-  return (int)geo/2;
+int anagr::GetPlane(int geo, int ch){
+
+  // GR
+  if(geo<8) return (int)geo/2;  // 0:X1, 1:U1, 2:X2, 3:U2
+
+  // LAS (as of 2019.12.04)
+  if(geo== 8 || geo==9) return 0;           // X1
+  if(geo==11 && ch>31 && ch< 63)  return 3; // X2
+  if(geo==11 && ch>95 && ch<127)  return 0; // X1
+  if(geo==12 || geo==13) return 1;          // U1
+  if(geo==14 || geo==15) return 2;          // V1
+  if(geo==16 || geo==17) return 3;          // X2
+  if(geo==20 || geo==21) return 4;          // U2
+  if(geo==22 || geo==23) return 5;          // X2
+
+  // Default
+  return 0;
 }
 
 int anagr::GetWire(int geo, int ch){
+  
+  // GR
   if(geo==0 || geo==4){
     if(ch>=  0 && ch<= 15) return ch;
     if(ch>= 16 && ch<= 31) return ch+16;
@@ -98,6 +118,23 @@ int anagr::GetWire(int geo, int ch){
     if(ch> 112 && ch<=127) return -1;
   }
 
+  // LAS (as of 2019.12.04)
+  if(geo== 8 && ch!=  0) return ch;                     // X1
+  if(geo== 9 && ch!=127) return ch+128;                 // X1
+  if(geo==11 && ch> 31 && ch< 63) return 16*15+(ch-32); // X2
+  if(geo==11 && ch> 95 && ch<127) return 16*15+(ch-96); // X1
+  if(geo==12 && ch!=  0) return ch;                     // U1
+  if(geo==13 && ch!=127) return ch+128;                 // U1
+  if(geo==14 && ch!=  0) return ch;                     // V1
+  if(geo==15 && ch!=127) return ch+128;                 // V1
+  if(geo==16 && ch!=  0) return ch;                     // X2
+  if(geo==17 && ch!=127) return ch+128;                 // X2
+  if(geo==20 && ch!=  0) return ch;                     // U2
+  if(geo==21 && ch!=127) return ch+128;                 // U2
+  if(geo==22 && ch!=  0) return ch;                     // V2
+  if(geo==23 && ch!=127) return ch+128;                 // V2
+  
+  // Default or reference ch
   return -1;
 }
 
@@ -119,7 +156,7 @@ void anagr::V1190Hit2VDCData(evtdata *evt){
     
     if((tmp_field==FIELD_GV_NEW || tmp_field==FIELD_GV_OLD)
        && tmp_geo<=7 && tmp_ch!=127){
-      tmp_plane = GetPlane(tmp_geo);
+      tmp_plane = GetPlane(tmp_geo, tmp_ch);
       tmp_wire = GetWire(tmp_geo, tmp_ch);
       tmp_vdc_data.plane = tmp_plane;
       tmp_vdc_data.wire = tmp_wire;

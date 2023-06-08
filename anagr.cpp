@@ -240,8 +240,11 @@ void anagr::cal_nclst(evtdata *evt){
   // Make the hit-table arrays
   unsigned int hit_array[N_VDCPLANE][PLANE_SIZE]={0}; // Initilize with zero
   size_t grvdc_size = evt->grvdc.size();
+
+  // convert data to hit array with gating good drift time (length)
   for(int i=0; i<(int)grvdc_size; i++){
-    if(evt->grvdc[i].wire >0){
+    if(evt->grvdc[i].wire >0 &&
+       evt->grvdc[i].dlen >0.001 && evt->grvdc[i].dlen<9.999){
       hit_array[evt->grvdc[i].plane][evt->grvdc[i].wire]++;
     }
   }

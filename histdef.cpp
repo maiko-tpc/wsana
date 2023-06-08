@@ -127,7 +127,7 @@ void analysis::HistFill(){
       hwire[plane]->Fill(wire);
       hdrifttime[plane]->Fill(evt.grvdc[i].lead_cor);
       if(evt.vme_inp[8]==1) hdrifttime_coin[plane]->Fill(evt.grvdc[i].lead_cor);      
-      hdriftlen[plane]->Fill(evt.grvdc[i].dlen);      
+      if(evt.grvdc[i].dlen>0.001 && evt.grvdc[i].dlen<9.999)hdriftlen[plane]->Fill(evt.grvdc[i].dlen);      
       evt.nhit_plane[plane]++;
       evt.mean_wire[plane]+=wire;
     }

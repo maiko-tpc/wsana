@@ -60,7 +60,6 @@ void analysis::TreeDef(){
   tree->Branch("grx", &evt.grx, "grx/F");
   tree->Branch("gry", &evt.gry, "gry/F");
   tree->Branch("grthx", &evt.grthx, "grthx/F");
-  tree->Branch("grthx2", &evt.grthx2, "grthx2/F");  
   tree->Branch("grthy", &evt.grthy, "grthy/F");
 
   tree->Branch("grp_rela", &evt.grp_rela, "grp_rela/D");

@@ -577,7 +577,6 @@ double anagr::fit_planes(evtdata *evt){
   evt->gry = center_pos[1] - gry_size/2.0;  
   
   evt->grthx = atan((center_pos[2]+chamb_space - center_pos[0])/chamb_space)*TMath::RadToDeg()-45.0;  
-  evt->grthx2 = atan((center_pos[2]-center_pos[0])/chamb_space)*TMath::RadToDeg();
   evt->grthy = atan((center_pos[3]-center_pos[1])/chamb_space)*TMath::RadToDeg();
 
   return 0;

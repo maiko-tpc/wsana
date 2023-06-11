@@ -799,7 +799,6 @@ void analysis::InitEvt(){
   evt.grx = 100000;
   evt.gry = 100000;  
   evt.grthx = 100000;
-  evt.grthx2= 100000;  
   evt.grthy = 100000;  
 
   evt.good_fit=1;

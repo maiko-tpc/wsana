@@ -77,7 +77,6 @@ struct evtdata{
 
   float grx, gry;
   float grthx, grthy;
-  float grthx2;
 
   int good_fit;
 

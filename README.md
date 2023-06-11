@@ -24,7 +24,7 @@ Just type `$> make`
   - Useful script for online monitor: `./online.sh`
     It analyzes the latest .bld data with -web 5920 and -last options.
 
-- Tree branches
+## Tree branches
 
 |Branch parameter|Data description|Note|
 | ------- | ----------- | ------- |

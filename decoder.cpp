@@ -8,8 +8,6 @@
 #define V1190_MAX_GEO 32
 
 #define V1190_SUBTRACT_REF 1
-#define V1190_REF_CH 127
-#define V1190_REF_CH_PLA 14
 
 #define VSN_GR 1
 
@@ -219,6 +217,14 @@ void init_v1190_data(v1190_data *v1190){
 
 int ana_v1190(vector<v1190_hit> &v1190_hit_all,
               unsigned int *rawdata, unsigned int size, int field_id){
+
+  // reference channel by geo address
+  unsigned int v1190_ref_ch[V1190_MAX_GEO]=
+    {112, 112, 112, 112, 112, 112, 112, 112,  // GR
+       0, 127,   0, 127,   0, 127,   0, 127,  // LAS
+       0, 127,   0, 127,   0, 127,   0, 127,  // LAS
+     127, 127, 127, 127, 127, 127,  14, 127}; // GEO=30:PLA
+
   unsigned int rp=0;
   unsigned int data;
   int geo=V1190_MAX_GEO-1;
@@ -237,9 +243,6 @@ int ana_v1190(vector<v1190_hit> &v1190_hit_all,
   int ref_lead[V1190_MAX_GEO]={0};
   int ref_flag[V1190_MAX_GEO]={0};  
 
-  unsigned int ref_ch=V1190_REF_CH;
-  if(field_id == FIELD_PLA) ref_ch = V1190_REF_CH_PLA;
-  
   // multiple module data is coming (not single module)
   while(rp<size/2){
     data=flip_32bit(ntohl(rawdata[rp]));
@@ -274,7 +277,8 @@ int ana_v1190(vector<v1190_hit> &v1190_hit_all,
 	  if(edge==0){ // leading edge
 	    if(lead_cnt[geo][ich]<V1190_MAX_MULTI){
 	      tmp_lead[geo][ich][lead_cnt[geo][ich]]=measure;
-	      if(ich==ref_ch && ref_flag[geo]==0){
+	      //	      if(ich==ref_ch && ref_flag[geo]==0){
+	      if(ich==v1190_ref_ch[geo] && ref_flag[geo]==0){		
 		ref_lead[geo]=measure;
 		ref_flag[geo]=1;
 	      }

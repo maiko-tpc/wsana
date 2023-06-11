@@ -162,16 +162,17 @@ void anagr::V1190Hit2VDCData(evtdata *evt){
       tmp_vdc_data.wire = tmp_wire;
       tmp_vdc_data.geo = evt->v1190_hit_all[i].geo;
       tmp_vdc_data.lead_raw = evt->v1190_hit_all[i].lead_raw;
-      //      tmp_vdc_data.lead_cor = evt->v1190_hit_all[i].lead_cor + VDC_OFFSET; // obsolate
+
+      tmp_vdc_data.lead_cor = evt->v1190_hit_all[i].lead_cor + VDC_OFFSET; // use v1190 reference sbtracted
 
       //      tmp_vdc_data.lead_cor = evt->v1190_hit_all[i].lead_cor -
-      //      	(int)((evt->grpla.vtdc[0]+evt->grpla.vtdc[1])/2.0) + VDC_OFFSET2; // before run40990
+      //      	(int)((evt->grpla.vtdc[0]+evt->grpla.vtdc[1])/2.0) + VDC_OFFSET2; // before e552 run40990
 
-      tmp_vdc_data.lead_cor = evt->v1190_hit_all[i].lead_cor - evt->grpla.vtdc[15] + VDC_OFFSET2; //from run4090
+      //tmp_vdc_data.lead_cor = evt->v1190_hit_all[i].lead_cor - evt->grpla.vtdc[15] + VDC_OFFSET2; //from e552 run4090
 
       tmp_vdc_data.clst_flag = 0;                  
       if(tmp_vdc_data.plane<4 &&
-	 tmp_vdc_data.wire>0 && tmp_vdc_data.wire<1000 &&
+	 tmp_vdc_data.wire>=0 && tmp_vdc_data.wire<1000 &&
 	 hit_flag[tmp_plane][tmp_wire]==0){
 	evt->grvdc.push_back(tmp_vdc_data);
 	hit_flag[tmp_plane][tmp_wire]=1;

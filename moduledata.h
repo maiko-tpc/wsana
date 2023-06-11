@@ -41,8 +41,7 @@ const int N_GRPLA    = 2;
 const int MAX_VDC_TDC = 10000;
 const int N_RF=3;
 
-const int VDC_OFFSET = 4000;
-const int VDC_OFFSET2 = 9000;
+const int VDC_OFFSET = 5000;
 
 #define SSD_TDC_CH 128
 

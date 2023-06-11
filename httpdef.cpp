@@ -12,10 +12,17 @@ void analysis::MakeTHttp(int portnum){
   //  serv->SetItemField("/", "_drawopt", "colz");
   //  serv->SetItemField("/","_monitoring","1000");
   
-  string fitcmd = Form("gSystem->Exec(\"kill -10 %d\");", pid);
+  /* Fit button definition */
+  //  string fitcmd = Form("gSystem->Exec(\"kill -10 %d\");", pid);
+  string fitcmd = Form("gSystem->Exec(\"kill -%d %d\");", SIGUSR1, pid);  
   serv->RegisterCommand("/Commands/Fit", fitcmd.c_str(),
-  			"button;rootsys/icons/bld_delete.png");  
+  			"button;rootsys/icons/Root6Icon.png");  
 
+  /* Clear button definition */
+  string clearcmd = Form("gSystem->Exec(\"kill -%d %d\");", SIGUSR2, pid);  
+  serv->RegisterCommand("/Commands/Clear", clearcmd.c_str(),
+  			"button;rootsys/icons/refresh.png");  
+  
 
   serv->Register("/Info", cinfo);
   
@@ -111,6 +118,88 @@ void analysis::MakeTHttp(int portnum){
 }
 
 void analysis::HttpHistReset(){
+  printf("clear function\n");  
+  
+  for(int i=0; i<N_VDCPLANE; i++){
+    hwire[i]->Clear();
+  }
+  
+  for(int i=0; i<N_VDCPLANE; i++){
+    hdrifttime[i]->Clear();
+  }
+  
+  for(int i=0; i<N_VDCPLANE; i++){
+    hdriftlen[i]->Clear();
+  }
+  
+  for(int i=0; i<N_VDCPLANE; i++){
+    hhiteff[i]->Clear();
+  }
+  
+  for(int i=0; i<N_VDCPLANE; i++){
+    hclsteff[i]->Clear();
+  }
+  
+  hhiteffall->Clear();
+  hclsteffall->Clear();
+  
+  hgrtrackx->Clear();
+  hgrtracky->Clear();  
+  
+  for(int i=0; i<4; i++){
+    hgrfqdc[i]->Clear();
+  }
+  for(int i=0; i<4; i++){
+    hgrvqdc[i]->Clear();
+  }
+  for(int i=0; i<4; i++){
+    hgrqdccor[i]->Clear();
+  }
+  
+  for(int i=0; i<4; i++){
+    hgrplaposq[i]->Clear();
+  }   
+  
+  for(int i=0; i<2; i++){
+    hgrplarfde[i]->Clear();
+  }
+  
+  for(int i=0; i<N_RF; i++){
+    hgrrf[i]->Clear();
+  }
+  
+  hgrlascoin->Clear();
+	    
+  for(int i=0; i<4; i++){
+    hlasfqdc[i]->Clear();
+  }
+  for(int i=0; i<4; i++){
+    hlasvqdc[i]->Clear();
+  }
+  for(int i=0; i<4; i++){
+    hlasqdccor[i]->Clear();
+  }
+  
+  hgrx->Clear();
+  hgrx_thxgate->Clear();
+  hgry->Clear();
+  hgrangx->Clear();
+  hgrangy->Clear();
+  
+  hgrthx->Clear();
+  hgryx->Clear();  
+
+  hgrrelap->Clear();
+  
+#ifdef ANALAS
+  for(int i=0; i<N_VDCPLANE_LAS; i++){
+    hwire_las[i]->Clear();
+  }
+
+  for(int i=0; i<N_VDCPLANE_LAS; i++){
+    hdrifttime_las[i]->Clear();
+  }
+#endif
 }
 
 void analysis::HttpHistFit(){  

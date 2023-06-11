@@ -254,6 +254,7 @@ int  analysis::AnaEvt(){
     
     // http control
     extern int FIT_FLAG;
+    extern int CLEAR_FLAG;    
 
     if(GetWeb() && FIT_FLAG==1){
       HttpHistFit();  // only reset when the bottun is pressed
@@ -262,6 +263,7 @@ int  analysis::AnaEvt(){
     
     if(GetWeb()){
       HttpHistReset();  // only reset when the bottun is pressed
+      CLEAR_FLAG=0;
     }
     
   } //if( (SKIP_BLK_END==0)...

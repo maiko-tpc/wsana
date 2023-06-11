@@ -33,6 +33,8 @@ volatile sig_atomic_t eflag;
 void fit_handler(int sig);
 int FIT_FLAG=0;
 
+void clear_handler(int sig);
+int CLEAR_FLAG=0;
 
 int main(int iarg, char *argv[]) {
   
@@ -46,9 +48,12 @@ int main(int iarg, char *argv[]) {
     exit(1);
   }
 
-  /* define action for fit button */
+  /* Define action for fit button */
   signal(SIGUSR1, fit_handler);  // SIGID=10 (user definition signal1)
 
+  /* Define action for clear button */
+  signal(SIGUSR2, clear_handler);  // SIGID=12 (user definition signal2)
+  
   /* Get pid of myself */
   pid_t my_pid = getpid();
   printf("PID: %d\n", (int)my_pid);
@@ -212,4 +217,9 @@ void abrt_handler(int sig, siginfo_t *info, void *ctx) {
 void fit_handler(int signal){
   printf("fit signal!\n");
   FIT_FLAG = 1;
+}
+
+void clear_handler(int signal){
+  printf("clear signal!\n");
+  CLEAR_FLAG = 1;
 }

@@ -82,7 +82,7 @@ int anapla::GetV1190Hit(evtdata *evt){
       //      lead_raw = evt->v1190_hit_all[i].lead_raw;
       
       // GR       
-      if(ch>=0 && ch<16){
+      if(ch>=0 && ch<32){
 	evt->v1190pla_multi[ch]++;
 	// take only the first hit
 	if(evt->v1190_first_hit[PLA_V1190_GEO][ch] == 1){
@@ -93,7 +93,7 @@ int anapla::GetV1190Hit(evtdata *evt){
       }
 
       // LAS
-      if(ch>=32 && ch<48){
+      if(ch>=32 && ch<64){
 	// take only the first hit
 	if(evt->v1190_first_hit[PLA_V1190_GEO][ch] == 1){
 	  evt->laspla.vtdc[ch-32] = evt->v1190_hit_all[i].lead_cor+VDC_OFFSET;

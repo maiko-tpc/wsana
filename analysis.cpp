@@ -746,6 +746,11 @@ void analysis::InitEvt(){
   evt.grvdc_x.clear();
   evt.grvdc_u.clear();  
 
+  evt.lasvdc.clear();
+  evt.lasvdc_x.clear();
+  evt.lasvdc_u.clear();
+  evt.lasvdc_v.clear();    
+  
   evt.v1190_hit_all.clear();
   evt.mxdc32_hit_all.clear();
   evt.fera_hit_all.clear();    
@@ -758,6 +763,10 @@ void analysis::InitEvt(){
   for(int i=0; i<N_VDCPLANE; i++){
     evt.nhit_plane[i]=0;
     evt.mean_wire[i]=0.0;
+  }
+  for(int i=0; i<N_VDCPLANE_LAS; i++){
+    evt.nhit_plane_las[i]=0;
+    evt.mean_wire_las[i]=0.0;
   }
 
   for(int i=0; i<N_GRPLA_CH; i++){

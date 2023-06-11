@@ -1,8 +1,8 @@
 #ifndef ANALYSIS_HPP_
 #define ANALYSIS_HPP_
 
-//#define ANASSD   // comment out to disable ssd analysis
-#define ANALAS   // comment out to disable LAS analysis
+//#define ANASSD 1  // comment out to disable ssd analysis
+#define ANALAS 1    // comment out to disable LAS analysis
 
 
 #define SKIP_BLK_END 1
@@ -144,6 +144,10 @@ private:
   TH1F *hclsteff[N_VDCPLANE];    
   TH1F* hhiteffall;
   TH1F* hclsteffall;  
+
+  // LAS
+  TH1F *hwire_las[N_VDCPLANE_LAS];
+  TH1F *hdrifttime_las[N_VDCPLANE_LAS];  
   
   TH1F *hgrfqdc[4];
   TH1F *hgrvqdc[4];

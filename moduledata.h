@@ -6,6 +6,7 @@
 #define N_V1190 1
 #define V1190_MAX_MULTI 2
 #define N_VDCPLANE 4
+#define N_VDCPLANE_LAS 6
 #define PLANE_SIZE 256
 
 #define MQDC_START_GEO 0
@@ -25,6 +26,7 @@
 #define FIELD_GV_NEW 26486
 #define FIELD_GR_OLD 0
 #define FIELD_GR_NEW 26482
+#define FIELD_LV  27766
 
 #define VSN_GRQDC1 1
 #define VSN_GRQDC2 2
@@ -128,7 +130,7 @@ typedef struct pla_data{
   int vtdc[N_PLA_CH];  
 } pla_data;
 
-typedef struct grvdc_data{
+typedef struct vdc_data{
   unsigned int geo;
   int ray;
   unsigned int plane;
@@ -137,7 +139,7 @@ typedef struct grvdc_data{
   int lead_cor;
   unsigned int clst_flag;
   float dlen; // drift length
-} grvdc_data;
+} vdc_data;
 
 
 #endif

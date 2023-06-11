@@ -98,6 +98,16 @@ void analysis::MakeTHttp(int portnum){
   serv->Register("/GR", hgryx);
 
   serv->Register("/GR", hgrrelap);    
+
+#ifdef ANALAS
+  for(int i=0; i<N_VDCPLANE_LAS; i++){
+    serv->Register("/LAS_VDC", hwire_las[i]);
+  }
+
+  for(int i=0; i<N_VDCPLANE_LAS; i++){
+    serv->Register("/LAS_VDC", hdrifttime_las[i]);
+  }
+#endif
 }
 
 void analysis::HttpHistReset(){

@@ -3,38 +3,51 @@
 void analysis::HistDef(){
   cinfo = new TCanvas("cinfo", "Run Information");
 
-  std::vector<std::string> gr_plane_name =
-    {"gr_X1", "gr_U1", "gr_X2", "gr_U2"};
+  char *gr_plane_name[N_VDCPLANE] = {"gr_X1", "gr_U1", "gr_X2", "gr_U2"};
 
   for(int i=0; i<N_VDCPLANE; i++){
-    hwire[i] = new TH1F(Form("h_%s_hit", gr_plane_name[i].c_str()),
-			Form("GR VDC %s hit", gr_plane_name[i].c_str()),
+    hwire[i] = new TH1F(Form("h_%s_hit", gr_plane_name[i]),
+			Form("GR VDC %s hit", gr_plane_name[i]),
                         PLANE_SIZE, 0, PLANE_SIZE);
     
-    hdrifttime[i] = new TH1F(Form("h_%s_tdc", gr_plane_name[i].c_str()),
-			     Form("GR VDC %s TDC", gr_plane_name[i].c_str()),
+    hdrifttime[i] = new TH1F(Form("h_%s_tdc", gr_plane_name[i]),
+			     Form("GR VDC %s TDC", gr_plane_name[i]),
     			     MAX_VDC_TDC, 0, MAX_VDC_TDC);
 
-    hdrifttime_coin[i] = new TH1F(Form("h_%s_tdc_coin", gr_plane_name[i].c_str()),
-				  Form("GR VDC %s TDC coin trig", gr_plane_name[i].c_str()),
+    hdrifttime_coin[i] = new TH1F(Form("h_%s_tdc_coin", gr_plane_name[i]),
+				  Form("GR VDC %s TDC coin trig", gr_plane_name[i]),
 				  MAX_VDC_TDC, -10000, 10000);
     
-    hdriftlen[i]  = new TH1F(Form("h_%s_len", gr_plane_name[i].c_str()),
-			     Form("GR VDC %s drift length", gr_plane_name[i].c_str()),
+    hdriftlen[i]  = new TH1F(Form("h_%s_len", gr_plane_name[i]),
+			     Form("GR VDC %s drift length", gr_plane_name[i]),
                              512, 0, 16);
 
-    hhiteff[i]  = new TH1F(Form("h_%s_hit_eff", gr_plane_name[i].c_str()),
-			   Form("GR VDC %s hit efficiency", gr_plane_name[i].c_str()),
+    hhiteff[i]  = new TH1F(Form("h_%s_hit_eff", gr_plane_name[i]),
+			   Form("GR VDC %s hit efficiency", gr_plane_name[i]),
 			   2, 0, 2);
     
-    hclsteff[i]  = new TH1F(Form("h_%s_clst_eff", gr_plane_name[i].c_str()),
-			    Form("GR VDC %s cluster efficiency", gr_plane_name[i].c_str()),
+    hclsteff[i]  = new TH1F(Form("h_%s_clst_eff", gr_plane_name[i]),
+			    Form("GR VDC %s cluster efficiency", gr_plane_name[i]),
 			   2, 0, 2);
   }
 
   hhiteffall  = new TH1F("h_hit_eff_all", "GR VDC hit efficiency all", 2, 0, 2);
   hclsteffall = new TH1F("h_clst_eff_all", "GR VDC cluster efficiency all", 2, 0, 2);  
     
+  char *las_plane_name[N_VDCPLANE_LAS] =
+    {"las_X1", "las_U1", "las_V1", "las_X2, las_U2, las_V2"};
+
+  for(int i=0; i<N_VDCPLANE_LAS; i++){
+    hwire_las[i] = new TH1F(Form("h_%s_hit", las_plane_name[i]),
+			Form("VDC %s hit", las_plane_name[i]),
+                        PLANE_SIZE, 0, PLANE_SIZE);
+    
+    hdrifttime_las[i] = new TH1F(Form("h_%s_tdc", las_plane_name[i]),
+			     Form("VDC %s TDC", las_plane_name[i]),
+    			     MAX_VDC_TDC, 0, MAX_VDC_TDC);
+  }
+
+
   for(int i=0; i<4; i++){
     hgrfqdc[i] = new TH1F(Form("h_gr_fqdc_ch%d", i),
 			  Form("GR plastic FERA QDC ch%d", i),
@@ -157,20 +170,32 @@ void analysis::HistDef(){
 } // end of histdef
 
 void analysis::HistFill(){
-  for(int i=0; i<(int)(evt.grvdc.size()); i++){
+
+  // GR VDC
+  for(int i=0; i<(int)(evt.grvdc.size()); i++){  
     int plane=evt.grvdc[i].plane;
     int wire=evt.grvdc[i].wire;
     //    int drifttime=evt.grvdc[i].lead_cor;
     if(wire>=0){
       hwire[plane]->Fill(wire);
       hdrifttime[plane]->Fill(evt.grvdc[i].lead_cor);
-      if(evt.vme_inp[8]==1) hdrifttime_coin[plane]->Fill(evt.grvdc[i].lead_cor);      
+      if(evt.vme_inp[8]==1) hdrifttime_coin[plane]->Fill(evt.grvdc[i].lead_cor);
       hdriftlen[plane]->Fill(evt.grvdc[i].dlen);      
-      evt.nhit_plane[plane]++;
-      evt.mean_wire[plane]+=wire;
     }
   }  
 
+  // LAS VDC
+#ifdef ANALAS
+  for(int i=0; i<(int)(evt.lasvdc.size()); i++){  
+    int plane=evt.lasvdc[i].plane;
+    int wire=evt.lasvdc[i].wire;
+    if(wire>=0){
+      hwire_las[plane]->Fill(wire);
+      hdrifttime_las[plane]->Fill(evt.lasvdc[i].lead_cor);
+    }
+  }  
+#endif  
+  
 
   for(int i=0; i<4; i++){
     hgrfqdc[i]->Fill(evt.grpla.fqdc[i]);
@@ -260,8 +285,12 @@ void analysis::HistWrite(){
   }
   for(int i=0; i<N_VDCPLANE; i++){
     hdrifttime[i]->Write();
-    hdrifttime_coin[i]->Write();    
   }
+#ifdef ANALAS
+  for(int i=0; i<N_VDCPLANE; i++){
+    hdrifttime_coin[i]->Write();
+  }
+#endif
   for(int i=0; i<N_VDCPLANE; i++){
     hdriftlen[i]->Write();    
   }
@@ -276,6 +305,15 @@ void analysis::HistWrite(){
   }
   hhiteffall->Write();
   hclsteffall->Write();      
+
+#ifdef ANALAS
+  for(int i=0; i<N_VDCPLANE_LAS; i++){
+    hwire_las[i]->Write();
+  }
+  for(int i=0; i<N_VDCPLANE_LAS; i++){
+    hdrifttime_las[i]->Write();
+  }
+#endif  
 
   for(int i=0; i<N_RF; i++){
     hgrrf[i]->Write();

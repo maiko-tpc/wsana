@@ -74,6 +74,13 @@ void analysis::TreeDef(){
   tree->Branch("band_v1190_lead", &evt.band_v1190_lead, "band_v1190_lead[32]/I");  
   tree->Branch("mqdc_nhit", &evt.mqdc_nhit, "mqdc_nhit[2]/i");
   
+#ifdef ANALAS
+  tree->Branch("vdcnhit_las", &evt.nhit_plane_las,
+	       Form("vdcnhit_las[%d]/I", N_VDCPLANE_LAS));
+  tree->Branch("meanwire_las", &evt.mean_wire_las,
+	       Form("vdcwire_las[%d]/F", N_VDCPLANE_LAS));  
+#endif  
+
 } // end of void analysis::TreeDef(){
 
 void analysis::TreeWrite(){

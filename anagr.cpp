@@ -3,7 +3,7 @@
 using namespace std;
 
 anagr::anagr(int gr_las){
-  if(gr_las==0 || gr_las==1) i_gr_las = gr_las;
+  if(gr_las==0 || gr_las==1) i_gr_las = gr_las; // 0:GR, 1:LAS
   else i_gr_las = 0;
 
   rnd = new TRandom3();
@@ -139,7 +139,7 @@ int anagr::GetWire(int geo, int ch){
 }
 
 void anagr::V1190Hit2VDCData(evtdata *evt){
-  /* Get V1190 hit data to fill into grvdc */
+  /* Get V1190 hit data to fill into vdc data */
 
   int tmp_field;
   int tmp_geo, tmp_ch, tmp_plane, tmp_wire;
@@ -149,13 +149,13 @@ void anagr::V1190Hit2VDCData(evtdata *evt){
   
   int hit_size = (int)(evt->v1190_hit_all.size());
   for(int i=0; i<hit_size; i++){
-    grvdc_data tmp_vdc_data;
+    vdc_data tmp_vdc_data;
     tmp_field = evt->v1190_hit_all[i].field;
     tmp_geo = evt->v1190_hit_all[i].geo;
     tmp_ch = evt->v1190_hit_all[i].ch;
     
-    if((tmp_field==FIELD_GV_NEW || tmp_field==FIELD_GV_OLD)
-       && tmp_geo<=7 && tmp_ch!=127){
+    if((tmp_field==FIELD_GV_NEW || tmp_field==FIELD_GV_OLD || tmp_field==FIELD_LV)
+       && tmp_geo<=23){
       tmp_plane = GetPlane(tmp_geo, tmp_ch);
       tmp_wire = GetWire(tmp_geo, tmp_ch);
       tmp_vdc_data.plane = tmp_plane;
@@ -171,11 +171,11 @@ void anagr::V1190Hit2VDCData(evtdata *evt){
       //tmp_vdc_data.lead_cor = evt->v1190_hit_all[i].lead_cor - evt->grpla.vtdc[15] + VDC_OFFSET2; //from e552 run4090
 
       tmp_vdc_data.clst_flag = 0;                  
-      if(tmp_vdc_data.plane<4 &&
-	 tmp_vdc_data.wire>=0 && tmp_vdc_data.wire<1000 &&
-	 hit_flag[tmp_plane][tmp_wire]==0){
-	evt->grvdc.push_back(tmp_vdc_data);
-	hit_flag[tmp_plane][tmp_wire]=1;
+      if(tmp_vdc_data.plane<6 &&
+	 tmp_vdc_data.wire>=0 && hit_flag[tmp_plane][tmp_wire]==0){
+	if(i_gr_las == 0) evt->grvdc.push_back(tmp_vdc_data);
+	if(i_gr_las != 0) evt->lasvdc.push_back(tmp_vdc_data);	
+	hit_flag[tmp_plane][tmp_wire]=1;  // analyze only the first hit
       }
     }
     
@@ -183,15 +183,35 @@ void anagr::V1190Hit2VDCData(evtdata *evt){
 }
 
 void anagr::GetXUHits(evtdata *evt){
-  int nhits = (int)evt->grvdc.size();
+
+  int nhits = 0;
+  if(i_gr_las==0) nhits = (int)evt->grvdc.size();
+  if(i_gr_las!=0) nhits = (int)evt->lasvdc.size();  
+
   for(int i=0; i<nhits; i++){
-    if((evt->grvdc[i].plane)%2==0){  // X plane
-      evt->grvdc_x.push_back(evt->grvdc[i]);
+
+    if(i_gr_las==0){  // GR
+      if((evt->grvdc[i].plane)%2==0){  // X plane
+	evt->grvdc_x.push_back(evt->grvdc[i]);
+      }
+      if((evt->grvdc[i].plane)%2==1){  // U plane
+	evt->grvdc_u.push_back(evt->grvdc[i]);
+      }
     }
-    if((evt->grvdc[i].plane)%2==1){  // U plane
-      evt->grvdc_u.push_back(evt->grvdc[i]);
+
+    if(i_gr_las!=0){  // LAS
+      if((evt->lasvdc[i].plane)%3==0){  // X plane
+	evt->lasvdc_x.push_back(evt->lasvdc[i]);
+      }
+      if((evt->lasvdc[i].plane)%3==1){  // U plane
+	evt->lasvdc_u.push_back(evt->lasvdc[i]);
+      }
+      if((evt->lasvdc[i].plane)%3==2){  // V plane
+	evt->lasvdc_v.push_back(evt->lasvdc[i]);
+      }
     }
-  }
+    
+  } // end of nhit loop
 
 }
 
@@ -201,45 +221,70 @@ void anagr::anavdc(evtdata *evt){
   V1190Hit2VDCData(evt);
   GetXUHits(evt);
   
-  int grvdc_size = (int)(evt->grvdc.size());
-  for(i=0; i<grvdc_size; i++){
-    int plane=evt->grvdc[i].plane;
-    int wire=evt->grvdc[i].wire;
-    //    int drifttime=evt->grvdc[i].lead_cor;
+  int vdc_size;
+  if(i_gr_las==0) vdc_size = (int)(evt->grvdc.size());
+  if(i_gr_las!=0) vdc_size = (int)(evt->lasvdc.size());  
+
+  int plane, wire;
+  
+  for(i=0; i<vdc_size; i++){
+    if(i_gr_las==0){
+      plane=evt->grvdc[i].plane;
+      wire=evt->grvdc[i].wire;
+    }
+    if(i_gr_las!=0){
+      plane=evt->lasvdc[i].plane;
+      wire=evt->lasvdc[i].wire;
+    }
+
     if(wire>=0){
-      evt->nhit_plane[plane]++;
-      evt->mean_wire[plane]+=wire;
+
+      if(i_gr_las==0){
+	evt->nhit_plane[plane]++;
+	evt->mean_wire[plane]+=wire;
+      }
+      if(i_gr_las!=0){
+	evt->nhit_plane_las[plane]++;
+	evt->mean_wire_las[plane]+=wire;
+      }
+
     }
   }
   
   for(i=0; i<N_VDCPLANE; i++){
     if(evt->nhit_plane[i]>0){
-      evt->mean_wire[i] = evt->mean_wire[i]/evt->nhit_plane[i];
+      if(i_gr_las==0) evt->mean_wire[i] = evt->mean_wire[i]/evt->nhit_plane[i];
+      if(i_gr_las!=0) evt->mean_wire_las[i] = evt->mean_wire_las[i]/evt->nhit_plane_las[i];      
     }
   }
+
+  if(i_gr_las==0){  // LAS is not impremented yet
+  
+    TDC2Len_GR(evt);
+    cal_nclst(evt);
+    evt->gr_good_hit=IsGoodHit(evt);
+    evt->gr_good_clst=IsGoodClst(evt);
     
-  TDC2Len_GR(evt);
-  cal_nclst(evt);
-  evt->gr_good_hit=IsGoodHit(evt);
-  evt->gr_good_clst=IsGoodClst(evt);
-
-  if(evt->gr_good_clst==1){
-    for(i=0; i<N_VDCPLANE; i++){
-      FitOnePlane(evt, i);
+    if(evt->gr_good_clst==1){
+      for(i=0; i<N_VDCPLANE; i++){
+	FitOnePlane(evt, i);
+      }
     }
-  }
-  
-  if(evt->gr_good_clst==0) evt->good_fit=0;
-  for(int i=0; i<N_VDCPLANE; i++){
-    if(evt->redchi2[i]>100) evt->good_fit=0;
-  }
-  
-  // get position at focal plane & angle
-  calc_center_pos(evt);
-  fit_planes(evt);  
+    
+    if(evt->gr_good_clst==0) evt->good_fit=0;
+    for(int i=0; i<N_VDCPLANE; i++){
+      if(evt->redchi2[i]>100) evt->good_fit=0;
+    }
+    
+    // get position at focal plane & angle
+    calc_center_pos(evt);
+    fit_planes(evt);  
+    
+    // calc the momentum
+    calc_rela_momentum(evt);
 
-  // calc the momentum
-  calc_rela_momentum(evt);
+  }  // if(i_gr_las==0)
+  
 }
 
 void anagr::TDC2Len_GR(evtdata *evt){

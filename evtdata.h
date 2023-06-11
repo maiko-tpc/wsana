@@ -44,12 +44,21 @@ struct evtdata{
   pla_data grpla;
   pla_data laspla;  
 
-  std::vector<grvdc_data> grvdc;
-  std::vector<grvdc_data> grvdc_x;
-  std::vector<grvdc_data> grvdc_u;  
+  std::vector<vdc_data> grvdc;
+  std::vector<vdc_data> grvdc_x;
+  std::vector<vdc_data> grvdc_u;  
+
+  std::vector<vdc_data> lasvdc;
+  std::vector<vdc_data> lasvdc_x;
+  std::vector<vdc_data> lasvdc_u;
+  std::vector<vdc_data> lasvdc_v;    
+
   int nhit_plane[N_VDCPLANE];
   float mean_wire[N_VDCPLANE];  
 
+  int nhit_plane_las[N_VDCPLANE_LAS];
+  float mean_wire_las[N_VDCPLANE_LAS];  
+  
   int nclst[N_VDCPLANE];
   int clst_size[N_VDCPLANE];
 

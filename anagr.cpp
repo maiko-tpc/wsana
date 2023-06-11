@@ -206,7 +206,7 @@ void anagr::anavdc(evtdata *evt){
     int plane=evt->grvdc[i].plane;
     int wire=evt->grvdc[i].wire;
     //    int drifttime=evt->grvdc[i].lead_cor;
-    if(wire>0){
+    if(wire>=0){
       evt->nhit_plane[plane]++;
       evt->mean_wire[plane]+=wire;
     }
@@ -269,7 +269,7 @@ void anagr::cal_nclst(evtdata *evt){
   unsigned int hit_array[N_VDCPLANE][PLANE_SIZE]={0}; // Initilize with zero
   size_t grvdc_size = evt->grvdc.size();
   for(int i=0; i<(int)grvdc_size; i++){
-    if(evt->grvdc[i].wire >0){
+    if(evt->grvdc[i].wire >=0){
       hit_array[evt->grvdc[i].plane][evt->grvdc[i].wire]++;
     }
   }

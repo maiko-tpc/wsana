@@ -161,7 +161,7 @@ void analysis::HistFill(){
     int plane=evt.grvdc[i].plane;
     int wire=evt.grvdc[i].wire;
     //    int drifttime=evt.grvdc[i].lead_cor;
-    if(wire>0){
+    if(wire>=0){
       hwire[plane]->Fill(wire);
       hdrifttime[plane]->Fill(evt.grvdc[i].lead_cor);
       if(evt.vme_inp[8]==1) hdrifttime_coin[plane]->Fill(evt.grvdc[i].lead_cor);      

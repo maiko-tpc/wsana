@@ -68,3 +68,6 @@ Just type `$> make`
 |gre|GR energy|Unit in MeV.|
 |vdcnhit_las[6]|Number of hits in LAS VDC planes|[0]:X1, [1]:U1, [2]:V1, [3]:X2, [4]:U2, [5]:V2|
 |meanwire_las[6]|Mean position of VDC hits in LAS|[0]:X1, [1]:U1, [2]:V1, [3]:X2, [4]:U2, [5]:V2|
+
+- Example
+  - `tree->Draw("grthx:grx>>h1(200,-600,600, 200,-10,10)", "good_fit", "colz")`

@@ -6,6 +6,9 @@ Program to convert the GR daq file to ROOT file
 ## Requirement
 [ROOT](https://root.cern.ch/) is required.
 
+## Installation
+Just type `$> make`
+
 ## Usage
 - ./ana run****.bld run****.root [Options]
 

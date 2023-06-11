@@ -68,9 +68,6 @@ void analysis::TreeDef(){
 
   //  tree->Branch("v1190pla_multi", &evt.v1190pla_multi, "v1190pla_multi[16]/I");
 
-  // for E552 on 2023 Feb.
-  tree->Branch("band_v1190_multi", &evt.band_v1190_multi, "band_v1190_multi[32]/I");
-  tree->Branch("band_v1190_lead", &evt.band_v1190_lead, "band_v1190_lead[32]/I");  
   tree->Branch("mqdc_nhit", &evt.mqdc_nhit, "mqdc_nhit[2]/i");
   
 #ifdef ANALAS

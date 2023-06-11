@@ -112,10 +112,6 @@ struct evtdata{
   float sakra_r[N_SAKRA];
   float sakra_theta[N_SAKRA];    
 
-  // for E552 on 2023 Feb.
-  int band_v1190_multi[32];
-  int band_v1190_lead[32];  
-
   unsigned int mqdc_nhit[2]; //[0]:GR, [1]:LAS
 
   int rf[N_RF];

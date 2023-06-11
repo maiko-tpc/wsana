@@ -826,11 +826,6 @@ void analysis::InitEvt(){
     evt.v1190pla_multi[i]=0;
   }
 
-  // for E552 on 2023 Feb.
-  for(int i=0; i<32; i++){
-    evt.band_v1190_multi[i]=0;
-    evt.band_v1190_lead[i]=-1000000;    
-  }
 
   for(int i=0; i<2; i++){
     evt.mqdc_nhit[i]=0;

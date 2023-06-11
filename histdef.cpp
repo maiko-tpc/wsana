@@ -35,7 +35,7 @@ void analysis::HistDef(){
   hclsteffall = new TH1F("h_clst_eff_all", "GR VDC cluster efficiency all", 2, 0, 2);  
     
   char *las_plane_name[N_VDCPLANE_LAS] =
-    {"las_X1", "las_U1", "las_V1", "las_X2, las_U2, las_V2"};
+    {"las_X1", "las_U1", "las_V1", "las_X2", "las_U2", "las_V2"};
 
   for(int i=0; i<N_VDCPLANE_LAS; i++){
     hwire_las[i] = new TH1F(Form("h_%s_hit", las_plane_name[i]),

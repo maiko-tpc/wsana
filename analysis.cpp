@@ -261,7 +261,7 @@ int  analysis::AnaEvt(){
       FIT_FLAG=0;
     }
     
-    if(GetWeb()){
+    if(GetWeb() && CLEAR_FLAG==1){
       HttpHistReset();  // only reset when the bottun is pressed
       CLEAR_FLAG=0;
     }

@@ -121,83 +121,83 @@ void analysis::HttpHistReset(){
   printf("clear function\n");  
   
   for(int i=0; i<N_VDCPLANE; i++){
-    hwire[i]->Clear();
+    hwire[i]->Reset();
   }
   
   for(int i=0; i<N_VDCPLANE; i++){
-    hdrifttime[i]->Clear();
+    hdrifttime[i]->Reset();
   }
   
   for(int i=0; i<N_VDCPLANE; i++){
-    hdriftlen[i]->Clear();
+    hdriftlen[i]->Reset();
   }
   
   for(int i=0; i<N_VDCPLANE; i++){
-    hhiteff[i]->Clear();
+    hhiteff[i]->Reset();
   }
   
   for(int i=0; i<N_VDCPLANE; i++){
-    hclsteff[i]->Clear();
+    hclsteff[i]->Reset();
   }
   
-  hhiteffall->Clear();
-  hclsteffall->Clear();
+  hhiteffall->Reset();
+  hclsteffall->Reset();
   
-  hgrtrackx->Clear();
-  hgrtracky->Clear();  
-  
-  for(int i=0; i<4; i++){
-    hgrfqdc[i]->Clear();
-  }
-  for(int i=0; i<4; i++){
-    hgrvqdc[i]->Clear();
-  }
-  for(int i=0; i<4; i++){
-    hgrqdccor[i]->Clear();
-  }
+  hgrtrackx->Reset();
+  hgrtracky->Reset();  
   
   for(int i=0; i<4; i++){
-    hgrplaposq[i]->Clear();
+    hgrfqdc[i]->Reset();
+  }
+  for(int i=0; i<4; i++){
+    hgrvqdc[i]->Reset();
+  }
+  for(int i=0; i<4; i++){
+    hgrqdccor[i]->Reset();
+  }
+  
+  for(int i=0; i<4; i++){
+    hgrplaposq[i]->Reset();
   }   
   
   for(int i=0; i<2; i++){
-    hgrplarfde[i]->Clear();
+    hgrplarfde[i]->Reset();
   }
   
   for(int i=0; i<N_RF; i++){
-    hgrrf[i]->Clear();
+    hgrrf[i]->Reset();
   }
   
-  hgrlascoin->Clear();
+  hgrlascoin->Reset();
 	    
   for(int i=0; i<4; i++){
-    hlasfqdc[i]->Clear();
+    hlasfqdc[i]->Reset();
   }
   for(int i=0; i<4; i++){
-    hlasvqdc[i]->Clear();
+    hlasvqdc[i]->Reset();
   }
   for(int i=0; i<4; i++){
-    hlasqdccor[i]->Clear();
+    hlasqdccor[i]->Reset();
   }
   
-  hgrx->Clear();
-  hgrx_thxgate->Clear();
-  hgry->Clear();
-  hgrangx->Clear();
-  hgrangy->Clear();
+  hgrx->Reset();
+  hgrx_thxgate->Reset();
+  hgry->Reset();
+  hgrangx->Reset();
+  hgrangy->Reset();
   
-  hgrthx->Clear();
-  hgryx->Clear();  
+  hgrthx->Reset();
+  hgryx->Reset();  
 
-  hgrrelap->Clear();
+  hgrrelap->Reset();
   
 #ifdef ANALAS
   for(int i=0; i<N_VDCPLANE_LAS; i++){
-    hwire_las[i]->Clear();
+    hwire_las[i]->Reset();
   }
 
   for(int i=0; i<N_VDCPLANE_LAS; i++){
-    hdrifttime_las[i]->Clear();
+    hdrifttime_las[i]->Reset();
   }
 #endif
 }

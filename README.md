@@ -27,7 +27,6 @@ Program to convert the GR daq file to ROOT file
 | ------- | ----------- | ------- |
 |run|Run number||
 |blk|Block number||
-<!-- 
 |eve|Event number|Block end events are skipped.|
 |unixtime|Unix Time of the block||
 |unixtimesub|Time in second from the run start||
@@ -66,4 +65,3 @@ Program to convert the GR daq file to ROOT file
 |gre|GR energy|Unit in MeV.|
 |vdcnhit_las[6]|Number of hits in LAS VDC planes|[0]:X1, [1]:U1, [2]:V1, [3]:X2, [4]:U2, [5]:V2|
 |meanwire_las[6]|Mean position of VDC hits in LAS|[0]:X1, [1]:U1, [2]:V1, [3]:X2, [4]:U2, [5]:V2|
--->

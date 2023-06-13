@@ -57,6 +57,8 @@ Just type `$> make`
 |clst_size[4]|Cluster size in GR VDC planes|[0]:X1, [1]:U1, [2]:X2, [3]:U2|
 |gr_good_clst[4]|Good cluster flag for GR VDC planes|0:not good cluster, 1:good cluster|
 |good_fit|GR VDC good fit flag|0:not good fit, 1:good fit|
+|gr_tot_mean[4]|Mean values of time over threshold in GR VDC plane||
+|gr_tot_max[4]|Max values of time over threshold in GR VDC plane||
 |redchi2[4]|Reduced chi square of the fit in GR VDC||
 |wire_pos[4]|Fitted position in GR VDC planes||
 |residual[4]|Mean residual lengths in GR VDC planes|Unit in mm.|
@@ -68,6 +70,8 @@ Just type `$> make`
 |gre|GR energy|Unit in MeV.|
 |vdcnhit_las[6]|Number of hits in LAS VDC planes|[0]:X1, [1]:U1, [2]:V1, [3]:X2, [4]:U2, [5]:V2|
 |meanwire_las[6]|Mean position of VDC hits in LAS|[0]:X1, [1]:U1, [2]:V1, [3]:X2, [4]:U2, [5]:V2|
+|las_tot_mean[6]|Mean values of time over threshold in LAS VDC plane||
+|las_tot_max[6]|Max values of time over threshold in LAS VDC plane||
 
 - Example
   - `tree->Draw("grthx:grx>>h1(200,-600,600, 200,-10,10)", "good_fit", "colz")`

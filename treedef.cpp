@@ -52,7 +52,9 @@ void analysis::TreeDef(){
   tree->Branch("clst_size", &evt.clst_size, Form("clst_size[%d]/I", N_VDCPLANE));  
   tree->Branch("gr_good_clst", &evt.gr_good_clst, "gr_good_clst/I");
   tree->Branch("good_fit", &evt.good_fit, "good_fit/I");  
-
+  tree->Branch("gr_tot_mean", &evt.gr_tot_mean, Form("gr_tot_mean[%d]/F", N_VDCPLANE));
+  tree->Branch("gr_tot_max", &evt.gr_tot_max, Form("gr_tot_max[%d]/I", N_VDCPLANE));  
+  
   tree->Branch("redchi2", &evt.redchi2, Form("redchi2[%d]/F", N_VDCPLANE));
   tree->Branch("wire_pos", &evt.wire_pos, Form("wire_pos[%d]/F", N_VDCPLANE));
   tree->Branch("residual", &evt.residual, Form("residual[%d]/F", N_VDCPLANE));        
@@ -75,6 +77,8 @@ void analysis::TreeDef(){
 	       Form("vdcnhit_las[%d]/I", N_VDCPLANE_LAS));
   tree->Branch("meanwire_las", &evt.mean_wire_las,
 	       Form("vdcwire_las[%d]/F", N_VDCPLANE_LAS));  
+  tree->Branch("las_tot_mean", &evt.las_tot_mean, Form("las_tot_mean[%d]/F", N_VDCPLANE_LAS));
+  tree->Branch("las_tot_max", &evt.las_tot_max, Form("las_tot_max[%d]/I", N_VDCPLANE_LAS));  
 #endif  
 
 } // end of void analysis::TreeDef(){

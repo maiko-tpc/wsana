@@ -137,6 +137,7 @@ typedef struct vdc_data{
   int wire;
   int lead_raw;
   int lead_cor;
+  int tot;
   unsigned int clst_flag;
   float dlen; // drift length
 } vdc_data;

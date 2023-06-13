@@ -170,6 +170,7 @@ void anagr::V1190Hit2VDCData(evtdata *evt){
 
       //tmp_vdc_data.lead_cor = evt->v1190_hit_all[i].lead_cor - evt->grpla.vtdc[15] + VDC_OFFSET2; //from e552 run4090
 
+      tmp_vdc_data.tot = evt->v1190_hit_all[i].tot;
       tmp_vdc_data.clst_flag = 0;                  
       if(tmp_vdc_data.plane<6 &&
 	 tmp_vdc_data.wire>=0 && hit_flag[tmp_plane][tmp_wire]==0){
@@ -215,11 +216,59 @@ void anagr::GetXUHits(evtdata *evt){
 
 }
 
+int anagr::AnaTOT(evtdata *evt){
+  int nhits = 0;
+  if(i_gr_las==0) nhits = (int)evt->grvdc.size();
+  if(i_gr_las!=0) nhits = (int)evt->lasvdc.size();  
+
+  int tmp_gr_max_tot[N_VDCPLANE]={0};
+  int tmp_las_max_tot[N_VDCPLANE_LAS]={0};  
+  int gr_plane_cnt[N_VDCPLANE]={0};
+  int las_plane_cnt[N_VDCPLANE_LAS]={0};  
+  int plane;
+  
+
+  if(i_gr_las==0){
+    for(int i=0; i<nhits; i++){
+      plane = evt->grvdc[i].plane;
+      gr_plane_cnt[plane]++;
+      evt->gr_tot_mean[plane]+=evt->grvdc[i].tot;
+      if(evt->grvdc[i].tot > tmp_gr_max_tot[plane]){
+	tmp_gr_max_tot[plane] = evt->grvdc[i].tot;
+      }
+    }
+
+    for(int i=0; i<N_VDCPLANE; i++){
+      evt->gr_tot_mean[i] = (float)(evt->gr_tot_mean[i]/gr_plane_cnt[i]);
+      evt->gr_tot_max[i] = tmp_gr_max_tot[i];      
+    }
+
+  }
+
+  if(i_gr_las!=0){
+    for(int i=0; i<nhits; i++){
+      plane = evt->lasvdc[i].plane;
+      las_plane_cnt[plane]++;
+      evt->las_tot_mean[plane]+=evt->lasvdc[i].tot;
+      if(evt->lasvdc[i].tot > tmp_las_max_tot[plane]){
+	tmp_las_max_tot[plane] = evt->lasvdc[i].tot;
+      }
+    }
+    for(int i=0; i<N_VDCPLANE_LAS; i++){
+      evt->las_tot_mean[i] = (float)(evt->las_tot_mean[i]/las_plane_cnt[i]);
+      evt->las_tot_max[i] = tmp_las_max_tot[i];      
+    }
+  }
+  
+  return 0;
+}
+
 void anagr::anavdc(evtdata *evt){
   int i;
   
   V1190Hit2VDCData(evt);
   GetXUHits(evt);
+  AnaTOT(evt);
   
   int vdc_size;
   if(i_gr_las==0) vdc_size = (int)(evt->grvdc.size());

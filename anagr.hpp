@@ -36,6 +36,7 @@ public:
   void GetXUHits(evtdata *);
   int GetPlane(int geo, int ch);
   int GetWire(int geo, int ch);
+  int AnaTOT(evtdata *);
   
   void TDC2Len_GR(evtdata *);
   void cal_nclst(evtdata *);

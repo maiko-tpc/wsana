@@ -771,6 +771,16 @@ void analysis::InitEvt(){
     evt.mean_wire_las[i]=0.0;
   }
 
+  for(int i=0; i<N_VDCPLANE; i++){
+    evt.gr_tot_mean[i]=0;
+    evt.gr_tot_max[i]=0;    
+  }
+
+  for(int i=0; i<N_VDCPLANE_LAS; i++){
+    evt.las_tot_mean[i]=0;
+    evt.las_tot_max[i]=0;    
+  }
+  
   for(int i=0; i<N_GRPLA_CH; i++){
     evt.grpla.adc[i]=0;
     evt.grpla.tdc[i]=0;

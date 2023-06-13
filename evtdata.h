@@ -70,8 +70,10 @@ struct evtdata{
   float gr_hit_eff_all;
   float gr_clst_eff_all;  
 
-  float gr_tot_mean[N_VDCPLANE], gr_tot_max[N_VDCPLANE];
-  int las_tot_mean[N_VDCPLANE_LAS], las_tot_max[N_VDCPLANE_LAS];  
+  float gr_tot_mean[N_VDCPLANE];
+  int gr_tot_max[N_VDCPLANE];
+  float las_tot_mean[N_VDCPLANE_LAS];
+  int las_tot_max[N_VDCPLANE_LAS];
   
   float redchi2[N_VDCPLANE];
   float wire_pos[N_VDCPLANE];

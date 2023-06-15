@@ -88,7 +88,6 @@ void analysis::read_config_file(char *config_file_name){
   config_read_file(config_file_name);
   fprintf(stderr, "Done\n");
 }
-
 void analysis::GetTargetPart(){
 }
 
@@ -233,6 +232,11 @@ int  analysis::AnaEvt(){
     
     // GR VDC
     gr->anavdc(&evt);
+
+#ifdef ANALAS
+    // LAS VDC
+    las->anavdc(&evt);
+#endif
     
     // kinema
     evt.grp=kine->Calc_p3(&evt);
@@ -271,6 +275,7 @@ int  analysis::AnaEvt(){
   evt.eve++;
 
   return evt.eve;
+      
 }
 
 

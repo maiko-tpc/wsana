@@ -241,7 +241,7 @@ void anagr::cal_nclst(evtdata *evt){
   unsigned int hit_array[N_VDCPLANE][PLANE_SIZE]={0}; // Initilize with zero
   size_t grvdc_size = evt->grvdc.size();
 
-  // convert data to hit array with gating good drift time (length) on 2023.06.07
+  // convert data to hit array with gating good drift time (length)
   for(int i=0; i<(int)grvdc_size; i++){
     if(evt->grvdc[i].wire >0 &&
        evt->grvdc[i].dlen >0.001 && evt->grvdc[i].dlen<9.999){
@@ -498,17 +498,16 @@ int anagr::calc_center_pos(evtdata *evt){
 }
 
 double anagr::fit_planes(evtdata *evt){
-  //  evt->grx = (center_pos[0] + center_pos[2])/2.0;
-  //  evt->gry = (center_pos[1] + center_pos[3])/2.0;  
 
-  // 2023.03.21  focal plane is at the exit window of GR
-  //  which is close to the X1 plane
-  evt->grx = center_pos[0];
-  evt->gry = center_pos[1];  
-  
-  evt->grthx = atan((center_pos[2]-center_pos[0])/chamb_space)*TMath::RadToDeg();
+  evt->grthx = atan((center_pos[1]-center_pos[0])/chamb_space)*TMath::RadToDeg();  
+  evt->grthx2 = atan((center_pos[2]+chamb_space - center_pos[0])/chamb_space)*TMath::RadToDeg()-45.0;
   evt->grthy = atan((center_pos[3]-center_pos[1])/chamb_space)*TMath::RadToDeg();
-  evt->grthx2 = atan((center_pos[2]+chamb_space - center_pos[0])/chamb_space)*TMath::RadToDeg()-45.0;  
+
+  // 2023.06.25  focal plane is at the exit window of GR
+  //  which is assumed to be 50mm upstream of the X1 plane
+  //  evt->grx = center_pos[0];
+  evt->grx = center_pos[0] - 50*(evt->grthx)*TMath::DegToRad();
+  evt->gry = center_pos[1] - 50*(evt->grthy)*TMath::DegToRad();
   return 0;
 }
 

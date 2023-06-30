@@ -167,8 +167,15 @@ void anagr::V1190Hit2VDCData(evtdata *evt){
       tmp_vdc_data.geo = evt->v1190_hit_all[i].geo;
       tmp_vdc_data.lead_raw = evt->v1190_hit_all[i].lead_raw;
 
-      tmp_vdc_data.lead_cor = evt->v1190_hit_all[i].lead_cor + VDC_OFFSET; // use v1190 reference sbtracted
+      if(tmp_field == FIELD_GV_NEW || tmp_field == FIELD_GV_OLD){
+	tmp_vdc_data.lead_cor = evt->v1190_hit_all[i].lead_cor + VDC_OFFSET; //GR
+      }
 
+      if(tmp_field == FIELD_LV){
+	tmp_vdc_data.lead_cor = evt->v1190_hit_all[i].lead_cor + VDC_OFFSET_LAS; //LAS
+      }
+      
+      
       //      tmp_vdc_data.lead_cor = evt->v1190_hit_all[i].lead_cor -
       //      	(int)((evt->grpla.vtdc[0]+evt->grpla.vtdc[1])/2.0) + VDC_OFFSET2; // before e552 run40990
 
@@ -305,10 +312,15 @@ void anagr::anavdc(evtdata *evt){
     }
   }
   
+  // calculate mean wire pos
   for(i=0; i<N_VDCPLANE; i++){
-    if(evt->nhit_plane[i]>0){
-      if(i_gr_las==0) evt->mean_wire[i] = evt->mean_wire[i]/evt->nhit_plane[i];
-      if(i_gr_las!=0) evt->mean_wire_las[i] = evt->mean_wire_las[i]/evt->nhit_plane_las[i];      
+    if(i_gr_las==0 && evt->nhit_plane[i]>0){
+      evt->mean_wire[i] = evt->mean_wire[i]/evt->nhit_plane[i];
+    }
+  }
+  for(i=0; i<N_VDCPLANE_LAS; i++){
+    if(i_gr_las!=0 && evt->nhit_plane_las[i]>0){
+      evt->mean_wire_las[i] = evt->mean_wire_las[i]/evt->nhit_plane_las[i];
     }
   }
 
@@ -366,8 +378,14 @@ void anagr::cal_nclst(evtdata *evt){
   // Make the hit-table arrays
   unsigned int hit_array[N_VDCPLANE][PLANE_SIZE]={0}; // Initilize with zero
   size_t grvdc_size = evt->grvdc.size();
+
+  // convert data to hit array with gating good drift time (length)
   for(int i=0; i<(int)grvdc_size; i++){
-    if(evt->grvdc[i].wire >=0){
+    //    if(evt->grvdc[i].wire >=0 &&
+    //       evt->grvdc[i].dlen > 0.001 && evt->grvdc[i].dlen<9.999){      
+    if(evt->grvdc[i].wire >=0 &&
+       evt->grvdc[i].lead_cor > 0 && evt->grvdc[i].lead_cor<10000){      
+
       hit_array[evt->grvdc[i].plane][evt->grvdc[i].wire]++;
     }
   }
@@ -624,14 +642,15 @@ double anagr::fit_planes(evtdata *evt){
   //  evt->grx = (center_pos[0] + center_pos[2])/2.0;
   //  evt->gry = (center_pos[1] + center_pos[3])/2.0;  
 
-  // 2023.03.21  focal plane is at the exit window of GR
-  //  which is close to the X1 plane
-  evt->grx = center_pos[0] - grx_size/2.0;
-  evt->gry = center_pos[1] - gry_size/2.0;  
-  
   evt->grthx = atan((center_pos[2]+chamb_space - center_pos[0])/chamb_space)*TMath::RadToDeg()-45.0;  
   evt->grthy = atan((center_pos[3]-center_pos[1])/chamb_space)*TMath::RadToDeg();
 
+  // 2023.06.25  focal plane is at the exit window of GR
+  //  which is assumed to be 50mm upstream of the X1 plane
+  //  evt->grx = center_pos[0] - grx_size/2.0;
+  evt->grx = center_pos[0] - 50*(evt->grthx)*TMath::DegToRad() - grx_size/2.0;
+  evt->gry = center_pos[1] - 50*(evt->grthy)*TMath::DegToRad() - gry_size/2.0;  
+  
   return 0;
 }
 

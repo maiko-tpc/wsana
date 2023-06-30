@@ -8,7 +8,8 @@ struct optdata{
   char bldfname[256];
   char rootfname[256];  
   int online_flag;
-  int last_flag;  
+  int last_flag;
+  int refresh_flag;    
   int web_flag;  
   int useage_flag;
   char parfname[256];
@@ -70,6 +71,11 @@ struct evtdata{
   float gr_hit_eff_all;
   float gr_clst_eff_all;  
 
+  float las_hit_eff[N_VDCPLANE_LAS];
+  float las_clst_eff[N_VDCPLANE_LAS];  
+  float las_hit_eff_all;
+  float las_clst_eff_all;  
+  
   float gr_tot_mean[N_VDCPLANE];
   int gr_tot_max[N_VDCPLANE];
   float las_tot_mean[N_VDCPLANE_LAS];
@@ -94,7 +100,8 @@ struct evtdata{
 
   unsigned int unixtime=0;
   unsigned int unixtimesub=0;
-  unsigned int unixtimefirst=0;    
+  unsigned int unixtimefirst=0;
+  unsigned int tmpunixtime=0;      
 
   unsigned int camac_sca_flag;
   unsigned long int camac_sca[CAMAC_SCA_CH];
@@ -119,6 +126,7 @@ struct evtdata{
   unsigned int mqdc_nhit[2]; //[0]:GR, [1]:LAS
 
   int rf[N_RF];
+  
   
 };
 

@@ -14,7 +14,8 @@ analysis::analysis(){
 
   sprintf(opt.rootfname, "out.root");
   opt.online_flag=0;
-  opt.last_flag=0;  
+  opt.last_flag=0;
+  opt.refresh_flag=0;    
   opt.web_flag=0;  
   opt.useage_flag=1;  
   sprintf(opt.parfname, "par/default.par");
@@ -246,6 +247,7 @@ int  analysis::AnaEvt(){
     
     if(evt.eve%10000==0){
       CalcGREff();
+      CalcLASEff();      
       if(GetWeb()) HttpInfoUpdate();
       //    ShowProg();
       //    printf("Analyzed %d events\n", evt.eve);
@@ -268,6 +270,12 @@ int  analysis::AnaEvt(){
     if(GetWeb() && CLEAR_FLAG==1){
       HttpHistReset();  // only reset when the bottun is pressed
       CLEAR_FLAG=0;
+    }
+
+    // refresh gist regularly
+    if(GetWeb() && evt.unixtime > evt.tmpunixtime+180){
+      HttpHistReset();
+      evt.tmpunixtime = evt.unixtime;
     }
     
   } //if( (SKIP_BLK_END==0)...
@@ -460,12 +468,20 @@ void analysis::SetLast(){
   opt.last_flag=1;
 }
 
+void analysis::SetRefresh(){
+  opt.last_flag=1;
+}
+
 int analysis::GetOnline(){
   return opt.online_flag;
 }
 
 int analysis::GetLast(){
   return opt.last_flag;
+}
+
+int analysis::GetRefresh(){
+  return opt.refresh_flag;
 }
 
 void analysis::SetWeb(){
@@ -559,6 +575,13 @@ void analysis::ShowGREff(){
 	 evt.gr_clst_eff[0], evt.gr_clst_eff[1], evt.gr_clst_eff[2], evt.gr_clst_eff[3]);
   printf("Total Cluster Efficiency: %.3f\n", evt.gr_clst_eff_all);
   printf("\n");
+
+  printf("\n");
+  printf("LAS Hit Efficiencies\n");
+  printf("X1: %.3f, U1: %.3f, V1: %.3f, X2: %.3f, U2: %.3f, V2: %.3f\n",
+	 evt.las_hit_eff[0], evt.las_hit_eff[1], evt.las_hit_eff[2],
+	 evt.las_hit_eff[3], evt.las_hit_eff[4], evt.las_hit_eff[5]);
+
 }
 
 void analysis::ClearCamacSca(){
@@ -689,6 +712,12 @@ void analysis::CalcGREff(){
   }
   evt.gr_hit_eff_all = hhiteffall->GetBinContent(2)/hhiteffall->GetEntries();
   evt.gr_clst_eff_all = hclsteffall->GetBinContent(2)/hclsteffall->GetEntries();  
+}
+
+void analysis::CalcLASEff(){
+  for(int i=0; i<N_VDCPLANE_LAS; i++){
+    evt.las_hit_eff[i] = hhiteff_las[i]->GetBinContent(2)/hhiteff_las[i]->GetEntries();
+  }
 }
 
 void analysis::ShowProg(){

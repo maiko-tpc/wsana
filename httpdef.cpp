@@ -54,10 +54,10 @@ void analysis::MakeTHttp(int portnum){
   serv->Register("/GR", hgrtrackx);  
   serv->Register("/GR", hgrtracky);  
   
-  for(int i=0; i<4; i++){
+  for(int i=0; i<5; i++){
     serv->Register("/GR_PLA", hgrfqdc[i]);
   }
-  for(int i=0; i<4; i++){
+  for(int i=0; i<5; i++){
     serv->Register("/GR_PLA", hgrvqdc[i]);
   }
   for(int i=0; i<4; i++){
@@ -81,13 +81,13 @@ void analysis::MakeTHttp(int portnum){
 
   serv->Register("/GR_LAS", hgrlascoin);  
   
-  for(int i=0; i<4; i++){
+  for(int i=0; i<16; i++){
     serv->Register("/LAS_PLA", hlasfqdc[i]);
   }
-  for(int i=0; i<4; i++){
+  for(int i=0; i<16; i++){
     serv->Register("/LAS_PLA", hlasvqdc[i]);
   }
-  for(int i=0; i<4; i++){
+  for(int i=0; i<6; i++){
     serv->Register("/LAS_PLA", hlasqdccor[i]);
   }
 
@@ -120,6 +120,8 @@ void analysis::MakeTHttp(int portnum){
 void analysis::HttpHistReset(){
   printf("clear function\n");  
   
+  HttpInfoUpdate();
+
   for(int i=0; i<N_VDCPLANE; i++){
     hwire[i]->Reset();
   }
@@ -246,7 +248,10 @@ void analysis::HttpHistFit(){
   double p_wid = fitfunc->GetParameter(2)*2.35/(15451.0*sqrt(2.0));
   double ene_wid = kine->GetBeamEne()*p_wid*2.0;
 
+  double counts = fitfunc->Integral(-600,600);
+  
   latex1.DrawLatexNDC(0.12, 0.80, Form("Ene reso: %.1f keV", ene_wid*1000.0));
+  latex1.DrawLatexNDC(0.12, 0.70, Form("Integ: %.1e counts", counts));  
   
   gSystem->ProcessEvents();
   

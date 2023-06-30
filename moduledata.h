@@ -7,7 +7,7 @@
 #define V1190_MAX_MULTI 2
 #define N_VDCPLANE 4
 #define N_VDCPLANE_LAS 6
-#define PLANE_SIZE 256
+#define PLANE_SIZE 272
 
 #define MQDC_START_GEO 0
 #define MADC_START_GEO 10
@@ -38,12 +38,14 @@ const int N_MADC_CH = N_MADC*32;
 const int N_MQDC_CH = N_MQDC*32;
 const int N_V1190_CH = 128;
 const int N_GRPLA_CH = 16;
+const int N_LASPLA_CH = 16;
 const int N_PLA_CH = 32;
-const int N_GRPLA    = 2;
+const int N_GRPLA    = 6;
 const int MAX_VDC_TDC = 10000;
 const int N_RF=3;
 
 const int VDC_OFFSET = 5000;
+const int VDC_OFFSET_LAS = 15000;
 
 #define SSD_TDC_CH 128
 

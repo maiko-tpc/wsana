@@ -93,6 +93,11 @@ int main(int iarg, char *argv[]) {
     if(strstr(argv[i], "-last") != NULL){
       ana->SetLast();
     }
+
+    // refresh flag
+    if(strstr(argv[i], "-refresh") != NULL){
+      ana->SetRefresh();
+    }
     
     // THttp flag
     if(strstr(argv[i], "-web") != NULL){
@@ -136,7 +141,7 @@ int main(int iarg, char *argv[]) {
   ana->SetKinema();
   if(ana->GetWeb()){
   }
-  
+
   /* Open .bld file */
   int bldres = ana->OpenBLDFile();
   if(bldres==1) exit(0);  // file not exist

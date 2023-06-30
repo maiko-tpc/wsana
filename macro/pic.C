@@ -1,3 +1,3 @@
 {
-  c1->SaveAs("pic/tmp.png");
+  c1->SaveAs("macro/pic/tmp.png");
 }

@@ -2,7 +2,7 @@
 #define ANALYSIS_HPP_
 
 //#define ANASSD 1  // comment out to disable ssd analysis
-#define ANALAS 1    // comment out to disable LAS analysis
+//#define ANALAS 1    // comment out to disable LAS analysis
 
 
 #define SKIP_BLK_END 1
@@ -79,11 +79,13 @@ public:
   void UnsetUseage();
   int GetUseage();    
   void SetOnline();
-  void SetLast();  
+  void SetLast();
+  void SetRefresh();    
   int GetWeb();  
   void SetWeb();
   int GetOnline();
-  int GetLast();    
+  int GetLast();
+  int GetRefresh();      
   void ShowCommandOption();
   void ShowCamacSca();
   void ShowVmeSca();  
@@ -111,6 +113,7 @@ public:
   void SetKinema();
 
   void CalcGREff();
+  void CalcLASEff();  
 
   void ShowProg();
   
@@ -144,19 +147,24 @@ private:
   TH1F *hclsteff[N_VDCPLANE];    
   TH1F* hhiteffall;
   TH1F* hclsteffall;  
-
+  
   // LAS
   TH1F *hwire_las[N_VDCPLANE_LAS];
   TH1F *hdrifttime_las[N_VDCPLANE_LAS];  
+
+  TH1F *hhiteff_las[N_VDCPLANE_LAS];
+  TH1F *hclsteff_las[N_VDCPLANE_LAS];    
+  TH1F* hhiteffall_las;
+  TH1F* hclsteffall_las;  
   
-  TH1F *hgrfqdc[4];
-  TH1F *hgrvqdc[4];
+  TH1F *hgrfqdc[N_PLA_CH];
+  TH1F *hgrvqdc[N_PLA_CH];
 
-  TH1F *hlasfqdc[4];
-  TH1F *hlasvqdc[4];
+  TH1F *hlasfqdc[N_PLA_CH];
+  TH1F *hlasvqdc[N_PLA_CH];
 
-  TH2F *hgrqdccor[4];
-  TH2F *hlasqdccor[4];  
+  TH2F *hgrqdccor[N_PLA_CH];
+  TH2F *hlasqdccor[N_PLA_CH];  
 
   TH2F* hv1190tdc;
   

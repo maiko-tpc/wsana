@@ -20,21 +20,26 @@ void anapla::analyze(evtdata *evt){
   // Get GR&LAS V1190 data from hit_all_data
   GetV1190Hit(evt);
   
-  // Hit position by TDC difference
+  // GR ANA
+
+  //  Hit position by TDC difference
   evt->grpla.pos[0] = evt->grpla.vtdc[0] - evt->grpla.vtdc[1];
   evt->grpla.pos[1] = evt->grpla.vtdc[2] - evt->grpla.vtdc[3];
 
-  evt->laspla.pos[0] = evt->laspla.ftdc[0] - evt->laspla.ftdc[1];
   
-  // Energy deposite by QDC mean
+  //  Energy deposite by QDC mean
   evt->grpla.de[0] = TMath::Sqrt(evt->grpla.vqdc[0] * evt->grpla.vqdc[1]);
   evt->grpla.de[1] = TMath::Sqrt(evt->grpla.vqdc[2] * evt->grpla.vqdc[3]); 
 
-  evt->laspla.de[0] = TMath::Sqrt(evt->laspla.fqdc[0] * evt->laspla.fqdc[1]);  
-
-  // RF
+  //  RF
   for(int i=0; i<N_RF; i++){
     evt->rf[i] = evt->grpla.vtdc[8+i]-evt->grpla.vtdc[15];
+  }
+
+  // LAS ANA
+  for(int i=0; i<6; i++){
+    evt->laspla.de[i] = TMath::Sqrt(evt->laspla.vqdc[i*2] * evt->laspla.vqdc[i*2+1]);
+    evt->laspla.pos[i] = evt->laspla.vtdc[i*4] - evt->laspla.vtdc[i*4+2];
   }
 }
 

@@ -45,41 +45,52 @@ void analysis::HistDef(){
     hdrifttime_las[i] = new TH1F(Form("h_%s_tdc", las_plane_name[i]),
 			     Form("VDC %s TDC", las_plane_name[i]),
     			     MAX_VDC_TDC, 0, MAX_VDC_TDC);
+
+    hhiteff_las[i]  = new TH1F(Form("h_%s_hit_eff_las", las_plane_name[i]),
+			       Form("LAS VDC %s hit efficiency", las_plane_name[i]),
+			       2, 0, 2);
+    
+    hclsteff_las[i]  = new TH1F(Form("h_%s_clst_eff_las", las_plane_name[i]),
+				Form("LAS VDC %s cluster efficiency", las_plane_name[i]),
+				2, 0, 2);
+    
   }
 
+  hhiteffall_las  = new TH1F("h_hit_eff_all_las", "LAS VDC hit efficiency all", 2, 0, 2);
+  hclsteffall_las = new TH1F("h_clst_eff_all_las", "LAS VDC cluster efficiency all", 2, 0, 2);  
 
-  for(int i=0; i<4; i++){
+  for(int i=0; i<N_PLA_CH; i++){
     hgrfqdc[i] = new TH1F(Form("h_gr_fqdc_ch%d", i),
 			  Form("GR plastic FERA QDC ch%d", i),
 			  512, 0, 2048);
   }
 
-  for(int i=0; i<4; i++){
+  for(int i=0; i<N_PLA_CH; i++){
     hgrvqdc[i] = new TH1F(Form("h_gr_vqdc_ch%d", i),
 			  Form("GR plastic VME QDC ch%d", i),
 			  1024, 0, 4096);
   }
 
-  for(int i=0; i<4; i++){
+  for(int i=0; i<N_PLA_CH; i++){
     hlasfqdc[i] = new TH1F(Form("h_las_fqdc_ch%d", i),
 			  Form("LAS plastic FERA QDC ch%d", i),
 			  512, 0, 2048);
   }
 
-  for(int i=0; i<4; i++){
+  for(int i=0; i<N_PLA_CH; i++){
     hlasvqdc[i] = new TH1F(Form("h_las_vqdc_ch%d", i),
 			  Form("LAS plastic VME QDC ch%d", i),
 			  1024, 0, 4096);
   }
 
   
-  for(int i=0; i<4; i++){
+  for(int i=0; i<N_PLA_CH; i++){
     hgrqdccor[i] = new TH2F(Form("h_gr_qdc_cor_ch%d", i),
 			    Form("GR plastic VME QDC vs FERA QDC ch%d", i),
 			    256, 0, 4096, 256, 0, 4096);
   }
 
-  for(int i=0; i<4; i++){
+  for(int i=0; i<N_PLA_CH; i++){
     hlasqdccor[i] = new TH2F(Form("h_las_qdc_cor_ch%d", i),
 			     Form("LAS plastic VME QDC vs FERA QDC ch%d", i),
 			     256, 0, 4096, 256, 0, 4096);
@@ -180,7 +191,9 @@ void analysis::HistFill(){
       hwire[plane]->Fill(wire);
       hdrifttime[plane]->Fill(evt.grvdc[i].lead_cor);
       if(evt.vme_inp[8]==1) hdrifttime_coin[plane]->Fill(evt.grvdc[i].lead_cor);
-      hdriftlen[plane]->Fill(evt.grvdc[i].dlen);      
+      if(evt.grvdc[i].lead_cor>0 && evt.grvdc[i].lead_cor<10000){
+	hdriftlen[plane]->Fill(evt.grvdc[i].dlen);
+      }
     }
   }  
 
@@ -197,19 +210,20 @@ void analysis::HistFill(){
 #endif  
   
 
-  for(int i=0; i<4; i++){
+  for(int i=0; i<N_PLA_CH; i++){
     hgrfqdc[i]->Fill(evt.grpla.fqdc[i]);
     hgrvqdc[i]->Fill(evt.grpla.vqdc[i]);    
     hgrqdccor[i]->Fill(evt.grpla.fqdc[i], evt.grpla.vqdc[i]);
   }
 
-  for(int i=0; i<4; i++){
+  for(int i=0; i<N_PLA_CH; i++){
     hlasfqdc[i]->Fill(evt.laspla.fqdc[i]);
     hlasvqdc[i]->Fill(evt.laspla.vqdc[i]);    
     hlasqdccor[i]->Fill(evt.laspla.fqdc[i], evt.laspla.vqdc[i]);
   }
 
   // small analysis for VDC efficiency
+  // GR
   for(int i=0; i<N_VDCPLANE; i++){
     if(evt.nhit_plane[i]==0) hhiteff[i]->Fill(0);
     if(evt.nhit_plane[i] >0) hhiteff[i]->Fill(1);    
@@ -217,6 +231,14 @@ void analysis::HistFill(){
     if(evt.nclst[i]!=1) hclsteff[i]->Fill(0);            
   }
 
+  // LAS
+  for(int i=0; i<N_VDCPLANE_LAS; i++){
+    if(evt.nhit_plane_las[i]==0) hhiteff_las[i]->Fill(0);
+    if(evt.nhit_plane_las[i] >0) hhiteff_las[i]->Fill(1);    
+    //    if(evt.nclst_las[i]==1) hclsteff_las[i]->Fill(1);
+    //    if(evt.nclst_las[i]!=1) hclsteff_las[i]->Fill(0);            
+  }
+  
   if(evt.gr_good_hit==0) hhiteffall->Fill(0);
   if(evt.gr_good_hit==1) hhiteffall->Fill(1);  
 

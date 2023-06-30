@@ -96,8 +96,6 @@ void analysis::HistDef(){
 			     256, 0, 4096, 256, 0, 4096);
   }
 
-  for(int i=0; i<N_VDCPLANE; i++){
-  }
      
   hv1190tdc = new TH2F("hv1190tdc","Pla V1190 TDC pattern",
 		       16,0,16, 1000, -10000, 10000);

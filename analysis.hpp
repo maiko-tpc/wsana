@@ -166,6 +166,8 @@ private:
   TH2F *hgrqdccor[N_PLA_CH];
   TH2F *hlasqdccor[N_PLA_CH];  
 
+  TH2F *hmqdcglcor;
+  
   TH2F* hv1190tdc;
   
   TH2F* hmadc_raw;

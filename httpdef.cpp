@@ -60,11 +60,20 @@ void analysis::MakeTHttp(int portnum){
   for(int i=0; i<5; i++){
     serv->Register("/GR_PLA", hgrvqdc[i]);
   }
+
   for(int i=0; i<4; i++){
     hgrqdccor[i]->SetOption("colz");
-    serv->Register("/GR_PLA", hgrqdccor[i]);
+    serv->Register("/Consistency", hgrqdccor[i]);
   }
 
+  for(int i=0; i<N_PLA_CH; i++){
+    hlasqdccor[i]->SetOption("colz");
+    serv->Register("/Consistency", hlasqdccor[i]);
+  }
+
+  hmqdcglcor->SetOption("colz");
+  serv->Register("/Consistency", hmqdcglcor);
+  
   for(int i=0; i<4; i++){
     hgrplaposq[i]->SetOption("colz");
     serv->Register("/GR_PLA", hgrplaposq[i]);    
@@ -157,6 +166,12 @@ void analysis::HttpHistReset(){
   for(int i=0; i<4; i++){
     hgrqdccor[i]->Reset();
   }
+
+  for(int i=0; i<N_PLA_CH; i++){
+    hlasqdccor[i]->Reset();
+  }
+
+  hmqdcglcor->Reset();
   
   for(int i=0; i<4; i++){
     hgrplaposq[i]->Reset();

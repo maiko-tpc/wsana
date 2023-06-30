@@ -96,7 +96,8 @@ void analysis::HistDef(){
 			     256, 0, 4096, 256, 0, 4096);
   }
 
-     
+  hmqdcglcor = new TH2F("hmqdcglcor", "MQDC GR-LAS consistency", 256,0,4096, 256,0,4096);
+  
   hv1190tdc = new TH2F("hv1190tdc","Pla V1190 TDC pattern",
 		       16,0,16, 1000, -10000, 10000);
   
@@ -220,6 +221,8 @@ void analysis::HistFill(){
     hlasqdccor[i]->Fill(evt.laspla.fqdc[i], evt.laspla.vqdc[i]);
   }
 
+  hmqdcglcor->Fill(evt.grpla.vqdc[0], evt.laspla.vqdc[14]);
+  
   // small analysis for VDC efficiency
   // GR
   for(int i=0; i<N_VDCPLANE; i++){
@@ -372,6 +375,8 @@ void analysis::HistWrite(){
 
   hgrtrackx->Write();
   hgrtracky->Write();  
+
+  hmqdcglcor->Write();
 }
 
 void analysis::FillGRTrack(){

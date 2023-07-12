@@ -42,13 +42,13 @@ Just type `$> make`
 |grpla.vqdc[32]|GR MQDC QDC||
 |grpla.ftdc[32]|GR FERA TDC||
 |grpla.vtdc[32]|vmepla V1190 TDC|[0--7]:GR PLA, [8--10]:RF, [11]:LAS trig, [14]:FCET trig, [15]: GR trig|
-|grpla.pos[2]|GR PLA position by V1190 difference|[0]:PL1, [1]:PL2|
+|grpla.pos[2]|GR PLA position by V1190 difference|[0]:PL1, [1]:PL2, Larger value means higher momentum|
 |grpla.de[2]|GR PLA energy deposit by sqrt(QDC_L*QDC_R)|[0]:PL1, [1]:PL2|
 |laspla.fqdc[32]|LAS FERA QDC||
 |laspla.vqdc[32]|LAS MQDC QDC||
 |laspla.ftdc[32]|LAS FERA TDC||
 |laspla.vtdc[32]|vmepla V1190 TDC||
-|laspla.pos[2]|LAS PLA position by V1190 difference||
+|laspla.pos[2]|LAS PLA position by V1190 difference|Larger value means higher momentum|
 |laspla.de[2]|LAS PLA energy deposit by sqrt(QDC_L*QDC_R)||
 |rf[3]|RF TDC|copy of grpla.vtdc[8--10]|
 |vdcnhit[4]|Number of hits in GR VDC planes|[0]:X1, [1]:U1, [2]:X2, [3]:U2|
@@ -64,7 +64,7 @@ Just type `$> make`
 |residual[4]|Mean residual lengths in GR VDC planes|Unit in mm.|
 |grx|GR X position|Unit in mm. Range: from -600 to 600. Larger values correspond to higher momentum.|
 |gry|GR Y position|Unit in mm. Range: from -50 to 50. Larger values correspond to upper position.|
-|grthx|GR X angle|Unit in degree.|
+|grthx|GR X angle|Unit in degree. Larger values correspond to backward angle at scattering point.|
 |grthy|GR Y angle|Unit in degree.|
 |grp|GR momentum|Unit in MeV/c.|
 |gre|GR energy|Unit in MeV.|

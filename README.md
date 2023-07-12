@@ -17,6 +17,7 @@ Just type `$> make`
   it will stand-by and wait for another data.
   - -web [port num]: Enable THttp server. http://aino-1:[port num]
   - -last: Analyze from the last block.
+  - -refresh: Auto refresh of the http histograms in every 3 mins.
 
 - Examples
   - Offline analysis: `$> ./ana data/run7777.bld run7777.root`

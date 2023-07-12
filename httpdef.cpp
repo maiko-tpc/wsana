@@ -57,7 +57,7 @@ void analysis::MakeTHttp(int portnum){
   for(int i=0; i<5; i++){
     serv->Register("/GR_PLA", hgrfqdc[i]);
   }
-  for(int i=0; i<5; i++){
+  for(int i=0; i<8; i++){
     serv->Register("/GR_PLA", hgrvqdc[i]);
   }
 
@@ -74,6 +74,12 @@ void analysis::MakeTHttp(int portnum){
   hmqdcglcor->SetOption("colz");
   serv->Register("/Consistency", hmqdcglcor);
   
+  hgrposcor->SetOption("colz");
+  serv->Register("/Consistency", hgrposcor);  
+
+  hlasposcor->SetOption("colz");
+  serv->Register("/Consistency", hlasposcor);  
+  
   for(int i=0; i<4; i++){
     hgrplaposq[i]->SetOption("colz");
     serv->Register("/GR_PLA", hgrplaposq[i]);    
@@ -88,7 +94,8 @@ void analysis::MakeTHttp(int portnum){
     serv->Register("/GR_RF", hgrrf[i]);
   }
 
-  serv->Register("/GR_LAS", hgrlascoin);  
+  serv->Register("/GR_LAS", hgrlascoin);
+  serv->Register("/GR_LAS", hgrlascoin_all);    
   
   for(int i=0; i<16; i++){
     serv->Register("/LAS_PLA", hlasfqdc[i]);
@@ -99,6 +106,11 @@ void analysis::MakeTHttp(int portnum){
   for(int i=0; i<6; i++){
     serv->Register("/LAS_PLA", hlasqdccor[i]);
   }
+
+  for(int i=0; i<12; i++){
+    hlasplaposq[i]->SetOption("colz");
+    serv->Register("/LAS_PLA", hlasplaposq[i]);    
+  }   
 
   serv->Register("/Fit", fitcan);
 
@@ -160,7 +172,7 @@ void analysis::HttpHistReset(){
   for(int i=0; i<4; i++){
     hgrfqdc[i]->Reset();
   }
-  for(int i=0; i<4; i++){
+  for(int i=0; i<10; i++){
     hgrvqdc[i]->Reset();
   }
   for(int i=0; i<4; i++){
@@ -172,6 +184,8 @@ void analysis::HttpHistReset(){
   }
 
   hmqdcglcor->Reset();
+  hgrposcor->Reset();
+  hlasposcor->Reset();  
   
   for(int i=0; i<4; i++){
     hgrplaposq[i]->Reset();
@@ -186,6 +200,7 @@ void analysis::HttpHistReset(){
   }
   
   hgrlascoin->Reset();
+  hgrlascoin_all->Reset();  
 	    
   for(int i=0; i<4; i++){
     hlasfqdc[i]->Reset();
@@ -196,6 +211,9 @@ void analysis::HttpHistReset(){
   for(int i=0; i<4; i++){
     hlasqdccor[i]->Reset();
   }
+  for(int i=0; i<12; i++){
+    hlasplaposq[i]->Reset();
+  }   
   
   hgrx->Reset();
   hgrx_thxgate->Reset();
@@ -288,6 +306,10 @@ void analysis::HttpInfoUpdate(){
 				       tm.tm_hour, tm.tm_min, tm.tm_sec));
   latex1.DrawLatexNDC(0.15, 0.75, Form("Run %04d", evt.run));
   latex1.DrawLatexNDC(0.15, 0.70, Form("Analyzed %d events (%d blk)", evt.eve, evt.blk));    
+
+  if(GetRefresh()){
+    latex1.DrawLatexNDC(0.15, 0.60, "Auto refresh hist in 3min");    
+  }
 }
 
 void analysis::CloseTHttp(){

@@ -272,8 +272,8 @@ int  analysis::AnaEvt(){
       CLEAR_FLAG=0;
     }
 
-    // refresh gist regularly
-    if(GetWeb() && evt.unixtime > evt.tmpunixtime+180){
+    // refresh hist regularly
+    if(GetWeb() && GetRefresh() && evt.unixtime > evt.tmpunixtime+180){
       HttpHistReset();
       evt.tmpunixtime = evt.unixtime;
     }
@@ -469,7 +469,7 @@ void analysis::SetLast(){
 }
 
 void analysis::SetRefresh(){
-  opt.last_flag=1;
+  opt.refresh_flag=1;
 }
 
 int analysis::GetOnline(){

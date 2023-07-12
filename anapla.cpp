@@ -39,7 +39,8 @@ void anapla::analyze(evtdata *evt){
   // LAS ANA
   for(int i=0; i<6; i++){
     evt->laspla.de[i] = TMath::Sqrt(evt->laspla.vqdc[i*2] * evt->laspla.vqdc[i*2+1]);
-    evt->laspla.pos[i] = evt->laspla.vtdc[i*4] - evt->laspla.vtdc[i*4+2];
+    //    evt->laspla.pos[i] = evt->laspla.vtdc[i*4] - evt->laspla.vtdc[i*4+2];
+    evt->laspla.pos[i] = evt->laspla.vtdc[i*4+2] - evt->laspla.vtdc[i*4];    
   }
 }
 

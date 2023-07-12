@@ -39,11 +39,11 @@ void analysis::HistDef(){
 
   for(int i=0; i<N_VDCPLANE_LAS; i++){
     hwire_las[i] = new TH1F(Form("h_%s_hit", las_plane_name[i]),
-			Form("VDC %s hit", las_plane_name[i]),
+			Form("LAS VDC %s hit", las_plane_name[i]),
                         PLANE_SIZE, 0, PLANE_SIZE);
     
     hdrifttime_las[i] = new TH1F(Form("h_%s_tdc", las_plane_name[i]),
-			     Form("VDC %s TDC", las_plane_name[i]),
+			     Form("LAS VDC %s TDC", las_plane_name[i]),
     			     MAX_VDC_TDC, 0, MAX_VDC_TDC);
 
     hhiteff_las[i]  = new TH1F(Form("h_%s_hit_eff_las", las_plane_name[i]),
@@ -87,16 +87,23 @@ void analysis::HistDef(){
   for(int i=0; i<N_PLA_CH; i++){
     hgrqdccor[i] = new TH2F(Form("h_gr_qdc_cor_ch%d", i),
 			    Form("GR plastic VME QDC vs FERA QDC ch%d", i),
-			    256, 0, 4096, 256, 0, 4096);
+			    256, 0, 2048, 256, 0, 4096);
   }
 
   for(int i=0; i<N_PLA_CH; i++){
     hlasqdccor[i] = new TH2F(Form("h_las_qdc_cor_ch%d", i),
 			     Form("LAS plastic VME QDC vs FERA QDC ch%d", i),
-			     256, 0, 4096, 256, 0, 4096);
+			     256, 0, 2048, 256, 0, 4096);
   }
 
-  hmqdcglcor = new TH2F("hmqdcglcor", "MQDC GR-LAS consistency", 256,0,4096, 256,0,4096);
+  hmqdcglcor = new TH2F("hmqdcglcor", "MQDC GR-LAS consistency",
+			256,0,4096, 256,0,4096);
+  
+  hgrposcor = new TH2F("hgrposcor", "GR PLA-VDC X consistency",
+		       150,-150,150, 200,0,200);
+
+  hlasposcor = new TH2F("hlasposcor", "LAS PLA-VDC X consistency",
+		       300,-600,600, 250,0,250);
   
   hv1190tdc = new TH2F("hv1190tdc","Pla V1190 TDC pattern",
 		       16,0,16, 1000, -10000, 10000);
@@ -113,7 +120,8 @@ void analysis::HistDef(){
 			2048, 0, 4096);
   }
 
-  hgrlascoin = new TH1F("hGR_LAS_coin", "GR LAS coin timing", 2048,0,8192);
+  hgrlascoin = new TH1F("hGR_LAS_coin", "GR LAS coin timing", 10000,0,20000);
+  hgrlascoin_all = new TH1F("hGR_LAS_coin_all", "GR LAS coin timing all hits", 10000,0,20000);  
 
   /* GR PID */
   char *name_grpla[4] = {"1L", "1R", "2L", "2R"};
@@ -121,13 +129,23 @@ void analysis::HistDef(){
     hgrplaposq[i] = new TH2F(Form("hgrpla_%s_pos", name_grpla[i]),
 			     Form("GR PLA QDC %s vs pos", name_grpla[i]),
 			     150, -150, 150, 400,0,4000);
-    }
-
+  }
+  
   hgrplarfde[0] = new TH2F("hgrpla_1st_rfq", "GR PLA 1st dE vs RF",
 			   200,0,4000, 200,0,4000);
   hgrplarfde[1] = new TH2F("hgrpla_2nd_rfq", "GR PLA 1st dE vs RF",
 			   200,0,4000, 200,0,4000);
   
+
+  /* LAS PID */
+  char *name_laspla[12] = {"1L", "1R", "2L", "2R", "3L", "3R",
+			   "4L", "4R", "5L", "5R", "6L", "6R"};  
+  for(int i=0; i<12; i++){
+    hlasplaposq[i] = new TH2F(Form("hlaspla_%s_pos", name_laspla[i]),
+			      Form("LAS PLA QDC %s vs pos", name_laspla[i]),
+			      600, -600, 600, 400,0,4000);
+  }
+
 #ifdef ANASSD
   
   // layer 1
@@ -222,6 +240,13 @@ void analysis::HistFill(){
   }
 
   hmqdcglcor->Fill(evt.grpla.vqdc[0], evt.laspla.vqdc[14]);
+
+  if(evt.nhit_plane[0]>0 && evt.vme_inp[7]==0){
+    hgrposcor->Fill(evt.grpla.pos[0], evt.mean_wire[0]);
+  }
+  if(evt.nhit_plane_las[0]>0 && evt.vme_inp[5]==0){
+    hlasposcor->Fill(evt.laspla.pos[2], evt.mean_wire_las[0]);
+  }
   
   // small analysis for VDC efficiency
   // GR
@@ -234,8 +259,10 @@ void analysis::HistFill(){
 
   // LAS
   for(int i=0; i<N_VDCPLANE_LAS; i++){
-    if(evt.nhit_plane_las[i]==0) hhiteff_las[i]->Fill(0);
-    if(evt.nhit_plane_las[i] >0) hhiteff_las[i]->Fill(1);    
+    if(evt.vme_inp[8]==1 || evt.vme_inp[7]==1){
+      if(evt.nhit_plane_las[i]==0) hhiteff_las[i]->Fill(0);
+      if(evt.nhit_plane_las[i] >0) hhiteff_las[i]->Fill(1);    
+    }
     //    if(evt.nclst_las[i]==1) hclsteff_las[i]->Fill(1);
     //    if(evt.nclst_las[i]!=1) hclsteff_las[i]->Fill(0);            
   }
@@ -254,6 +281,16 @@ void analysis::HistFill(){
     hgrlascoin->Fill(evt.grpla.vtdc[11]-evt.grpla.vtdc[15]);
   }
 
+  // analyze all LAS stop timing for coin
+  if(evt.vme_inp[8]==1){
+    int v1190_size = (int)(evt.v1190_hit_all.size());
+    int ch;
+    for(int i=0; i<v1190_size; i++){
+      ch = evt.v1190_hit_all[i].ch;
+      if(ch==11) hgrlascoin_all->Fill(evt.v1190_hit_all[i].lead_cor - evt.grpla.vtdc[15]);
+    }
+  }
+
   for(int i=0; i<4; i++){
     hgrplaposq[i]->Fill(evt.grpla.pos[i/2], evt.grpla.vqdc[i]);
   }
@@ -262,6 +299,10 @@ void analysis::HistFill(){
     hgrplarfde[i]->Fill(evt.rf[0], evt.grpla.de[i]);
   }
   
+  for(int i=0; i<12; i++){
+    hlasplaposq[i]->Fill(evt.laspla.pos[i/2], evt.laspla.vqdc[i]);
+  }
+
   // MADC histogram
 #ifdef ANASSD
   for(int i=0; i<N_MADC_CH; i++){
@@ -343,6 +384,7 @@ void analysis::HistWrite(){
   }
 
   hgrlascoin->Write();
+  hgrlascoin_all->Write();  
   
   for(int i=0; i<4; i++){
     hgrplaposq[i]->Write();

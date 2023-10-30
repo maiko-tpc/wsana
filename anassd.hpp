@@ -21,11 +21,13 @@
 #include "evtdata.h"
 #include "decoder.hpp"
 
-#define SI_CH 96
+#define SI_CH 192
 
 class anassd{
 private:
   double ene_calib_par[SI_CH][2];
+
+  int tdc_offset[256];  
 
   double sakra_r_wid;
   double sakra_theta_wid;  

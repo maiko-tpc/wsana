@@ -36,6 +36,7 @@ struct evtdata{
   std::vector<mxdc32_hit> mxdc32_hit_all;
 
   v1190ssd_data v1190_ssd;
+  v1190ssd_data v1190_ssd_mod;  
   std::vector<v1190_hit> v1190_hit_all;
 
   int v1190_hit_ref[V1190_MAX_GEO];
@@ -112,7 +113,7 @@ struct evtdata{
   unsigned int v1190pla_multi[16];
 
   int rf_ssd[MAX_RF_MULTI];
-  float ssd_ene[96];
+  float ssd_ene[N_MADC_CH];
 
   int ssd_clst_multi[N_SSD_CLST];
   float ssd_clst_ene[N_SSD_CLST];
@@ -126,6 +127,11 @@ struct evtdata{
   unsigned int mqdc_nhit[2]; //[0]:GR, [1]:LAS
 
   int rf[N_RF];
+  
+  int ssd_pulser_flag;
+
+  int labr_tdc_rf[32];
+  int labr_tdc_gr[32];  
   
   
 };

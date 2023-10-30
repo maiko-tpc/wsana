@@ -110,10 +110,10 @@ void ana_mxdc32(evtdata *evt, unsigned int *rawdata, unsigned int size){
 //      }
       nword=(tmpdata)&0x00000fff;
 
-      if(geo>=MQDC_START_GEO && geo<MQDC_START_GEO+N_MQDC){
+      if(geo>=MQDC_START_GEO && geo<(MQDC_START_GEO+N_MQDC)){
 	evt->mqdc.wrdcnt[geo-MQDC_START_GEO]=nword;
       }
-      if(geo>=MADC_START_GEO && geo<MADC_START_GEO+N_MADC){
+      if(geo>=MADC_START_GEO && geo<(MADC_START_GEO+N_MADC)){
 	evt->madc.wrdcnt[geo-MADC_START_GEO]=nword;      
       }
       
@@ -223,7 +223,10 @@ int ana_v1190(vector<v1190_hit> &v1190_hit_all,
     {112, 112, 112, 112, 112, 112, 112, 112,  // GR
        0, 127,   0, 127,   0, 127,   0, 127,  // LAS
        0, 127,   0, 127,   0, 127,   0, 127,  // LAS
-     127, 127, 127, 127, 127, 127,  14, 127}; // GEO=30:PLA
+     120, 120,  // GEO=24,25: SSD, ch120:GRTRIG, ch127:FCET(same as common trig)
+     127, 127, 127, 127,
+     15,  // GEO=30:PLA (GR TRIG)
+     127}; 
 
   unsigned int rp=0;
   unsigned int data;

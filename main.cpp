@@ -148,8 +148,11 @@ int main(int iarg, char *argv[]) {
 
   /* Make output ROOT file with tree and histograms */
   ana->MakeROOTFile();
+  printf("output root file create\n");  
   ana->TreeDef();
+  printf("tree def done\n");    
   ana->HistDef();
+  printf("hist def done\n");      
   if(ana->GetWeb()) ana->MakeTHttp(portnum);
 
   ana->AnaRunHeader();

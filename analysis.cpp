@@ -55,6 +55,7 @@ int analysis::OpenBLDFile(){
     printf("Input File: %s\n", GetBLDFile());
     return 1;
   }
+  printf("BLD file opened.\n");
   return 0;
 }
 
@@ -576,12 +577,13 @@ void analysis::ShowGREff(){
   printf("Total Cluster Efficiency: %.3f\n", evt.gr_clst_eff_all);
   printf("\n");
 
-  printf("\n");
-  printf("LAS Hit Efficiencies\n");
-  printf("X1: %.3f, U1: %.3f, V1: %.3f, X2: %.3f, U2: %.3f, V2: %.3f\n",
-	 evt.las_hit_eff[0], evt.las_hit_eff[1], evt.las_hit_eff[2],
-	 evt.las_hit_eff[3], evt.las_hit_eff[4], evt.las_hit_eff[5]);
-
+#ifdef ANALAS
+    printf("\n");
+    printf("LAS Hit Efficiencies\n");
+    printf("X1: %.3f, U1: %.3f, V1: %.3f, X2: %.3f, U2: %.3f, V2: %.3f\n",
+	   evt.las_hit_eff[0], evt.las_hit_eff[1], evt.las_hit_eff[2],
+	   evt.las_hit_eff[3], evt.las_hit_eff[4], evt.las_hit_eff[5]);
+#endif
 }
 
 void analysis::ClearCamacSca(){
@@ -880,6 +882,14 @@ void analysis::InitEvt(){
   for(int i=0; i<N_RF; i++){
     evt.rf[i]=0;
   }
+
+  evt.ssd_pulser_flag=0;
+
+  for(int i=0; i<32; i++) {
+    evt.labr_tdc_rf[i]=-10000;
+    evt.labr_tdc_gr[i]=-10000;        
+  }
+  
 }
 
 

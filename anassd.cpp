@@ -1,7 +1,7 @@
 #include "anassd.hpp"
 
 #define V1190_SSD_GEO 24
-#define RF_SSD_CH 112
+#define RF_SSD_CH 122
 
 anassd::anassd(){
   for(int i=0; i<SI_CH; i++){
@@ -11,12 +11,13 @@ anassd::anassd(){
 
   // open energy calibration parameter file
   std::ifstream calib_file;
-  string calib_fname = "/home/tamidaq/ana/furuno/calib/ssdcalib.dat";
+  string calib_fname = "./calib/ssdcalib.dat";
   calib_file.open(calib_fname.c_str(), std::ios::in);
   if(!calib_file){
     printf("Cannot open the SSD calibration file: %s\n",
 	   calib_fname.c_str());
   }
+
 
   // Read the calibration parameters
   int tmp_ch;
@@ -32,6 +33,31 @@ anassd::anassd(){
     }
   }
 
+  // open TDC offset file (for PANDORA on 2023.10.23)
+  std::ifstream tdc_offset_file;
+  string tdc_offset_fname = "./calib/ssd_tdc_offset.dat";
+  tdc_offset_file.open(tdc_offset_fname.c_str(), std::ios::in);
+  if(!tdc_offset_file){
+    printf("Cannot open the TDC offset file: %s\n",
+	   tdc_offset_fname.c_str());
+  }
+
+  // initialize TDC offset
+  for(int i=0; i<256; i++){
+    tdc_offset[i]=0;
+  }
+  
+  // Read the TDC offset
+  if(tdc_offset_file){
+    printf("Reading TDC offset file: %s\n", tdc_offset_fname.c_str());
+    while(!tdc_offset_file.eof()){
+      tdc_offset_file >> tmp_ch;
+      if(tmp_ch>=0 && tmp_ch<256){
+	tdc_offset_file >> tdc_offset[tmp_ch];
+      }
+    }
+  }
+      
   // Set SAKRA position for hit histograms
   sakra_r_wid = (sakra_rmax-sakra_rmin)/16.0;
   sakra_theta_wid = sakra_ang*2/8.0;  
@@ -59,23 +85,30 @@ void anassd::V1190Hit2SSDTDC(evtdata *evt){
     tmp_geo = evt->v1190_hit_all[i].geo;
     tmp_ch = evt->v1190_hit_all[i].ch;
     
-    if(tmp_geo==V1190_SSD_GEO && tmp_field==FIELD_SSD){
+    if( (tmp_geo==24 || tmp_geo==25) && tmp_field==FIELD_SSD){
+      tmp_ch+= (tmp_geo-24)*128;      
       evt->v1190_ssd.hit[tmp_ch] = 1;
       evt->v1190_ssd.multi[tmp_ch]++;
-      evt->v1190_ssd.tdc_raw[tmp_ch]
-	=evt->v1190_hit_all[i].lead_raw;
-      evt->v1190_ssd.tdc_cor[tmp_ch]
-	=evt->v1190_hit_all[i].lead_cor;
-    }    
-
-    if(tmp_field==FIELD_PLA && tmp_ch>=96 && tmp_ch<=98){
-      evt->v1190_ssd.hit[tmp_ch] = 1;
-      evt->v1190_ssd.multi[tmp_ch]++;
-      evt->v1190_ssd.tdc_raw[tmp_ch]
-	=evt->v1190_hit_all[i].lead_raw;
-      evt->v1190_ssd.tdc_cor[tmp_ch]
-	=evt->v1190_hit_all[i].lead_cor;
+      evt->v1190_ssd.tdc_raw[tmp_ch] = evt->v1190_hit_all[i].lead_raw + tdc_offset[tmp_ch];
+      evt->v1190_ssd.tdc_cor[tmp_ch] = evt->v1190_hit_all[i].lead_cor + tdc_offset[tmp_ch];
     }
+
+    tmp_ch = evt->v1190_hit_all[i].ch;    
+    if( (tmp_geo==24 && evt->v1190_hit_all[i].ch<80) ||
+	(tmp_geo==25 && evt->v1190_hit_all[i].ch<112) ){
+      if(tmp_geo==25 && evt->v1190_hit_all[i].ch<80) tmp_ch=evt->v1190_hit_all[i].ch+80;
+      if(tmp_geo==25 && evt->v1190_hit_all[i].ch>=96 && evt->v1190_hit_all[i].ch<112) tmp_ch=evt->v1190_hit_all[i].ch+64;
+      evt->v1190_ssd_mod.hit[tmp_ch] = 1;
+      evt->v1190_ssd_mod.multi[tmp_ch]++;
+      evt->v1190_ssd_mod.tdc_raw[tmp_ch] = evt->v1190_hit_all[i].lead_raw;
+      evt->v1190_ssd_mod.tdc_cor[tmp_ch] = evt->v1190_hit_all[i].lead_cor;
+    }
+    
+    // consistency check using pulser
+    if(tmp_field==FIELD_PLA && tmp_ch==95){
+      evt->ssd_pulser_flag=1;      
+    }
+
   }
   
   //  V1190_SSD_GEO
@@ -87,6 +120,10 @@ void anassd::Mxdc32Hit2SSDADC(evtdata *evt){
   unsigned int ch;
 
   unsigned int cnt[N_MADC];
+  for(int i=0; i<N_MADC; i++){
+    cnt[i]=0;    
+  }
+  
   
   int hit_size = (int)(evt->mxdc32_hit_all.size());
 
@@ -130,6 +167,12 @@ void anassd::ana_rf(evtdata *evt){
     }
   }
 
+  // analysis of LaBr timing
+  for(int i=0; i<32; i++) {
+    evt->labr_tdc_rf[i] = evt->v1190_ssd_mod.tdc_cor[160+i] - evt->rf_ssd[0];
+    evt->labr_tdc_rf[i] = evt->v1190_ssd_mod.tdc_cor[160+i] - evt->v1190_ssd.tdc_cor[120+128];        
+  }
+       
 }
 
 void anassd::ene_calib(evtdata *evt){
@@ -215,6 +258,11 @@ void anassd::init_data(evtdata *evt){
     evt->v1190_ssd.multi[i]=0;
     evt->v1190_ssd.tdc_raw[i]=0;
     evt->v1190_ssd.tdc_cor[i]=0;        
+
+    evt->v1190_ssd_mod.hit[i]=0;
+    evt->v1190_ssd_mod.multi[i]=0;
+    evt->v1190_ssd_mod.tdc_raw[i]=0;
+    evt->v1190_ssd_mod.tdc_cor[i]=0;        
   }
 
   for(int i=0; i<MAX_RF_MULTI; i++){

@@ -23,8 +23,11 @@ void analysis::TreeDef(){
   tree->Branch("v1190_ssd", &evt.v1190_ssd,
 	       Form("hit[%d]/I:multi[%d]/I:tdc_raw[%d]/I:tdc_cor[%d]/I",
 		    SSD_TDC_CH, SSD_TDC_CH, SSD_TDC_CH, SSD_TDC_CH));
+  tree->Branch("v1190_ssd_mod", &evt.v1190_ssd_mod,
+	       Form("hit[%d]/I:multi[%d]/I:tdc_raw[%d]/I:tdc_cor[%d]/I",
+		    SSD_TDC_CH, SSD_TDC_CH, SSD_TDC_CH, SSD_TDC_CH));
   tree->Branch("rf_ssd", &evt.rf_ssd, Form("rf_ssd[%d]/I", MAX_RF_MULTI));
-  tree->Branch("ssd_ene", &evt.ssd_ene, "ssd_ene[96]/F");
+  tree->Branch("ssd_ene", &evt.ssd_ene, Form("ssd_ene[%d]/F", N_MADC_CH));
 
   tree->Branch("ssd_clst_multi", &evt.ssd_clst_multi,
 	       Form("ssd_clst_multi[%d]/I", N_SSD_CLST));  
@@ -32,6 +35,10 @@ void analysis::TreeDef(){
 	       Form("ssd_clst_ene[%d]/F", N_SSD_CLST));  
   tree->Branch("ssd_clst_tdc", &evt.ssd_clst_tdc,
 	       Form("ssd_clst_tdc[%d]/I", N_SSD_CLST));  
+  tree->Branch("ssd_pulser_flag", &evt.ssd_pulser_flag, "ssd_pulser_flag/I");  
+  tree->Branch("labr_tdc_rf", &evt.labr_tdc_rf, "labr_tdc_rf[32]/I");
+  tree->Branch("labr_tdc_gr", &evt.labr_tdc_gr, "labr_tdc_gr[32]/I");    
+  
 #endif
   
   tree->Branch("grpla", &evt.grpla,
@@ -39,11 +46,6 @@ void analysis::TreeDef(){
 		    N_PLA_CH, N_PLA_CH, N_GRPLA, N_GRPLA,
 		    N_PLA_CH, N_PLA_CH, N_PLA_CH, N_PLA_CH));
 
-  tree->Branch("laspla", &evt.laspla,
-	       Form("adc[%d]/I:tdc[%d]/I:pos[%d]/F:de[%d]/F:fqdc[%d]/I:ftdc[%d]/I:vqdc[%d]/I:vtdc[%d]/I",
-		    N_PLA_CH, N_PLA_CH, N_GRPLA, N_GRPLA,
-		    N_PLA_CH, N_PLA_CH, N_PLA_CH, N_PLA_CH));
-  
   tree->Branch("rf", &evt.rf, Form("rf[%d]/I", N_RF));
   tree->Branch("vdcnhit", &evt.nhit_plane, Form("vdcnhit[%d]/I", N_VDCPLANE));
   tree->Branch("meanwire", &evt.mean_wire, Form("vdcwire[%d]/F", N_VDCPLANE));
@@ -73,6 +75,11 @@ void analysis::TreeDef(){
   tree->Branch("mqdc_nhit", &evt.mqdc_nhit, "mqdc_nhit[2]/i");
   
 #ifdef ANALAS
+  tree->Branch("laspla", &evt.laspla,
+	       Form("adc[%d]/I:tdc[%d]/I:pos[%d]/F:de[%d]/F:fqdc[%d]/I:ftdc[%d]/I:vqdc[%d]/I:vtdc[%d]/I",
+		    N_PLA_CH, N_PLA_CH, N_GRPLA, N_GRPLA,
+		    N_PLA_CH, N_PLA_CH, N_PLA_CH, N_PLA_CH));
+
   tree->Branch("vdcnhit_las", &evt.nhit_plane_las,
 	       Form("vdcnhit_las[%d]/I", N_VDCPLANE_LAS));
   tree->Branch("meanwire_las", &evt.mean_wire_las,

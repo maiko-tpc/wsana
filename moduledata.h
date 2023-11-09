@@ -1,7 +1,7 @@
 #ifndef MODULEDATA_H_
 #define MODULEDATA_H_
 
-#define N_MADC 4
+#define N_MADC 6
 #define N_MQDC 2
 #define N_V1190 1
 #define V1190_MAX_MULTI 2
@@ -47,7 +47,7 @@ const int N_RF=3;
 const int VDC_OFFSET = 5000;
 const int VDC_OFFSET_LAS = 15000;
 
-#define SSD_TDC_CH 128
+#define SSD_TDC_CH 256
 
 #define MAX_RF_MULTI 8
 #define N_SSD_CLST 9

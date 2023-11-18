@@ -21,6 +21,7 @@ anassd::anassd(){
 
   // Read the calibration parameters
   int tmp_ch;
+#ifdef ANASSD
   if(calib_file){
     printf("Reading SSD calibration file: %s\n",
 	   calib_fname.c_str());
@@ -32,7 +33,8 @@ anassd::anassd(){
       }
     }
   }
-
+#endif
+  
   // open TDC offset file (for PANDORA on 2023.10.23)
   std::ifstream tdc_offset_file;
   string tdc_offset_fname = "./calib/ssd_tdc_offset.dat";

@@ -110,7 +110,7 @@ typedef struct v1190_data{
 typedef struct grpla_data{
   unsigned int adc[N_PLA_CH];
   unsigned int tdc[N_PLA_CH];
-  float pos[N_GRPLA];
+  int pos[N_GRPLA];
   float  de[N_GRPLA];
   unsigned int fqdc[N_PLA_CH];
   unsigned int ftdc[N_PLA_CH];  
@@ -121,7 +121,7 @@ typedef struct grpla_data{
 typedef struct pla_data{
   unsigned int adc[N_PLA_CH];
   unsigned int tdc[N_PLA_CH];
-  float pos[N_GRPLA];
+  int pos[N_GRPLA];
   float de[N_GRPLA];
   unsigned int fqdc[N_PLA_CH];
   unsigned int ftdc[N_PLA_CH];  

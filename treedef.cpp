@@ -35,7 +35,7 @@ void analysis::TreeDef(){
 #endif
   
   tree->Branch("grpla", &evt.grpla,
-	       Form("adc[%d]/I:tdc[%d]/I:pos[%d]/F:de[%d]/F:fqdc[%d]/I:ftdc[%d]/I:vqdc[%d]/I:vtdc[%d]/I",
+	       Form("adc[%d]/I:tdc[%d]/I:pos[%d]/I:de[%d]/F:fqdc[%d]/I:ftdc[%d]/I:vqdc[%d]/I:vtdc[%d]/I",
 		    N_PLA_CH, N_PLA_CH, N_GRPLA, N_GRPLA,
 		    N_PLA_CH, N_PLA_CH, N_PLA_CH, N_PLA_CH));
 
@@ -67,7 +67,7 @@ void analysis::TreeDef(){
   tree->Branch("grp", &evt.grp, "grp/D");
   tree->Branch("gre", &evt.gre, "gre/D");        
 
-  //  tree->Branch("v1190pla_multi", &evt.v1190pla_multi, "v1190pla_multi[16]/I");
+  tree->Branch("v1190pla_multi", &evt.v1190pla_multi, "v1190pla_multi[16]/I");
 
   // for E552 on 2023 Feb.
   tree->Branch("band_v1190_multi", &evt.band_v1190_multi, "band_v1190_multi[32]/I");

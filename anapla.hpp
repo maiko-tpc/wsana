@@ -18,6 +18,8 @@
 #include "evtdata.h"
 #include "decoder.hpp"
 
+#include "config.h"
+
 class anapla{
 public:
   anapla();
@@ -30,6 +32,9 @@ public:
   int GetFERAHit(evtdata *);    
 
 private:
+  double band_tdc_min;
+  double band_tdc_max;  
+
 };
 
 #endif // end of include guard

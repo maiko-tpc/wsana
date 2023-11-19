@@ -4,6 +4,16 @@
 #define PLA_V1190_LEAD_MAX =  100000
 
 anapla::anapla(){
+  band_tdc_min = -10000000;
+  band_tdc_max =  10000000;  
+
+  // open the parameter file
+  config_read_file("par/default.par");
+  band_tdc_min = config_get_d_value("band_tdc_min", 0, -100000);
+  band_tdc_max = config_get_d_value("band_tdc_max", 0,  100000);  
+
+  printf("BAND TDC window min: %f\n", band_tdc_min);
+  printf("BAND TDC window max: %f\n", band_tdc_max);  
 }
 
 anapla::~anapla(){
@@ -106,7 +116,9 @@ int anapla::GetV1190Hit(evtdata *evt){
       if(ch>=32 && ch<64){
 	evt->band_v1190_multi[ch-32]++;
 	// take only the first hit
-	if(evt->v1190_first_hit[PLA_V1190_GEO][ch] == 1){
+	if(evt->v1190_first_hit[PLA_V1190_GEO][ch] == 1 &&
+	   evt->v1190_hit_all[i].lead_cor +VDC_OFFSET > (int)band_tdc_min &&
+	   evt->v1190_hit_all[i].lead_cor +VDC_OFFSET < (int)band_tdc_max){
 	  evt->band_v1190_lead[ch-32] = evt->v1190_hit_all[i].lead_cor+VDC_OFFSET;
 	  evt->v1190_first_hit[PLA_V1190_GEO][ch] = 0;
 	}

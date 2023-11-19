@@ -28,8 +28,10 @@ analysis::analysis(){
   gr->SetGRPars();
   gr->SetTDC2LenTab_GR();
 
+#ifdef ANASSD
   ssd = new anassd();
-
+#endif
+  
   kine = new kinema();
   
   par_debug_mode = 0;

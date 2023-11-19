@@ -12,7 +12,5 @@ test
 data
 root/*
 *.o
-par/*
-*.par
 *.png
 *.pdf

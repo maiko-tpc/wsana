@@ -334,6 +334,7 @@ void anagr::anavdc(evtdata *evt){
     if(evt->gr_good_clst==1){
       for(i=0; i<N_VDCPLANE; i++){
 	FitOnePlane(evt, i);
+	if(evt->redchi2[i]<=100) evt->good_fit_plane[i]=1;
       }
     }
     

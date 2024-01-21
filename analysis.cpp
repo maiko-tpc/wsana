@@ -796,6 +796,7 @@ void analysis::InitEvt(){
   for(int i=0; i<N_VDCPLANE; i++){
     evt.nclst[i]=0;
     evt.clst_size[i]=0;    
+    evt.good_fit_plane[i]=0;
   }
   
   for(int i=0; i<N_VDCPLANE; i++){

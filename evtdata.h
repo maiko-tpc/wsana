@@ -90,7 +90,8 @@ struct evtdata{
   float grthx, grthy;
 
   int good_fit;
-
+  int good_fit_plane[N_VDCPLANE];
+  
   double grp_rela;
   double grp;
   double grtote, gre;

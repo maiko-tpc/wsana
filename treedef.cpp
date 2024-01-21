@@ -54,6 +54,7 @@ void analysis::TreeDef(){
   tree->Branch("clst_size", &evt.clst_size, Form("clst_size[%d]/I", N_VDCPLANE));  
   tree->Branch("gr_good_clst", &evt.gr_good_clst, "gr_good_clst/I");
   tree->Branch("good_fit", &evt.good_fit, "good_fit/I");  
+  tree->Branch("good_fit_plane", evt.good_fit_plane, Form("good_fit_plane[%d]/I", N_VDCPLANE));
   tree->Branch("gr_tot_mean", &evt.gr_tot_mean, Form("gr_tot_mean[%d]/F", N_VDCPLANE));
   tree->Branch("gr_tot_max", &evt.gr_tot_max, Form("gr_tot_max[%d]/I", N_VDCPLANE));  
   

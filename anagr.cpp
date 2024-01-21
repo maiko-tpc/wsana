@@ -646,10 +646,10 @@ double anagr::fit_planes(evtdata *evt){
   evt->grthy = atan((center_pos[3]-center_pos[1])/chamb_space)*TMath::RadToDeg();
 
   // 2023.06.25  focal plane is at the exit window of GR
-  //  which is assumed to be 50mm upstream of the X1 plane
+  //  which is assumed to be 150mm upstream of the X1 plane
   //  evt->grx = center_pos[0] - grx_size/2.0;
-  evt->grx = center_pos[0] - 50*(evt->grthx)*TMath::DegToRad() - grx_size/2.0;
-  evt->gry = center_pos[1] - 50*(evt->grthy)*TMath::DegToRad() - gry_size/2.0;  
+  evt->grx = center_pos[0] - 150*(evt->grthx)*TMath::DegToRad() - grx_size/2.0;
+  evt->gry = center_pos[1] - 150*(evt->grthy)*TMath::DegToRad() - gry_size/2.0;  
   
   return 0;
 }

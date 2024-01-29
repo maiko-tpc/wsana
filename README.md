@@ -63,10 +63,10 @@ Just type `$> make`
 |redchi2[4]|Reduced chi square of the fit in GR VDC||
 |wire_pos[4]|Fitted position in GR VDC planes||
 |residual[4]|Mean residual lengths in GR VDC planes|Unit in mm.|
-|grx|GR X position|Unit in mm. Range: from -600 to 600. Larger values correspond to higher momentum.|
-|gry|GR Y position|Unit in mm. Range: from -50 to 50. Larger values correspond to upper position.|
-|grthx|GR X angle|Unit in degree. Larger values correspond to backward angle at scattering point.|
-|grthy|GR Y angle|Unit in degree.|
+|grx|GR X position at focal plane|Unit in mm. Range: from -600 to 600. Larger values correspond to higher momentum.|
+|gry|GR Y position at focal plane|Unit in mm. Range: from -50 to 50. Larger values correspond to upper position.|
+|grthx|GR X angle at focal plane|Unit in degree. Larger values correspond to backward angle at scattering point.|
+|grthy|GR Y angle at focal plane|Unit in degree.|
 |grp|GR momentum|Unit in MeV/c.|
 |gre|GR energy|Unit in MeV.|
 |vdcnhit_las[6]|Number of hits in LAS VDC planes|[0]:X1, [1]:U1, [2]:V1, [3]:X2, [4]:U2, [5]:V2|

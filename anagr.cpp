@@ -143,13 +143,14 @@ int anagr::GetWire(int geo, int ch){
 }
 
 void anagr::V1190Hit2VDCData(evtdata *evt){
+
   /* Get V1190 hit data to fill into vdc data */
 
   int tmp_field;
   int tmp_geo, tmp_ch, tmp_plane, tmp_wire;
 
   // Accept only the first hit in each wire
-  unsigned int hit_flag[N_VDCPLANE_LAS][PLANE_SIZE]={0};
+  unsigned int hit_flag[N_VDCPLANE_LAS][PLANE_SIZE]={0}; // [0]:GR, [1]: LAS
   
   int hit_size = (int)(evt->v1190_hit_all.size());
   for(int i=0; i<hit_size; i++){
@@ -167,6 +168,7 @@ void anagr::V1190Hit2VDCData(evtdata *evt){
       tmp_vdc_data.geo = evt->v1190_hit_all[i].geo;
       tmp_vdc_data.lead_raw = evt->v1190_hit_all[i].lead_raw;
 
+      
       if(tmp_field == FIELD_GV_NEW || tmp_field == FIELD_GV_OLD){
 	tmp_vdc_data.lead_cor = evt->v1190_hit_all[i].lead_cor + VDC_OFFSET; //GR
       }

@@ -21,7 +21,7 @@
 #include "evtdata.h"
 #include "decoder.hpp"
 
-#define SI_CH 192
+#define SI_CH 32
 
 class anassd{
 private:

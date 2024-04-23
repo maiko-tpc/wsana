@@ -138,7 +138,7 @@ int analysis::AnaFld(){
     
     switch(region_id){
     case 0x1:  // V1190
-      ana_v1190(evt.v1190_hit_all, tmpdata, region_size, field_id);      
+      ana_v1190(&evt, evt.v1190_hit_all, tmpdata, region_size, field_id);      
       break;
     case 0x2:  // input register
       ana_inp(&evt, tmpdata, region_size, field_id);
@@ -886,11 +886,11 @@ void analysis::InitEvt(){
 
   evt.ssd_pulser_flag=0;
 
-  for(int i=0; i<32; i++) {
-    evt.labr_tdc_rf[i]=-10000;
-    evt.labr_tdc_gr[i]=-10000;        
+#ifdef ANASSD
+  for(int i=0; i<LABR_TDC_N_CH; i++){
+    evt.labr_time[i]=-10000;
   }
-  
+#endif
 }
 
 

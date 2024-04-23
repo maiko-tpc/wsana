@@ -16,7 +16,7 @@ void ana_mxdc32(evtdata *,
 		unsigned int *rawdata, unsigned int size);
 void ana_mxdc32(vector<mxdc32_hit> &mxdc32_hit_all, unsigned int *rawdata, unsigned int size, int field_id);
 void init_v1190_data(v1190_data *v1190);
-int ana_v1190(vector<v1190_hit> &v1190_hit_all,
+int ana_v1190(evtdata *evt, vector<v1190_hit> &v1190_hit_all,
 	      unsigned int *rawdata, unsigned int size, int field_id);
 
 void init_grpla_data(pla_data *grpla);

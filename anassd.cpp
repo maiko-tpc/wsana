@@ -82,6 +82,9 @@ void anassd::V1190Hit2SSDTDC(evtdata *evt){
   unsigned int tmp_geo, tmp_ch;
   int hit_size = (int)(evt->v1190_hit_all.size());
 
+  int labr_hit[LABR_TDC_N_CH];
+  for(int i=0; i<LABR_TDC_N_CH; i++) labr_hit[i]=0;
+
   for(int i=0; i<hit_size; i++){
     tmp_field = evt->v1190_hit_all[i].field;
     tmp_geo = evt->v1190_hit_all[i].geo;
@@ -106,11 +109,18 @@ void anassd::V1190Hit2SSDTDC(evtdata *evt){
       evt->v1190_ssd_mod.tdc_cor[tmp_ch] = evt->v1190_hit_all[i].lead_cor;
     }
     
-    // consistency check using pulser
-    if(tmp_field==FIELD_PLA && tmp_ch==95){
-      evt->ssd_pulser_flag=1;      
+    // LaBr
+    if(tmp_geo==LABR_TDC_GEO &&
+       tmp_ch >= LABR_TDC_START_CH && tmp_ch < LABR_TDC_START_CH+LABR_TDC_N_CH){
+      int labr_ch = tmp_ch-LABR_TDC_START_CH;
+      
+      // take only the first hit
+      if(labr_hit[labr_ch]==0){
+	evt->labr_time[labr_ch] = evt->v1190_hit_all[i].lead_cor;
+	labr_hit[labr_ch]=1;
+      }
     }
-
+    
   }
   
   //  V1190_SSD_GEO
@@ -169,11 +179,6 @@ void anassd::ana_rf(evtdata *evt){
     }
   }
 
-  // analysis of LaBr timing
-  for(int i=0; i<32; i++) {
-    evt->labr_tdc_rf[i] = evt->v1190_ssd_mod.tdc_cor[160+i] - evt->rf_ssd[0];
-    evt->labr_tdc_rf[i] = evt->v1190_ssd_mod.tdc_cor[160+i] - evt->v1190_ssd.tdc_cor[120+128];        
-  }
        
 }
 

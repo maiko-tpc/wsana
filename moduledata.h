@@ -1,7 +1,7 @@
 #ifndef MODULEDATA_H_
 #define MODULEDATA_H_
 
-#define N_MADC 6
+#define N_MADC 1
 #define N_MQDC 2
 #define N_V1190 1
 #define V1190_MAX_MULTI 2
@@ -10,7 +10,7 @@
 #define PLANE_SIZE 272
 
 #define MQDC_START_GEO 0
-#define MADC_START_GEO 10
+#define MADC_START_GEO 15
 #define PLA_V1190_GEO 30
 #define V1190_MAX_GEO 32
 
@@ -52,6 +52,10 @@ const int VDC_OFFSET_LAS = 15000;
 #define MAX_RF_MULTI 8
 #define N_SSD_CLST 9
 #define N_SAKRA 6
+
+const int LABR_TDC_GEO = 30;
+const int LABR_TDC_START_CH = 96;
+const int LABR_TDC_N_CH = 32;
 
 const double sakra_ang=72/2.0;       
 const double sakra_rmin=32.6;       // active area inner radius [mm]

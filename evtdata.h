@@ -131,10 +131,12 @@ struct evtdata{
   
   int ssd_pulser_flag;
 
-  int labr_tdc_rf[32];
-  int labr_tdc_gr[32];  
-  
-  
+  int labr_time[LABR_TDC_N_CH];
+
+  unsigned long time_tag_cor=0;
+  unsigned long time_tag_first=0;
+  unsigned long time_tag_previous=0;    
+
 };
 
 #endif

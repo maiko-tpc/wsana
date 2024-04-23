@@ -104,6 +104,9 @@ void analysis::HistDef(){
 
   hlasposcor = new TH2F("hlasposcor", "LAS PLA-VDC X consistency",
 		       300,-600,600, 250,0,250);
+
+  hgrmadccor = new TH2F("hgrmadccor", "GR PLA1L MADC consistency",
+			256,0,4096, 256,0,8192);
   
   hv1190tdc = new TH2F("hv1190tdc","Pla V1190 TDC pattern",
 		       16,0,16, 1000, -10000, 10000);
@@ -248,6 +251,8 @@ void analysis::HistFill(){
     hlasposcor->Fill(evt.laspla.pos[2], evt.mean_wire_las[0]);
   }
   
+  hgrmadccor->Fill(evt.grpla.vqdc[0], evt.madc.adc[31]);
+
   // small analysis for VDC efficiency
   // GR
   for(int i=0; i<N_VDCPLANE; i++){
@@ -419,6 +424,8 @@ void analysis::HistWrite(){
   hgrtracky->Write();  
 
   hmqdcglcor->Write();
+
+  hgrmadccor->Write();
 }
 
 void analysis::FillGRTrack(){

@@ -215,7 +215,7 @@ void init_v1190_data(v1190_data *v1190){
 
 
 
-int ana_v1190(vector<v1190_hit> &v1190_hit_all,
+int ana_v1190(evtdata *evt, vector<v1190_hit> &v1190_hit_all,
               unsigned int *rawdata, unsigned int size, int field_id){
 
   // reference channel by geo address
@@ -234,6 +234,8 @@ int ana_v1190(vector<v1190_hit> &v1190_hit_all,
   unsigned int edge;
   unsigned int ich;
   unsigned int measure;
+  unsigned long time_tag_raw=0;
+
   int i,j;
   
   //  int counter=0;
@@ -246,6 +248,8 @@ int ana_v1190(vector<v1190_hit> &v1190_hit_all,
   int ref_lead[V1190_MAX_GEO]={0};
   int ref_flag[V1190_MAX_GEO]={0};  
 
+  v1190_hit tmp_hit;
+  
   // multiple module data is coming (not single module)
   while(rp<size/2){
     data=flip_32bit(ntohl(rawdata[rp]));
@@ -270,6 +274,28 @@ int ana_v1190(vector<v1190_hit> &v1190_hit_all,
 	}
 
 	if((data>>27) == 0x4){ // TDC error
+	}
+
+	if(((data>>27)&0x1f) == 0x11){ // extended trigger time tag
+
+	  if(geo==30){ // only for pla
+	    time_tag_raw = (data)&0x07ffffff;
+	    
+	    if(evt->eve==0) evt->time_tag_first = time_tag_raw;
+
+	    if(time_tag_raw < (evt->time_tag_previous)){
+	      //	      printf("kuriagari, eve %d, %ld, %d \n",
+	      //		     evt->eve, evt->time_tag_cor, 0x08000000);
+	      evt->time_tag_cor += 0x08000000;
+	      //	      printf("after: %ld\n", evt->time_tag_cor);
+	    }
+
+	    evt->time_tag_cor = (evt->time_tag_cor&0xfffffffff8000000)
+	      +time_tag_raw;	    
+	    
+	    if(evt->eve==0) evt->time_tag_cor -= evt->time_tag_first;
+	    evt->time_tag_previous = time_tag_raw;
+	  }
 	}
 	
 	if((data>>27) == 0x00){ // TDC measure
@@ -305,7 +331,6 @@ int ana_v1190(vector<v1190_hit> &v1190_hit_all,
   
   // reanalysis 
   int total_hit=0;
-  v1190_hit tmp_hit;
 
   for(geo=0; geo<V1190_MAX_GEO; geo++){
     if(ref_flag[geo]==1){

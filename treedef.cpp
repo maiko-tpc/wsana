@@ -14,6 +14,7 @@ void analysis::TreeDef(){
   tree->Branch("vme_sca", &evt.vme_sca, Form("vme_sca[%d]/l", VME_SCA_CH));  
   tree->Branch("v1190_hit_ref", evt.v1190_hit_ref,
 	       Form("v1190_hit_ref[%d]/I", V1190_MAX_GEO));
+  tree->Branch("time_tag_cor",  &evt.time_tag_cor, "time_tag_cor/l");
   
 #ifdef ANASSD
   tree->Branch("madc", &evt.madc,
@@ -35,9 +36,9 @@ void analysis::TreeDef(){
 	       Form("ssd_clst_ene[%d]/F", N_SSD_CLST));  
   tree->Branch("ssd_clst_tdc", &evt.ssd_clst_tdc,
 	       Form("ssd_clst_tdc[%d]/I", N_SSD_CLST));  
-  tree->Branch("ssd_pulser_flag", &evt.ssd_pulser_flag, "ssd_pulser_flag/I");  
-  tree->Branch("labr_tdc_rf", &evt.labr_tdc_rf, "labr_tdc_rf[32]/I");
-  tree->Branch("labr_tdc_gr", &evt.labr_tdc_gr, "labr_tdc_gr[32]/I");    
+
+  tree->Branch("labr_time", &evt.labr_time,
+	       Form("labr_time[%d]/I", LABR_TDC_N_CH));
   
 #endif
   

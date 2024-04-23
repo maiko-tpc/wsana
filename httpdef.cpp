@@ -79,6 +79,8 @@ void analysis::MakeTHttp(int portnum){
 
   hlasposcor->SetOption("colz");
   serv->Register("/Consistency", hlasposcor);  
+
+  serv->Register("/Consistency", hgrmadccor);  
   
   for(int i=0; i<4; i++){
     hgrplaposq[i]->SetOption("colz");
@@ -185,7 +187,8 @@ void analysis::HttpHistReset(){
 
   hmqdcglcor->Reset();
   hgrposcor->Reset();
-  hlasposcor->Reset();  
+  hlasposcor->Reset();
+  hgrmadccor->Reset();    
   
   for(int i=0; i<4; i++){
     hgrplaposq[i]->Reset();

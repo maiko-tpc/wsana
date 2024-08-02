@@ -566,17 +566,20 @@ int ana_camac_sca(evtdata *evt, unsigned int *rawdata, unsigned int size,
   unsigned int rp=0;
   unsigned int tmpdata;
 
-  if(evt->camac_sca_flag==0){  // analysis only the first region
-    evt->camac_sca_flag++;
+  if(evt->camac_sca_flag<2){  // analysis first (spin-up) and second (spin-down)
     int ich=0;
     while(rp<size/2){
       tmpdata=flip_32bit(ntohl(rawdata[rp]));
       rp++;
-
-      evt->camac_sca[ich] += tmpdata;
+      
+      if(evt->camac_sca_flag==0) evt->camac_sca_up[ich] += tmpdata;
+      if(evt->camac_sca_flag==1) evt->camac_sca_down[ich] += tmpdata;
+      evt->camac_sca_total[ich] += tmpdata;
+      
       ich++;
-    }  
+    }
   }
+  evt->camac_sca_flag++;
   return 0;
 }
 

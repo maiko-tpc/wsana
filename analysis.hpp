@@ -2,7 +2,7 @@
 #define ANALYSIS_HPP_
 
 #define ANASSD 1  // comment out to disable ssd analysis
-#define ANALAS 1    // comment out to disable LAS analysis
+//#define ANALAS 1    // comment out to disable LAS analysis
 
 
 #define SKIP_BLK_END 1

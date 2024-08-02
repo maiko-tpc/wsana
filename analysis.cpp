@@ -546,12 +546,13 @@ int analysis::SeekLastBlk(){
 void analysis::ShowCamacSca(){
   char sca_name[256];
   printf("*********** CAMAC Scaler ***********\n");
+  printf("        Total         Spin UP       Spin DOWN  \n");
   for(int i=0; i<CAMAC_SCA_CH; i++){
     sprintf(sca_name, "Sca %02d", i);
-    printf("%s: %012ld\n", sca_name, evt.camac_sca[i]);
+    printf("%s: %012ld  %012ld  %012ld\n",
+           sca_name, evt.camac_sca_total[i], evt.camac_sca_up[i], evt.camac_sca_down[i]);
   }
-  printf("**********************\n");
-}
+  printf("**********************\n");}
 
 void analysis::ShowVmeSca(){
   char sca_name[256];
@@ -589,6 +590,9 @@ void analysis::ShowGREff(){
 void analysis::ClearCamacSca(){
   for(int i=0; i<CAMAC_SCA_CH; i++){
     evt.camac_sca[i]=0;
+    evt.camac_sca_up[i]=0;
+    evt.camac_sca_down[i]=0;
+    evt.camac_sca_total[i]=0;
   }
 }
 
